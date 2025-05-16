@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <Folder Include="DTO%27s\" />
-    <Folder Include="Entities\" />
   </ItemGroup>
 
 </Project>
