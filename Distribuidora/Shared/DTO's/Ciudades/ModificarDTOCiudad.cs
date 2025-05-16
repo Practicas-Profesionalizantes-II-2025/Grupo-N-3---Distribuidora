@@ -4,12 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Entities
+namespace Shared.DTO_s.Ciudades
 {
-    public class Distribuidores : EntityBase
+    public class ModificarDTOCiudad
     {
         public string Nombre { get; set; }
-        public string Telefono { get; set; }
-        public string Email { get; set; }
+        public string Cp { get; set; }
+        public string Acp { get; set; }
     }
 }

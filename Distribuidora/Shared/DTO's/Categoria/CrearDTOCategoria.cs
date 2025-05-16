@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.Entities;
 
-namespace Shared.Entities
+namespace Shared.DTO_s.Categoria
 {
-    public class Distribuidores : EntityBase
+    public class CrearDTOCategoria
     {
         public string Nombre { get; set; }
-        public string Telefono { get; set; }
-        public string Email { get; set; }
+        public Estado estado { get; set; }
     }
 }

@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Entities
+namespace Shared.DTO_s.Distribuidores
 {
-    public class Distribuidores : EntityBase
+    public class ModificarDTODistribuidor
     {
         public string Nombre { get; set; }
         public string Telefono { get; set; }

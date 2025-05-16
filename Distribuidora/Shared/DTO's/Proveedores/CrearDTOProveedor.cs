@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Shared.Entities
+namespace Shared.DTO_s.Proveedores
 {
-    public class Distribuidores : EntityBase
+    public class CrearDTOProveedor
     {
         public string Nombre { get; set; }
+        public string Direccion { get; set; }
         public string Telefono { get; set; }
         public string Email { get; set; }
     }
