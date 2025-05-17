@@ -9,6 +9,8 @@
   <ItemGroup>
     <Folder Include="Logica\Interfaz\" />
     <Folder Include="Logica\Services\" />
+    <Folder Include="CasoDeUso\" />
+    <Folder Include="ClientHttp\" />
   </ItemGroup>
 
 </Project>
