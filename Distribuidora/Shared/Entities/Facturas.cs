@@ -12,7 +12,5 @@ namespace Shared.Entities
         public int numeroFactura { get; set; }
         public OrdenDeVenta? OrdenDeVenta { get; set; }
         public OrdenDeCompra? OrdenDeCompra { get; set; }
-
-
     }
 }

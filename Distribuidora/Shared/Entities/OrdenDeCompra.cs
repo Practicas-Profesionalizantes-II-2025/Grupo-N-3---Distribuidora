@@ -10,6 +10,7 @@ namespace Shared.Entities
     {
         public int IdOrdenCompra {  get; set; }
         public Distribuidores Distribuidor { get; set; }
+        public int IdDistribuidor { get; set; }
         public DateTime FechaOrden { get; set; }
         public Facturas? Factura { get; set; }    // 1:1 Con Factura
         public int FacturaId { get; set; }

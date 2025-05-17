@@ -38,25 +38,123 @@ namespace CDatos.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<Persona>()
+            .HasOne(p => p.Cliente)
+            .WithOne(c => c.Persona)
+            .HasForeignKey<Clientes>(c => c.PersonaId);
 
-        //   modelBuilder.Entity<Persona>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<Productos>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<TipoDocumento>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<Estado>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<Ciudades>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<Clientes>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<Distribuidores>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<Empleados>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<Facturas>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<OrdenDeCompra>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<OrdenDeCompraProducto>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
-        //    modelBuilder.Entity<OrdenDeVenta>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
+            modelBuilder.Entity<Persona>()
+                .HasOne(p => p.Empleado)
+                .WithOne(e => e.Persona)
+                .HasForeignKey<Empleados>(e => e.PersonaId);
 
-            DisableCascadingDelete(modelBuilder);
+            // Persona pertenece a una Ciudad
+            modelBuilder.Entity<Persona>()
+                .HasOne(p => p.Ciudad)
+                .WithMany(c => c.Personas)
+                .HasForeignKey(p => p.CiudadId);
+
+            // Empleado pertenece a un Sector
+            modelBuilder.Entity<Empleados>()
+                .HasOne(e => e.Sector)
+                .WithMany(s => s.Empleados)
+                .HasForeignKey(e => e.SectorId);
+
+            // OrdenDeVenta con Factura 1:1
+            modelBuilder.Entity<OrdenDeVenta>()
+                .HasOne(ov => ov.Factura)
+                .WithOne(f => f.OrdenDeVenta)
+                .HasForeignKey<OrdenDeVenta>(ov => ov.FacturaId);
+
+            // OrdenDeCompra con Factura 1:1
+            modelBuilder.Entity<OrdenDeCompra>()
+                .HasOne(oc => oc.Factura)
+                .WithOne(f => f.OrdenDeCompra)
+                .HasForeignKey<OrdenDeCompra>(oc => oc.FacturaId);
+
+            // OrdenDeCompra Producto (n:n explícito)
+            modelBuilder.Entity<OrdenDeCompraProducto>()
+                .HasKey(x => x.IdOrdenCompraProd);
+
+            modelBuilder.Entity<OrdenDeCompraProducto>()
+                .HasOne(x => x.Producto)
+                .WithMany()
+                .HasForeignKey(x => x.IdProducto);
+
+            modelBuilder.Entity<OrdenDeCompraProducto>()
+                .HasOne(x => x.OrdenDeCompra)
+                .WithMany()
+                .HasForeignKey(x => x.IdOrdenDeCompra);
+
+            // OrdenDeVenta Producto (n:n explícito)
+            modelBuilder.Entity<OrdenDeVentaProducto>()
+                .HasKey(x => x.IdOrdenVentaProd);
+
+            modelBuilder.Entity<OrdenDeVentaProducto>()
+                .HasOne(x => x.Producto)
+                .WithMany(p => p.OrdenDeVentaProductos)
+                .HasForeignKey(x => x.IdProducto);
+
+            modelBuilder.Entity<OrdenDeVentaProducto>()
+                .HasOne(x => x.OrdenDeVenta)
+                .WithMany(o => o.OrdenDeVenta_Productos)
+                .HasForeignKey(x => x.IdOrdenDeVenta);
+
+            // Producto tiene un Proveedor y una Categoria
+            modelBuilder.Entity<Productos>()
+                .HasOne(p => p.Proveedor)
+                .WithMany(prov => prov.Productos)
+                .HasForeignKey(p => p.ProveedorId);
+
+            modelBuilder.Entity<Productos>()
+                .HasOne(p => p.Categoria)
+                .WithMany(c => c.Productos)
+                .HasForeignKey(p => p.CategoriaId);
+
+            // Proveedor tiene una ciudad
+            modelBuilder.Entity<Proveedores>()
+                .HasOne(p => p.Ciudad)
+                .WithMany(c => c.Proveedores)
+                .HasForeignKey(p => p.IdCiudad);
+
+            // Distribuidor tiene una ciudad
+            modelBuilder.Entity<Distribuidores>()
+                .HasOne(d => d.Ciudad)
+                .WithMany(c => c.Distribuidores)
+                .HasForeignKey(d => d.IdCiudad);
+
+            // Orden de Venta relaciones
+            modelBuilder.Entity<OrdenDeVenta>()
+                .HasOne(ov => ov.Empleado)
+                .WithMany(e => e.OrdenesDeVenta)
+                .HasForeignKey(ov => ov.EmpleadoId);
+
+            modelBuilder.Entity<OrdenDeVenta>()
+                .HasOne(ov => ov.Cliente)
+                .WithMany(c => c.OrdenesDeVenta)
+                .HasForeignKey(ov => ov.ClienteId);
+
+            modelBuilder.Entity<OrdenDeVenta>()
+                .HasOne(ov => ov.Distribuidor)
+                .WithMany(d => d.OrdenesDeVenta)
+                .HasForeignKey(ov => ov.DistribuidorId);
+
+            // Orden de Compra relaciones
+            modelBuilder.Entity<OrdenDeCompra>()
+                .HasOne(oc => oc.Empleado)
+                .WithMany(e => e.OrdenesDeCompra)
+                .HasForeignKey(oc => oc.EmpleadoId);
+
+            modelBuilder.Entity<OrdenDeCompra>()
+                .HasOne(oc => oc.Distribuidor)
+                .WithMany()
+                .HasForeignKey("DistribuidorId");
+
+        //   DisableCascadingDelete(modelBuilder);
 
         }
 
-        public override int SaveChanges()
+     /*   public override int SaveChanges()
         {
             return base.SaveChanges();
         }
@@ -100,6 +198,6 @@ namespace CDatos.Data
                 relationship.DeleteBehavior = DeleteBehavior.Restrict;
             }
         }
-
+        */
     }
 }
