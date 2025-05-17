@@ -9,6 +9,7 @@ namespace Shared.DTO_s.Clientes
 {
     public class ModificarDTOCliente
     {
+        public int IdCliente { get; set; }
         public Shared.Entities.Persona Persona { get; set; }
     }
 }

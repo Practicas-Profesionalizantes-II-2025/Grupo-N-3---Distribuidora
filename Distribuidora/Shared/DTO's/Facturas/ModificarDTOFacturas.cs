@@ -8,6 +8,7 @@ namespace Shared.DTO_s.Facturas
 {
     public class ModificarDTOFacturas
     {
+        public int IdFactura { get; set; }
         public int numeroFactura { get; set; }
     }
 }

@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shared.Entities
 {
-    public class Estado : EntityBase
+    public class Estado
     {
+        public int IdEstado { get; set; }
         public string Descripcion { get; set; }    // "De Baja" - "De Alta"
     }
 }

@@ -6,9 +6,13 @@ using System.Threading.Tasks;
 
 namespace Shared.Entities
 {
-    public class Facturas : EntityBase
+    public class Facturas
     {
+        public int IdFactura { get; set; }
         public int numeroFactura { get; set; }
+        public OrdenDeVenta? OrdenDeVenta { get; set; }
+        public OrdenDeCompra? OrdenDeCompra { get; set; }
+
 
     }
 }

@@ -8,6 +8,7 @@ namespace Shared.DTO_s.TipoDocumento
 {
     public class ModificarDTOTipoDocumento
     {
+        public int IdTipoDocumento { get; set; }
         public string NombreTipoDocumento { get; set; }
         public Shared.Entities.Estado estado { get; set; }
     }

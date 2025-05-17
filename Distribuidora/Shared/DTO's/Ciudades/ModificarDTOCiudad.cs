@@ -8,6 +8,7 @@ namespace Shared.DTO_s.Ciudades
 {
     public class ModificarDTOCiudad
     {
+        public int IdCiudad {  get; set; }
         public string Nombre { get; set; }
         public string Cp { get; set; }
         public string Acp { get; set; }

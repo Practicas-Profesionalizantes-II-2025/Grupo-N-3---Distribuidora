@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 
 namespace Shared.Entities
 {
-    public class TipoDocumento : EntityBase
+    public class TipoDocumento
     {
+        public int IdTipoDocumento { get; set; }
         public const int LengthNombre = 60;
 
         [MaxLength(
@@ -17,5 +18,7 @@ namespace Shared.Entities
         )]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string NombreTipoDocumento { get; set; }
+        public ICollection<Empleados> Empleados { get; } = new List<Empleados>(); // 1:n con Empleados
+
     }
 }

@@ -8,6 +8,7 @@ namespace Shared.DTO_s.Productos
 {
     public class ModificarDTOProducto
     {
+        public int IdProducto { get; set; }
         public string Nombre { get; set; }
         public const int LengthNombre = 20;
         public int IdProveedor { get; set; }

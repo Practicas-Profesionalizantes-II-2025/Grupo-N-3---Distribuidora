@@ -9,6 +9,7 @@ namespace Shared.DTO_s.Persona
 {
     public class ModificarDTOPersona
     {
+        public int IdPersona { get; set; }
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public Shared.Entities.TipoDocumento Tipo_Doc { get; set; }

@@ -8,6 +8,7 @@ namespace Shared.DTO_s.Proveedores
 {
     public class ModificarDTOProveedor
     {
+        public int IdProveedor { get; set; }
         public string Nombre { get; set; }
         public string Direccion { get; set; }
         public string Telefono { get; set; }

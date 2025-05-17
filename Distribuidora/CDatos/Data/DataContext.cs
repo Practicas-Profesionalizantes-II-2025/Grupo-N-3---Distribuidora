@@ -39,7 +39,7 @@ namespace CDatos.Data
         {
             base.OnModelCreating(modelBuilder);
 
-        //    modelBuilder.Entity<Persona>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
+        //   modelBuilder.Entity<Persona>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
         //    modelBuilder.Entity<Productos>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
         //    modelBuilder.Entity<TipoDocumento>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha
         //    modelBuilder.Entity<Estado>().Property(x => x.CreatedDate).HasDefaultValue(DateTime.Now); // Cuando se crea el registro, se asigna la fecha

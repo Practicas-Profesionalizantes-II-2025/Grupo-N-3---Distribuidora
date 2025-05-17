@@ -8,6 +8,7 @@ namespace Shared.DTO_s.OrdenDeCompra
 {
     public class ModificarDTOOrdenCompra
     {
+        public int IdOrdenCompra {  get; set; }
         public Shared.Entities.Empleados? Empleado { get; set; }
         public Shared.Entities.Distribuidores? Distribuidor { get; set; }
         public DateTime FechaOrden { get; set; }

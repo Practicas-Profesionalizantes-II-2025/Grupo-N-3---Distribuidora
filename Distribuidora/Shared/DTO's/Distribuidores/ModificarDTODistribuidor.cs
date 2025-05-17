@@ -8,6 +8,7 @@ namespace Shared.DTO_s.Distribuidores
 {
     public class ModificarDTODistribuidor
     {
+        public int IdDistribuidor {  get; set; }
         public string Nombre { get; set; }
         public string Telefono { get; set; }
         public string Email { get; set; }

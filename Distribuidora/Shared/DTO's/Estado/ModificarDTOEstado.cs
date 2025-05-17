@@ -8,6 +8,7 @@ namespace Shared.DTO_s.Estado
 {
     public class ModificarDTOEstado
     {
+        public int IdEstado {  get; set; }
         public string Descripcion { get; set; }
     }
 }

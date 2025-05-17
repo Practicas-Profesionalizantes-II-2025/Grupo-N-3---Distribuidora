@@ -9,6 +9,7 @@ namespace Shared.DTO_s.Categoria
 {
     public class ModificarDTOCategoria
     {
+        public int IdCategoria { get; set; }
         public string Nombre { get; set; }
         public Shared.Entities.Estado estado { get; set; }
     }
