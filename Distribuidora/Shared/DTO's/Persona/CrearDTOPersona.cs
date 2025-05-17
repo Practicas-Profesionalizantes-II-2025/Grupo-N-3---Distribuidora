@@ -11,7 +11,7 @@ namespace Shared.DTO_s.Persona
     {
         public string Nombre { get; set; }
         public string Apellido { get; set; }
-        public TipoDocumento Tipo_Doc { get; set; }
+        public Shared.Entities.TipoDocumento Tipo_Doc { get; set; }
         public string Nro_Doc { get; set; }
         public Shared.Entities.Ciudades Ciudad { get; set; }
         public string Email { get; set; }

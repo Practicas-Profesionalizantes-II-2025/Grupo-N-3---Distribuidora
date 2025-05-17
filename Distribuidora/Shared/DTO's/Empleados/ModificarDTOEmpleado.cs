@@ -9,6 +9,6 @@ namespace Shared.DTO_s.Empleados
 {
     public class ModificarDTOEmpleado
     {
-        public Persona Persona { get; set; }
+        public Shared.Entities.Persona Persona { get; set; }
     }
 }

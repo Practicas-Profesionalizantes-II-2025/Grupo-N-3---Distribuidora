@@ -9,7 +9,7 @@ namespace Shared.DTO_s.OrdenDeCompraProducto
 {
     public class CrearDTOOrdenCompraProd
     {
-        public Productos Producto { get; set; }
+        public Shared.Entities.Productos Producto { get; set; }
         public Shared.Entities.OrdenDeCompra OrdenDeCompra { get; set; }
     }
 }
