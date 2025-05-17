@@ -10,6 +10,6 @@ namespace Shared.DTO_s.Categoria
     public class ModificarDTOCategoria
     {
         public string Nombre { get; set; }
-        public Estado estado { get; set; }
+        public Shared.Entities.Estado estado { get; set; }
     }
 }
