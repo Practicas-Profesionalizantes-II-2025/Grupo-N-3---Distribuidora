@@ -7,7 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Logica\" />
+    <Folder Include="Logica\Interfaz\" />
+    <Folder Include="Logica\Services\" />
   </ItemGroup>
 
 </Project>
