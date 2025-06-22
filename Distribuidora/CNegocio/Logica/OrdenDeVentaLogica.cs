@@ -24,10 +24,8 @@ namespace CNegocio.Logica
             {
                 Id = o.Id,
                 Fecha = o.Fecha,
-                FacturaId = o.FacturaId,
                 EmpleadoId = o.EmpleadoId,
                 ClienteId = o.ClienteId,
-                DistribuidorId = o.DistribuidorId
             }).ToList();
         }
 
@@ -39,10 +37,8 @@ namespace CNegocio.Logica
             {
                 Id = o.Id,
                 Fecha = o.Fecha,
-                FacturaId = o.FacturaId,
                 EmpleadoId = o.EmpleadoId,
                 ClienteId = o.ClienteId,
-                DistribuidorId = o.DistribuidorId
             }).ToList();
         }
         public async Task<List<OrdenDeVentaDTO>> ObtenerOrdenesDeVentaPorClienteId(int clienteId)
@@ -52,10 +48,8 @@ namespace CNegocio.Logica
             {
                 Id = o.Id,
                 Fecha = o.Fecha,
-                FacturaId = o.FacturaId,
                 EmpleadoId = o.EmpleadoId,
                 ClienteId = o.ClienteId,
-                DistribuidorId = o.DistribuidorId
             }).ToList();
         }
         public async Task<List<OrdenDeVentaDTO>> ObtenerOrdenesDeVentaPorDistribuidoraId(int distribuidorId)
@@ -65,10 +59,8 @@ namespace CNegocio.Logica
             {
                 Id = o.Id,
                 Fecha = o.Fecha,
-                FacturaId = o.FacturaId,
                 EmpleadoId = o.EmpleadoId,
                 ClienteId = o.ClienteId,
-                DistribuidorId = o.DistribuidorId
             }).ToList();
         }
 
@@ -81,10 +73,8 @@ namespace CNegocio.Logica
             {
                 Id = ordenDeVenta.Id,
                 Fecha = ordenDeVenta.Fecha,
-                FacturaId = ordenDeVenta.FacturaId,
                 EmpleadoId = ordenDeVenta.EmpleadoId,
                 ClienteId = ordenDeVenta.ClienteId,
-                DistribuidorId = ordenDeVenta.DistribuidorId
             };
         }
         public async Task CrearOrdenDeVenta(OrdenDeVentaDTO ordenDeVentaDTO)
@@ -92,10 +82,8 @@ namespace CNegocio.Logica
             var ordenDeVenta = new OrdenDeVenta
             {
                 Fecha = ordenDeVentaDTO.Fecha,
-                FacturaId = ordenDeVentaDTO.FacturaId,
                 EmpleadoId = ordenDeVentaDTO.EmpleadoId,
                 ClienteId = ordenDeVentaDTO.ClienteId,
-                DistribuidorId = ordenDeVentaDTO.DistribuidorId
             };
             await _ordenDeVentaRepositorio.CrearOrdenDeVenta(ordenDeVenta);
         }
@@ -105,10 +93,8 @@ namespace CNegocio.Logica
             {
                 Id = ordenDeVentaDTO.Id,
                 Fecha = ordenDeVentaDTO.Fecha,
-                FacturaId = ordenDeVentaDTO.FacturaId,
                 EmpleadoId = ordenDeVentaDTO.EmpleadoId,
                 ClienteId = ordenDeVentaDTO.ClienteId,
-                DistribuidorId = ordenDeVentaDTO.DistribuidorId
             };
             await _ordenDeVentaRepositorio.ActualizarOrdenDeVenta(ordenDeVenta);
         }

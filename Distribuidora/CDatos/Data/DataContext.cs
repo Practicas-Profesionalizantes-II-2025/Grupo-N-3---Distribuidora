@@ -14,10 +14,8 @@ namespace CDatos.Data
         public DbSet<Categoria> Categorias { get; set; } = null!;
         public DbSet<Ciudad> Ciudades { get; set; } = null!;
         public DbSet<Cliente> Clientes { get; set; } = null!;
-        public DbSet<Distribuidor> Distribuidores { get; set; } = null!;
         public DbSet<Empleado> Empleados { get; set; } = null!;
         public DbSet<Estado> Estados { get; set; } = null!;
-        public DbSet<FacturaCabecera> FacturasCabeceras { get; set; } = null!;
         public DbSet<OrdenDeCompra> OrdenesDeCompra { get; set; } = null!;
         public DbSet<OrdenDeCompraProducto> OrdenesDeCompraProducto { get; set; } = null!;
         public DbSet<OrdenDeVenta> OrdenesDeVenta { get; set; } = null!;

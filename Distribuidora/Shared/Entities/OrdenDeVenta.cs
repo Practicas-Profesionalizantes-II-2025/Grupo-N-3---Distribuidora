@@ -14,5 +14,6 @@ namespace Shared.Entities
         public int EmpleadoId { get; set; }
         public int ClienteId { get; set; }
         public int DistribuidorId { get; set; }
+        public int EstadoId { get; set; }
     }
 }

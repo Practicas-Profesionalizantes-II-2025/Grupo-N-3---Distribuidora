@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace Shared.Entities
 {
-    public class FacturaCabecera
+    public class EstadoPedido
     {
-        public int Id { get; set; }
+        int Id { get; set; }
+        string Descripcion { get; set; }  // "Pendiente" - "Finalizado" - "Cancelado"
     }
 }

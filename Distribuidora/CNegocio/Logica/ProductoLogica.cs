@@ -25,7 +25,7 @@ namespace CNegocio.Logica
                 Id = p.Id,
                 Nombre = p.Nombre,
                 PrecioProducto = p.PrecioProducto,
-                UnidadesProducto = p.UnidadesProducto,
+                Stock = p.Stock,
                 ProveedorId = p.ProveedorId
             }).ToList();
         }
@@ -37,7 +37,7 @@ namespace CNegocio.Logica
                 Id = producto.Id,
                 Nombre = producto.Nombre,
                 PrecioProducto = producto.PrecioProducto,
-                UnidadesProducto = producto.UnidadesProducto,
+                Stock = producto.Stock,
                 ProveedorId = producto.ProveedorId
             };
         }
@@ -48,7 +48,7 @@ namespace CNegocio.Logica
                 Id = productoDTO.Id,
                 Nombre = productoDTO.Nombre,
                 PrecioProducto = productoDTO.PrecioProducto,
-                UnidadesProducto = productoDTO.UnidadesProducto,
+                Stock = productoDTO.Stock,
                 ProveedorId = productoDTO.ProveedorId
             };
             await _IProductoRepositorio.CrearProducto(producto);
@@ -60,7 +60,7 @@ namespace CNegocio.Logica
                 Id = productoDTO.Id,
                 Nombre = productoDTO.Nombre,
                 PrecioProducto = productoDTO.PrecioProducto,
-                UnidadesProducto = productoDTO.UnidadesProducto,
+                Stock = productoDTO.Stock,
                 ProveedorId = productoDTO.ProveedorId
             };
             await _IProductoRepositorio.ActualizarProducto(producto);
@@ -77,7 +77,7 @@ namespace CNegocio.Logica
                 Id = p.Id,
                 Nombre = p.Nombre,
                 PrecioProducto = p.PrecioProducto,
-                UnidadesProducto = p.UnidadesProducto,
+                Stock = p.Stock,
                 ProveedorId = p.ProveedorId
             }).ToList();
         }
@@ -89,7 +89,7 @@ namespace CNegocio.Logica
                 Id = p.Id,
                 Nombre = p.Nombre,
                 PrecioProducto = p.PrecioProducto,
-                UnidadesProducto = p.UnidadesProducto,
+                Stock = p.Stock,
                 ProveedorId = p.ProveedorId
             }).ToList();
         }
@@ -101,7 +101,7 @@ namespace CNegocio.Logica
                 Id = p.Id,
                 Nombre = p.Nombre,
                 PrecioProducto = p.PrecioProducto,
-                UnidadesProducto = p.UnidadesProducto,
+                Stock = p.Stock,
                 ProveedorId = p.ProveedorId
             }).ToList();
         }

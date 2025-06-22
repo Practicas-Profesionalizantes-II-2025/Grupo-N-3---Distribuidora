@@ -46,7 +46,7 @@ namespace CDatos.Repositorios
                     throw new Exception("Producto no encontrado.");
                 }
                 productoExistente.PrecioProducto = producto.PrecioProducto;
-                productoExistente.UnidadesProducto = producto.UnidadesProducto;
+                productoExistente.Stock = producto.Stock;
                 productoExistente.ProveedorId = producto.ProveedorId;
                 productoExistente.Nombre = producto.Nombre;
 
