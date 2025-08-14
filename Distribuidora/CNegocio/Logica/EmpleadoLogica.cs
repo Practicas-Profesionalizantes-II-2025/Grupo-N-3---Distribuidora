@@ -30,8 +30,13 @@ namespace CNegocio.Logica
         }
         public async Task<EmpleadoDTO> ObtenerEmpleadoPorId(int id)
         {
+            if (id <= 0)
+                throw new ArgumentException("El ID del empleado debe ser mayor que cero.");
+
             var empleado = await _empleadoRepositorio.ObtenerEmpleadoPorId(id);
-            if (empleado == null) return null;
+            if (empleado == null)
+                throw new ArgumentException($"No se encontró un empleado con el ID {id}");
+
             return new EmpleadoDTO
             {
                 Id = empleado.Id,
@@ -42,6 +47,20 @@ namespace CNegocio.Logica
         }
         public async Task CrearEmpleado(EmpleadoDTO empleadoDTO)
         {
+            List<string> camposErroneos = new List<string>();
+            if (empleadoDTO.PersonaId <= 0)
+                camposErroneos.Add("PersonaId");
+            if (empleadoDTO.EstadoId <= 0)
+                camposErroneos.Add("EstadoId");
+            if (string.IsNullOrWhiteSpace(empleadoDTO.Foto))
+                camposErroneos.Add("Foto");
+
+
+            if (camposErroneos.Count > 0)
+            {
+                throw new ArgumentException("Los siguientes campos son inválidos: ", string.Join(", ", camposErroneos));
+            }
+
             var empleado = new Empleado
             {
                 PersonaId = empleadoDTO.PersonaId,
@@ -52,6 +71,19 @@ namespace CNegocio.Logica
         }
         public async Task ActualizarEmpleado(EmpleadoDTO empleadoDTO)
         {
+            List<string> camposErroneos = new List<string>();
+            if (empleadoDTO.PersonaId <= 0)
+                camposErroneos.Add("PersonaId");
+            if (empleadoDTO.EstadoId <= 0)
+                camposErroneos.Add("EstadoId");
+            if (string.IsNullOrWhiteSpace(empleadoDTO.Foto))
+                camposErroneos.Add("Foto");
+
+
+            if (camposErroneos.Count > 0)
+            {
+                throw new ArgumentException("Los siguientes campos son inválidos: ", string.Join(", ", camposErroneos));
+            }
             var empleado = new Empleado
             {
                 Id = empleadoDTO.Id,
@@ -63,6 +95,9 @@ namespace CNegocio.Logica
         }
         public async Task EliminarEmpleado(int id)
         {
+            if (id <= 0)
+                throw new ArgumentException("El ID debe ser mayor a 0.");
+            
             _empleadoRepositorio.EliminarEmpleado(id);
         }
         public async Task<List<EmpleadoDTO>> ObtenerEmpleadosPorDni(string dni)
@@ -76,5 +111,16 @@ namespace CNegocio.Logica
                 EstadoId = e.EstadoId,
             }).ToList();
         }
+        #region Validaciones
+        private bool ContainsInvalidCharacter(string text)
+        {
+            char[] caracteres = { '!', '"', '#', '$', '%', '/', '(', ')', '=', '.', ',' };
+            return caracteres.Any(c => text.Contains(c));
+        }
+        private bool IsValidName(string nombre)
+        {
+            return nombre.Length < 15 && !ContainsInvalidCharacter(nombre);
+        }
+        #endregion Validaciones
     }
 }
