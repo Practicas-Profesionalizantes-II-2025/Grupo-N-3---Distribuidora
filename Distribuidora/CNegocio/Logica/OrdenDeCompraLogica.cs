@@ -33,19 +33,11 @@ namespace CNegocio.Logica
         public async Task<OrdenDeCompraDTO> ObtenerOrdenDeCompraPorId(int id)
         {
             if (id <= 0)
-<<<<<<< HEAD
-                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(id));
+                throw new ArgumentException("El ID de la orden debe ser mayor que cero.");
 
             var ordenDeCompra = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(id);
             if (ordenDeCompra == null)
-                throw new KeyNotFoundException($"No se encontró una orden de compra con ID {id}.");
-=======
-                throw new ArgumentException("El Id de la orden debe ser mayor a 0");
-
-            var ordenDeCompra = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(id);
-            if (ordenDeCompra == null)
-                throw new ArgumentException($"No se encontró una orden de compra con el ID {id}");
->>>>>>> Validaciones-J
+                throw new ArgumentException($"No se encontró una orden con el ID {id}");
 
             return new OrdenDeCompraDTO
             {
@@ -59,44 +51,35 @@ namespace CNegocio.Logica
         public async Task<List<OrdenDeCompraDTO>> ObtenerOrdenesDeCompraPorDistribuidorId(int distribuidorId)
         {
             if (distribuidorId <= 0)
-<<<<<<< HEAD
-                throw new ArgumentException("El ID del distribuidor debe ser mayor que cero.", nameof(distribuidorId));
-=======
                 throw new ArgumentException("El ID del distribuidor debe ser mayor a 0.");
->>>>>>> Validaciones-J
 
             var ordenesDeCompra = await _ordenDeCompraRepositorio.ObtenerOrdenesDeCompraPorDistribuidorId(distribuidorId);
-            return ordenesDeCompra?.Select(o => new OrdenDeCompraDTO
+            return ordenesDeCompra.Select(o => new OrdenDeCompraDTO
             {
                 Id = o.Id,
                 EmpleadoId = o.EmpleadoId,
                 DistribuidorId = o.DistribuidorId,
                 FechaOrden = o.FechaOrden
-            }).ToList() ?? new List<OrdenDeCompraDTO>();
+            }).ToList();
         }
 
         public async Task<List<OrdenDeCompraDTO>> ObtenerOrdenesDeCompraPorEmpleadoId(int empleadoId)
         {
             if (empleadoId <= 0)
-<<<<<<< HEAD
-                throw new ArgumentException("El ID del empleado debe ser mayor que cero.", nameof(empleadoId));
-=======
                 throw new ArgumentException("El ID del empleado debe ser mayor a 0.");
->>>>>>> Validaciones-J
 
             var ordenesDeCompra = await _ordenDeCompraRepositorio.ObtenerOrdenesDeCompraPorEmpleadoId(empleadoId);
-            return ordenesDeCompra?.Select(o => new OrdenDeCompraDTO
+            return ordenesDeCompra.Select(o => new OrdenDeCompraDTO
             {
                 Id = o.Id,
                 EmpleadoId = o.EmpleadoId,
                 DistribuidorId = o.DistribuidorId,
                 FechaOrden = o.FechaOrden
-            }).ToList() ?? new List<OrdenDeCompraDTO>();
+            }).ToList();
         }
 
         public async Task CrearOrdenDeCompra(OrdenDeCompraDTO ordenDeCompraDTO)
         {
-<<<<<<< HEAD
             if (ordenDeCompraDTO == null)
                 throw new ArgumentNullException(nameof(ordenDeCompraDTO));
 
@@ -108,7 +91,6 @@ namespace CNegocio.Logica
 
             if (ordenDeCompraDTO.FechaOrden == default)
                 throw new ArgumentException("La fecha de la orden no es válida.", nameof(ordenDeCompraDTO.FechaOrden));
-=======
             List<string> camposErroneos = new List<string>();
 
             if (ordenDeCompraDTO.EmpleadoId <= 0)
@@ -122,7 +104,6 @@ namespace CNegocio.Logica
 
             if (camposErroneos.Count > 0)
                 throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
->>>>>>> Validaciones-J
 
             var ordenDeCompra = new OrdenDeCompra
             {
@@ -136,7 +117,6 @@ namespace CNegocio.Logica
 
         public async Task ActualizarOrdenDeCompra(OrdenDeCompraDTO ordenDeCompraDTO)
         {
-<<<<<<< HEAD
             if (ordenDeCompraDTO == null)
                 throw new ArgumentNullException(nameof(ordenDeCompraDTO));
 
@@ -161,7 +141,6 @@ namespace CNegocio.Logica
             existente.FechaOrden = ordenDeCompraDTO.FechaOrden;
 
             _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(existente);
-=======
             List<string> camposErroneos = new List<string>();
 
             if (ordenDeCompraDTO.Id <= 0)
@@ -187,21 +166,18 @@ namespace CNegocio.Logica
                 FechaOrden = ordenDeCompraDTO.FechaOrden
             };
             _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(ordenDeCompra);
->>>>>>> Validaciones-J
+
         }
 
         public async Task EliminarOrdenDeCompra(int id)
         {
             if (id <= 0)
-<<<<<<< HEAD
                 throw new ArgumentException("El ID debe ser mayor que cero.", nameof(id));
 
             var existente = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(id);
             if (existente == null)
                 throw new KeyNotFoundException($"No se encontró una orden de compra con ID {id}.");
-=======
                 throw new ArgumentException("El ID de la orden debe ser mayor a 0.");
->>>>>>> Validaciones-J
 
             _ordenDeCompraRepositorio.EliminarOrdenDeCompra(id);
         }
