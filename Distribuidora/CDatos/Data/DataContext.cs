@@ -25,5 +25,6 @@ namespace CDatos.Data
         public DbSet<Proveedor> Proveedores { get; set; } = null!;
         public DbSet<Sector> Sectores { get; set; } = null!;
         public DbSet<TipoDocumento> TiposDocumento { get; set; } = null!;
+        public DbSet<Usuario> Usuarios { get; set; } = null!;
     }
 }

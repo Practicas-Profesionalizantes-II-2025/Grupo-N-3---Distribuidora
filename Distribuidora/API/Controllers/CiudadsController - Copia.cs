@@ -15,12 +15,12 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CiudadsController : ControllerBase
+    public class UsuarioController : ControllerBase
     {
         private readonly ICiudadLogica _IciudadLogica;
 
 
-        public CiudadsController(ICiudadLogica _IciudadLogica)
+        public UsuarioController(ICiudadLogica _IciudadLogica)
         {
             this._IciudadLogica = _IciudadLogica;
         }
