@@ -1,0 +1,50 @@
+﻿@model IEnumerable<MVC.Models.Entities.Usuario>
+
+@{
+    Layout = null;
+    ViewData["Title"] = "Index";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Nombre App</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="../css/site.css">
+</head>
+<body>
+    <div class="login-container">
+        <!-- Header -->
+        <div class="login-header">
+            <h2><i class="fa-solid fa-user"></i> INICIO DE SESIÓN</h2>
+            <div class="app-logo">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span>NOMBRE APP</span>
+            </div>
+        </div>
+
+        <!-- Formulario -->
+        <form class="login-form">
+            <div class="form-group">
+                <label for="usuario">Usuario</label>
+                <div class="input-icon">
+                    <input type="text" id="usuario" placeholder="Usuario" required>
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="contrasenia">Contraseña</label>
+                <div class="input-icon">
+                    <input type="password" id="contrasenia" placeholder="Contraseña" required>
+                    <i class="fa-solid fa-lock"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">Iniciar sesión</button>
+        </form>
+    </div>
+</body>
+</html>
