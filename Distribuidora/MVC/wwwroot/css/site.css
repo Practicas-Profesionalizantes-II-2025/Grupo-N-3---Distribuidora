@@ -4,6 +4,7 @@
     padding: 0;
 }
 
+/* -------------------------------------------------- Pantalla Loggin -------------------------------------------------- */
 /* Contenedor principal */
 .login-container {
     background: #fff;
@@ -27,13 +28,13 @@
     border-bottom: 2px solid #ccc;
 }
 
-    .login-header h2 {
-        font-size: 18px;
-        font-weight: bold;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
+.login-header h2 {
+    font-size: 18px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
 
 .app-logo {
     display: flex;
@@ -42,13 +43,13 @@
     font-weight: bold;
 }
 
-    .app-logo i {
-        background: #0a3d62;
-        color: #fff;
-        padding: 12px;
-        border-radius: 50%;
-        font-size: 18px;
-    }
+.app-logo i {
+    background: #0a3d62;
+    color: #fff;
+    padding: 12px;
+    border-radius: 50%;
+    font-size: 18px;
+}
 
 /* Formulario */
 .login-form {
@@ -59,31 +60,31 @@
     margin-bottom: 20px;
 }
 
-    .form-group label {
-        display: block;
-        font-weight: bold;
-        margin-bottom: 6px;
-    }
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 6px;
+}
 
 .input-icon {
     position: relative;
 }
 
-    .input-icon input {
-        width: 100%;
-        padding: 10px 40px 10px 10px;
-        border: 1px solid #bbb;
-        border-radius: 5px;
-        font-size: 14px;
-    }
+.input-icon input {
+    width: 100%;
+    padding: 10px 40px 10px 10px;
+    border: 1px solid #bbb;
+    border-radius: 5px;
+    font-size: 14px;
+}
 
-    .input-icon i {
-        position: absolute;
-        right: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #555;
-    }
+.input-icon i {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #555;
+}
 
 /* Botón */
 .btn {

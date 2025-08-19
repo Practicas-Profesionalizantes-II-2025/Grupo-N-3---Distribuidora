@@ -16,5 +16,6 @@ namespace MVC.Data
 
         public DbSet<MVC.Models.Entities.Ciudad> Ciudad { get; set; } = default!;
         public DbSet<MVC.Models.Entities.Usuario> Usuario { get; set; } = default!;
+        public DbSet<MVC.Models.Entities.Empleado> Empleado { get; set; } = default!;
     }
 }
