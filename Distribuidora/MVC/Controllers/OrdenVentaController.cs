@@ -10,22 +10,22 @@ using MVC.Models.Entities;
 
 namespace MVC.Controllers
 {
-    public class OrdenCompraProductoController : Controller
+    public class OrdenVentaController : Controller
     {
         //private readonly MVCContext _context;
 
-        //public OrdenCompraProductoController(MVCContext context)
+        //public OrdenVentaController(MVCContext context)
         //{
         //    _context = context;
         //}
 
-        // GET: OrdenCompraProducto
-        public async Task<IActionResult> PagPrincipalCompraProd()
+        // GET: OrdenVenta
+        public async Task<IActionResult> PagPrincOrdenVenta()
         {
             return View();
         }
 
-        //// GET: OrdenCompraProducto/Details/5
+        //// GET: OrdenVenta/Details/5
         //public async Task<IActionResult> Details(int? id)
         //{
         //    if (id == null)
@@ -33,39 +33,39 @@ namespace MVC.Controllers
         //        return NotFound();
         //    }
 
-        //    var ordenDeCompraProducto = await _context.OrdenDeCompraProducto
+        //    var ordenDeVenta = await _context.OrdenDeVenta
         //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (ordenDeCompraProducto == null)
+        //    if (ordenDeVenta == null)
         //    {
         //        return NotFound();
         //    }
 
-        //    return View(ordenDeCompraProducto);
+        //    return View(ordenDeVenta);
         //}
 
-        //// GET: OrdenCompraProducto/Create
+        //// GET: OrdenVenta/Create
         //public IActionResult Create()
         //{
         //    return View();
         //}
 
-        //// POST: OrdenCompraProducto/Create
+        //// POST: OrdenVenta/Create
         //// To protect from overposting attacks, enable the specific properties you want to bind to.
         //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         //[HttpPost]
         //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,OrdenDeCompraId,ProductoId,CantidadProducto")] OrdenDeCompraProducto ordenDeCompraProducto)
+        //public async Task<IActionResult> Create([Bind("Id,Fecha,FacturaId,EmpleadoId,ClienteId,DistribuidorId,EstadoId")] OrdenDeVenta ordenDeVenta)
         //{
         //    if (ModelState.IsValid)
         //    {
-        //        _context.Add(ordenDeCompraProducto);
+        //        _context.Add(ordenDeVenta);
         //        await _context.SaveChangesAsync();
         //        return RedirectToAction(nameof(Index));
         //    }
-        //    return View(ordenDeCompraProducto);
+        //    return View(ordenDeVenta);
         //}
 
-        //// GET: OrdenCompraProducto/Edit/5
+        //// GET: OrdenVenta/Edit/5
         //public async Task<IActionResult> Edit(int? id)
         //{
         //    if (id == null)
@@ -73,22 +73,22 @@ namespace MVC.Controllers
         //        return NotFound();
         //    }
 
-        //    var ordenDeCompraProducto = await _context.OrdenDeCompraProducto.FindAsync(id);
-        //    if (ordenDeCompraProducto == null)
+        //    var ordenDeVenta = await _context.OrdenDeVenta.FindAsync(id);
+        //    if (ordenDeVenta == null)
         //    {
         //        return NotFound();
         //    }
-        //    return View(ordenDeCompraProducto);
+        //    return View(ordenDeVenta);
         //}
 
-        //// POST: OrdenCompraProducto/Edit/5
+        //// POST: OrdenVenta/Edit/5
         //// To protect from overposting attacks, enable the specific properties you want to bind to.
         //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         //[HttpPost]
         //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,OrdenDeCompraId,ProductoId,CantidadProducto")] OrdenDeCompraProducto ordenDeCompraProducto)
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Fecha,FacturaId,EmpleadoId,ClienteId,DistribuidorId,EstadoId")] OrdenDeVenta ordenDeVenta)
         //{
-        //    if (id != ordenDeCompraProducto.Id)
+        //    if (id != ordenDeVenta.Id)
         //    {
         //        return NotFound();
         //    }
@@ -97,12 +97,12 @@ namespace MVC.Controllers
         //    {
         //        try
         //        {
-        //            _context.Update(ordenDeCompraProducto);
+        //            _context.Update(ordenDeVenta);
         //            await _context.SaveChangesAsync();
         //        }
         //        catch (DbUpdateConcurrencyException)
         //        {
-        //            if (!OrdenDeCompraProductoExists(ordenDeCompraProducto.Id))
+        //            if (!OrdenDeVentaExists(ordenDeVenta.Id))
         //            {
         //                return NotFound();
         //            }
@@ -113,10 +113,10 @@ namespace MVC.Controllers
         //        }
         //        return RedirectToAction(nameof(Index));
         //    }
-        //    return View(ordenDeCompraProducto);
+        //    return View(ordenDeVenta);
         //}
 
-        //// GET: OrdenCompraProducto/Delete/5
+        //// GET: OrdenVenta/Delete/5
         //public async Task<IActionResult> Delete(int? id)
         //{
         //    if (id == null)
@@ -124,34 +124,34 @@ namespace MVC.Controllers
         //        return NotFound();
         //    }
 
-        //    var ordenDeCompraProducto = await _context.OrdenDeCompraProducto
+        //    var ordenDeVenta = await _context.OrdenDeVenta
         //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (ordenDeCompraProducto == null)
+        //    if (ordenDeVenta == null)
         //    {
         //        return NotFound();
         //    }
 
-        //    return View(ordenDeCompraProducto);
+        //    return View(ordenDeVenta);
         //}
 
-        //// POST: OrdenCompraProducto/Delete/5
+        //// POST: OrdenVenta/Delete/5
         //[HttpPost, ActionName("Delete")]
         //[ValidateAntiForgeryToken]
         //public async Task<IActionResult> DeleteConfirmed(int id)
         //{
-        //    var ordenDeCompraProducto = await _context.OrdenDeCompraProducto.FindAsync(id);
-        //    if (ordenDeCompraProducto != null)
+        //    var ordenDeVenta = await _context.OrdenDeVenta.FindAsync(id);
+        //    if (ordenDeVenta != null)
         //    {
-        //        _context.OrdenDeCompraProducto.Remove(ordenDeCompraProducto);
+        //        _context.OrdenDeVenta.Remove(ordenDeVenta);
         //    }
 
         //    await _context.SaveChangesAsync();
         //    return RedirectToAction(nameof(Index));
         //}
 
-        //private bool OrdenDeCompraProductoExists(int id)
+        //private bool OrdenDeVentaExists(int id)
         //{
-        //    return _context.OrdenDeCompraProducto.Any(e => e.Id == id);
+        //    return _context.OrdenDeVenta.Any(e => e.Id == id);
         //}
     }
 }

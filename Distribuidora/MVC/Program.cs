@@ -40,13 +40,15 @@ app.MapControllerRoute(
 
 app.MapControllerRoute(
     name: "cliente",
-    pattern: "{controller=Cliente}/{action=Index}/{id?}");
+    pattern: "{controller=Cliente}/{action=IndexClien}/{id?}");
 
 app.MapControllerRoute(
     name: "factura",
-    pattern: "{controller=FacturaCabecera}/{action=Index}/{id?}");
+    pattern: "{controller=FacturaCabecera}/{action=IndexF}/{id?}");
 
-
+app.MapControllerRoute(
+    name: "ordenVenta",
+    pattern: "{controller=OrdenVenta}/{action=PagPrincOrdenVenta}/{id?}");
 
 
 
