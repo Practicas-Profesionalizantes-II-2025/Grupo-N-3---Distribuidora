@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MVC.Models.Entities;
+using MVC.Models.DTOs;
 
 namespace MVC.Data
 {
@@ -19,5 +20,6 @@ namespace MVC.Data
         public DbSet<MVC.Models.Entities.Empleado> Empleado { get; set; } = default!;
         public DbSet<MVC.Models.Entities.Categoria> Categoria { get; set; } = default!;
         public DbSet<MVC.Models.Entities.Cliente> Cliente { get; set; } = default!;
+        public DbSet<MVC.Models.DTOs.FacturaCabeceraDTO> FacturaCabeceraDTO { get; set; } = default!;
     }
 }
