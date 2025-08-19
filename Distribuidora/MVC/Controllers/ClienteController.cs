@@ -20,7 +20,7 @@ namespace MVC.Controllers
         //}
 
         // GET: Cliente
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> IndexClien()
         {
             return View();
         }
