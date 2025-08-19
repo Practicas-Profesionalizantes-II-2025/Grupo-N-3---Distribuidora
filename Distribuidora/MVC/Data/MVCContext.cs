@@ -18,5 +18,6 @@ namespace MVC.Data
         public DbSet<MVC.Models.Entities.Usuario> Usuario { get; set; } = default!;
         public DbSet<MVC.Models.Entities.Empleado> Empleado { get; set; } = default!;
         public DbSet<MVC.Models.Entities.Categoria> Categoria { get; set; } = default!;
+        public DbSet<MVC.Models.Entities.Cliente> Cliente { get; set; } = default!;
     }
 }
