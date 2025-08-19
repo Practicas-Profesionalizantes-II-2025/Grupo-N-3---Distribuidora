@@ -28,8 +28,12 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     pattern: "{controller=OrdenCompra}/{action=IndexCompra}/{id?}");
+>>>>>>> Controllers-J
+=======
+    pattern: "{controller=OrdenCompraProducto}/{action=PagPrincipalCompraProd}/{id?}");
 >>>>>>> Controllers-J
 
     pattern: "{controller=Categorias}/{action=PagInicioCategoria}/{id?}");

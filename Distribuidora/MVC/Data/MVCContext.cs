@@ -22,6 +22,10 @@ namespace MVC.Data
         public DbSet<MVC.Models.Entities.Cliente> Cliente { get; set; } = default!;
         public DbSet<MVC.Models.DTOs.FacturaCabeceraDTO> FacturaCabeceraDTO { get; set; } = default!;
         public DbSet<MVC.Models.Entities.OrdenDeCompra> OrdenDeCompra { get; set; } = default!;
+<<<<<<< HEAD
 
+=======
+        public DbSet<MVC.Models.Entities.OrdenDeCompraProducto> OrdenDeCompraProducto { get; set; } = default!;
+>>>>>>> Controllers-J
     }
 }
