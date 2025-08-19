@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using MVC.Models.Entities;
+using MVC.Models.DTOs;
 
 namespace MVC.Data
 {
@@ -21,6 +22,10 @@ namespace MVC.Data
 <<<<<<< HEAD
 =======
         public DbSet<MVC.Models.Entities.Cliente> Cliente { get; set; } = default!;
+<<<<<<< HEAD
+>>>>>>> Controllers-J
+=======
+        public DbSet<MVC.Models.DTOs.FacturaCabeceraDTO> FacturaCabeceraDTO { get; set; } = default!;
 >>>>>>> Controllers-J
     }
 }
