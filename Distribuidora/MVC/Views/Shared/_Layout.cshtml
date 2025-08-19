@@ -1,49 +1,276 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewData["Title"] - MVC</title>
-    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/MVC.styles.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+    <link rel="stylesheet" href="/css/site.css">
+
 </head>
 <body>
-    <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">MVC</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+    <!--=============== HEADER ===============-->
+    <header class="header">
+        <nav class="nav container">
+            <!--=============== NAV MENU ===============-->
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <!-- <li><a href="#" class="nav__link">Home</a></li>
+
+                    <li><a href="#" class="nav__link">Company</a></li> -->
+                    <!--=============== Empleados ===============-->
+                    <li class="dropdown__item">
+                        <div class="nav__link">
+                            Empleados <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-list-check"></i> Lista Empleados
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-add-box-line"></i> Crear Empleado
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-edit-2-line"></i> Modificar Empleado
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-delete-bin-5-line"></i> Eliminar Empleado
+                                </a>
+                        </ul>
+                    </li>
+
+                    <!--=============== Clientes ===============-->
+
+                    <li class="dropdown__item">
+                        <div class="nav__link">
+                            Clientes <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-list-check"></i> Lista Clientes
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-add-box-line"></i> Crear Cliente
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-edit-2-line"></i> Modificar Cliente
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-delete-bin-5-line"></i> Eliminar Cliente
+                                </a>
+                        </ul>
+                    </li>
+
+                    <!--=============== Productos ===============-->
+
+                    <li class="dropdown__item">
+                        <div class="nav__link">
+                            Productos <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-list-check"></i> Lista Productos
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-add-box-line"></i> Crear Producto
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-edit-2-line"></i> Modificar Producto
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-delete-bin-5-line"></i> Eliminar Producto
+                                </a>
+                        </ul>
+                    </li>
+
+                    <!--=============== Categorias ===============-->
+
+                    <li class="dropdown__item">
+                        <div class="nav__link">
+                            Categorias <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-list-check"></i> Lista Categorias
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-add-box-line"></i> Crear Categoria
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-edit-2-line"></i> Modificar Categoria
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-delete-bin-5-line"></i> Eliminar Categoria
+                                </a>
+                        </ul>
+                    </li>
+
+                    <!--=============== Pedidos ===============-->
+
+                    <li class="dropdown__item">
+                        <div class="nav__link">
+                            Pedidos <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-list-check"></i> Lista Pedidos
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-add-box-line"></i> Crear Pedido
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-edit-2-line"></i> Modificar Pedido
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-delete-bin-5-line"></i> Eliminar Pedido
+                                </a>
+                        </ul>
+                    </li>
+
+                    <!--=============== Pedidos ===============-->
+
+                    <li><a href="#" class="nav__link">Stock</a></li>
+
+                    <!--=============== Proveedores ===============-->
+
+                    <li class="dropdown__item">
+                        <div class="nav__link">
+                            Proveedores <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-list-check"></i> Lista Proveedores
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-add-box-line"></i> Crear Proveedor
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-edit-2-line"></i> Modificar Proveedor
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-delete-bin-5-line"></i> Eliminar Proveedor
+                                </a>
+                        </ul>
+                    </li>
+
+                    <!--=============== Distribuidores ===============-->
+
+                    <li class="dropdown__item">
+                        <div class="nav__link">
+                            Distribuidores <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-list-check"></i> Lista Distribuidores
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-add-box-line"></i> Crear Distribuidor
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-edit-2-line"></i> Modificar Distribuidor
+                                </a>
+                            </li>
+
+                            <li>
+                                <a href="#" class="dropdown__link">
+                                    <i class="ri-delete-bin-5-line"></i> Eliminar Distribuidor
+                                </a>
+                        </ul>
+                    </li>
+
+                    <!--=============== Pedidos ===============-->
+
+                    <li><a href="#" class="nav__link">Compras</a></li>
+
+                    <!--=============== Pedidos ===============-->
+
+                    <li><a href="#" class="nav__link">Ventas</a></li>
+
+
+                </ul>
             </div>
         </nav>
     </header>
+    <script href="../js/main.js"></script>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
-
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - MVC - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-        </div>
-    </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
-    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
