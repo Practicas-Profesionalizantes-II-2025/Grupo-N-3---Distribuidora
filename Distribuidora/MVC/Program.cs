@@ -31,10 +31,6 @@ app.MapControllerRoute(
     pattern: "{controller=Categorias}/{action=PagInicioCategoria}/{id?}");
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Categorias}/{action=PagInicioCategoria}/{id?}");
-
-app.MapControllerRoute(
     name: "cliente",
     pattern: "{controller=Cliente}/{action=Index}/{id?}");
 
