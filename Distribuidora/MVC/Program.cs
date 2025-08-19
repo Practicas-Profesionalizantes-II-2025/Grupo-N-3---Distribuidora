@@ -27,14 +27,18 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-<<<<<<< HEAD
-<<<<<<< HEAD
-    pattern: "{controller=Categorias}/{action=PagInicioCategoria}/{id?}");
-=======
-    pattern: "{controller=Cliente}/{action=Index}/{id?}");
->>>>>>> Controllers-J
-=======
-    pattern: "{controller=FacturaCabecera}/{action=Index}/{id?}");
->>>>>>> Controllers-J
 
+    pattern: "{controller=Categorias}/{action=PagInicioCategoria}/{id?}");
+
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Categorias}/{action=PagInicioCategoria}/{id?}");
+
+app.MapControllerRoute(
+    name: "cliente",
+    pattern: "{controller=Cliente}/{action=Index}/{id?}");
+
+app.MapControllerRoute(
+    name: "factura",
+    pattern: "{controller=FacturaCabecera}/{action=Index}/{id?}");
 app.Run();
