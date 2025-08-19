@@ -24,5 +24,11 @@ namespace MVC.Data
         public DbSet<MVC.Models.Entities.OrdenDeCompra> OrdenDeCompra { get; set; } = default!;
         public DbSet<MVC.Models.Entities.OrdenDeCompraProducto> OrdenDeCompraProducto { get; set; } = default!;
         public DbSet<MVC.Models.Entities.OrdenDeVenta> OrdenDeVenta { get; set; } = default!;
+        public DbSet<MVC.Models.Entities.OrdenDeVentaProducto> OrdenDeVentaProducto { get; set; } = default!;
+        public DbSet<MVC.Models.Entities.Persona> Persona { get; set; } = default!;
+        public DbSet<MVC.Models.Entities.Producto> Producto { get; set; } = default!;
+        public DbSet<MVC.Models.Entities.Proveedor> Proveedor { get; set; } = default!;
+        public DbSet<MVC.Models.Entities.Sector> Sector { get; set; } = default!;
+        public DbSet<MVC.Models.Entities.TipoDocumento> TipoDocumento { get; set; } = default!;
     }
 }
