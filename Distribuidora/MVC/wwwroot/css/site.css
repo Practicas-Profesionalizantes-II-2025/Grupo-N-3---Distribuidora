@@ -180,7 +180,7 @@ a {
 
 /*=============== HEADER ===============*/
 .header {
-    position: fixed;
+    position: static;
     top: 0;
     left: 0;
     width: 100%;
@@ -212,8 +212,7 @@ a {
     align-items: center;
     column-gap: .25rem;
     font-weight: var(--font-semi-bold2);
-    /* Color highlighting when pressed on mobile devices */
-    /*-webkit-tap-highlight-color: transparent;*/
+    /*-webkit-tap-highlight-color: transparent; probar esto en mobiles, es para que los botones quede el color al presionar*/
 }
 
     .nav__logo i {
@@ -282,14 +281,14 @@ a {
         background-color: var(--black-color2-light);
     }
 
-/* Show menu */
+/* Desplegar menu */
 .show-menu {
     opacity: 1;
     top: 3.5rem;
     pointer-events: initial;
 }
 
-/* Show icon */
+/* mostrar icono */
 .show-icon .nav__burger {
     opacity: 0;
     transform: rotate(90deg);
@@ -341,14 +340,14 @@ a {
     transition: max-height .4s ease-out;
 }
 
-/* Show dropdown menu & submenu */
+/*mostrar menu y drop */
 .dropdown__item:hover .dropdown__menu,
 .dropdown__subitem:hover > .dropdown__submenu {
     max-height: 1000px;
     transition: max-height .4s ease-in;
 }
 
-/* Rotate dropdown icon */
+/* rotar icono del drop */
 .dropdown__item:hover .dropdown__arrow {
     transform: rotate(180deg);
 }
@@ -363,7 +362,6 @@ a {
 }
 
 /*=============== BREAKPOINTS ===============*/
-/* For small devices */
 @media screen and (max-width: 340px) {
     .container {
         margin-inline: 1rem;
@@ -374,7 +372,6 @@ a {
     }
 }
 
-/* For large devices */
 @media screen and (min-width: 1118px) {
 
 
@@ -437,7 +434,6 @@ a {
         top: .5rem;
     }
 
-    /* Show dropdown menu */
     .dropdown__item:hover .dropdown__menu {
         opacity: 1;
         top: 5.5rem;
@@ -445,7 +441,6 @@ a {
         transition: top .3s;
     }
 
-    /* Show dropdown submenu */
     .dropdown__subitem:hover > .dropdown__submenu {
         opacity: 1;
         top: 0;

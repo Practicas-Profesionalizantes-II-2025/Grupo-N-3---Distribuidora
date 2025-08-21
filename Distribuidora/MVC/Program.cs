@@ -26,28 +26,7 @@ app.UseRouting();
 app.UseAuthorization();
 
 app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=OrdenCompra}/{action=IndexCompra}/{id?}");
-
-app.MapControllerRoute(
-    name: "ordenCompraProducto",
-    pattern: "{controller=OrdenCompraProducto}/{action=PagPrincipalCompraProd}/{id?}");
-
-app.MapControllerRoute(
     name: "categorias",
     pattern: "{controller=Categorias}/{action=PagInicioCategoria}/{id?}");
-
-app.MapControllerRoute(
-    name: "cliente",
-    pattern: "{controller=Cliente}/{action=IndexClien}/{id?}");
-
-app.MapControllerRoute(
-    name: "factura",
-    pattern: "{controller=FacturaCabecera}/{action=IndexF}/{id?}");
-
-app.MapControllerRoute(
-    name: "ordenVenta",
-    pattern: "{controller=OrdenVenta}/{action=PagPrincOrdenVenta}/{id?}");
-
 
 app.Run();
