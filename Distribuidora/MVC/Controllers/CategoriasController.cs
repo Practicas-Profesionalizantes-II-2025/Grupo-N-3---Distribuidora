@@ -20,7 +20,7 @@ namespace MVC.Controllers
         //}
 
         // GET: Categorias
-        public async Task<IActionResult> PagInicioCategoria()
+        public IActionResult listaCategorias()
         {
             return View();
         }
