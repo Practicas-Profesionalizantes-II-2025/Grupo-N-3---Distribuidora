@@ -12,6 +12,6 @@ namespace Shared.Entities
         public string NombreUsuario { get; set; }
         public string Contrasenia { get; set; }
         public int PersonaId { get; set; }
-        public bool Activo { get; set; } = true;
+        public int EstadoId { get; set; }
     }
 }

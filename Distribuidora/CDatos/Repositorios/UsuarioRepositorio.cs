@@ -46,7 +46,7 @@ namespace CDatos.Repositorios
 
             usuarioExistente.Contrasenia = usuario.Contrasenia;
             usuarioExistente.PersonaId = usuario.PersonaId;
-            usuarioExistente.Activo = usuario.Activo;
+            usuarioExistente.EstadoId = usuario.EstadoId; 
 
             _context.SaveChanges();
         }
