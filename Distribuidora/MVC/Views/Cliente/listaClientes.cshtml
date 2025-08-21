@@ -1,15 +1,22 @@
-﻿<!DOCTYPE html>
-<html lang="en">
+﻿@{
+}
+
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewData["Title"] - MVC</title>
+    <title>Lista de clientes</title>
+
+    <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="/css/site.css">
 
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
+
     <!--=============== HEADER ===============-->
     <header class="header">
         <nav class="nav container">
@@ -27,25 +34,25 @@
 
                         <ul class="dropdown__menu">
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="listaEmpleados.html" class="dropdown__link">
                                     <i class="ri-list-check"></i> Lista Empleados
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="crearEmpleado.html" class="dropdown__link">
                                     <i class="ri-add-box-line"></i> Crear Empleado
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="modificarEmpleado.html" class="dropdown__link">
                                     <i class="ri-edit-2-line"></i> Modificar Empleado
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="eliminarEmpleado.html" class="dropdown__link">
                                     <i class="ri-delete-bin-5-line"></i> Eliminar Empleado
                                 </a>
                         </ul>
@@ -60,25 +67,25 @@
 
                         <ul class="dropdown__menu">
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="listaClientes.html" class="dropdown__link">
                                     <i class="ri-list-check"></i> Lista Clientes
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="crearCliente.html" class="dropdown__link">
                                     <i class="ri-add-box-line"></i> Crear Cliente
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="modificarCliente.html" class="dropdown__link">
                                     <i class="ri-edit-2-line"></i> Modificar Cliente
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="eliminarCliente.html" class="dropdown__link">
                                     <i class="ri-delete-bin-5-line"></i> Eliminar Cliente
                                 </a>
                         </ul>
@@ -93,25 +100,25 @@
 
                         <ul class="dropdown__menu">
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="listaProductos.html" class="dropdown__link">
                                     <i class="ri-list-check"></i> Lista Productos
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="crearProducto.html" class="dropdown__link">
                                     <i class="ri-add-box-line"></i> Crear Producto
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="modificarProducto.html" class="dropdown__link">
                                     <i class="ri-edit-2-line"></i> Modificar Producto
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="eliminarProducto.html" class="dropdown__link">
                                     <i class="ri-delete-bin-5-line"></i> Eliminar Producto
                                 </a>
                         </ul>
@@ -126,25 +133,25 @@
 
                         <ul class="dropdown__menu">
                             <li>
-                                <a href="/Categorias/listaCategorias" class="dropdown__link">
+                                <a href="listaCategorias.html" class="dropdown__link">
                                     <i class="ri-list-check"></i> Lista Categorias
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="crearCategoria.html" class="dropdown__link">
                                     <i class="ri-add-box-line"></i> Crear Categoria
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="modificarCategoria.html" class="dropdown__link">
                                     <i class="ri-edit-2-line"></i> Modificar Categoria
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="eliminarCategoria.html" class="dropdown__link">
                                     <i class="ri-delete-bin-5-line"></i> Eliminar Categoria
                                 </a>
                         </ul>
@@ -159,25 +166,25 @@
 
                         <ul class="dropdown__menu">
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="listaPedidos.html" class="dropdown__link">
                                     <i class="ri-list-check"></i> Lista Pedidos
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="crearPedido.html" class="dropdown__link">
                                     <i class="ri-add-box-line"></i> Crear Pedido
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="modificarPedido.html" class="dropdown__link">
                                     <i class="ri-edit-2-line"></i> Modificar Pedido
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="eliminarPedido.html" class="dropdown__link">
                                     <i class="ri-delete-bin-5-line"></i> Eliminar Pedido
                                 </a>
                         </ul>
@@ -185,7 +192,7 @@
 
                     <!--=============== Pedidos ===============-->
 
-                    <li><a href="#" class="nav__link">Stock</a></li>
+                    <li><a href="stock.html" class="nav__link">Stock</a></li>
 
                     <!--=============== Proveedores ===============-->
 
@@ -196,25 +203,25 @@
 
                         <ul class="dropdown__menu">
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="listaProveedores.html" class="dropdown__link">
                                     <i class="ri-list-check"></i> Lista Proveedores
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="crearProveedor.html" class="dropdown__link">
                                     <i class="ri-add-box-line"></i> Crear Proveedor
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="modificarProveedor.html" class="dropdown__link">
                                     <i class="ri-edit-2-line"></i> Modificar Proveedor
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="eliminarProveedor.html" class="dropdown__link">
                                     <i class="ri-delete-bin-5-line"></i> Eliminar Proveedor
                                 </a>
                         </ul>
@@ -229,25 +236,25 @@
 
                         <ul class="dropdown__menu">
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="listaDistribuidores.html" class="dropdown__link">
                                     <i class="ri-list-check"></i> Lista Distribuidores
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="crearDistribuidor.html" class="dropdown__link">
                                     <i class="ri-add-box-line"></i> Crear Distribuidor
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="modificarDistribuidor.html" class="dropdown__link">
                                     <i class="ri-edit-2-line"></i> Modificar Distribuidor
                                 </a>
                             </li>
 
                             <li>
-                                <a href="#" class="dropdown__link">
+                                <a href="eliminarDistribuidor.html" class="dropdown__link">
                                     <i class="ri-delete-bin-5-line"></i> Eliminar Distribuidor
                                 </a>
                         </ul>
@@ -255,22 +262,86 @@
 
                     <!--=============== Pedidos ===============-->
 
-                    <li><a href="#" class="nav__link">Compras</a></li>
+                    <li><a href="compras.html" class="nav__link">Compras</a></li>
 
                     <!--=============== Pedidos ===============-->
 
-                    <li><a href="#" class="nav__link">Ventas</a></li>
+                    <li><a href="ventas.html" class="nav__link">Ventas</a></li>
 
+                    <!--=============== Usuario / Cerrar Sesión ===============-->
+                    <li class="dropdown__item user-dropdown">
+                        <div class="nav__link">
+                            <i class="ri-user-line"></i> <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="../loggin.html" class="dropdown__link">
+                                    <i class="ri-logout-box-line"></i> Salir
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
 
                 </ul>
             </div>
         </nav>
     </header>
-    <script href="../js/main.js"></script>
-    <div class="container">
-        <main role="main" class="pb-3">
-            @RenderBody()
-        </main>
-    </div>
+
+    <!--=============== CONTENIDO PRINCIPAL ===============-->
+    <main class="container full-width">
+        <h2 class="titulo">Lista de clientes</h2>
+
+        <!-- Filtro de búsqueda -->
+        <div class="search-filter">
+            <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
+            <button class="btn yellow">Buscar</button>
+        </div>
+
+        <table class="tabla-empleados">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre y Apellido</th>
+                    <th>DNI</th>
+                    <th>Teléfono</th>
+                    <th>Dirección</th>
+                    <th>Ciudad</th>
+                    <th>Código Postal</th>
+                    <th>Email</th>
+                    <th>Estado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Juan Pérez</td>
+                    <td>32165498</td>
+                    <td>351-1234567</td>
+                    <td>Calle Falsa 123</td>
+                    <td>Rosario</td>
+                    <td>2000</td>
+                    <td>juan.perez@email.com</td>
+                    <td>Activo</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>María López</td>
+                    <td>35487965</td>
+                    <td>351-9876543</td>
+                    <td>Avenida Siempre Viva 456</td>
+                    <td>Santa Fe</td>
+                    <td>3000</td>
+                    <td>maria.lopez@email.com</td>
+                    <td>Activo</td>
+                </tr>
+
+            </tbody>
+        </table>
+
+    </main>
+
+    <!--=============== JS ===============-->
+    <script src="../js/main.js"></script>
 </body>
 </html>
+

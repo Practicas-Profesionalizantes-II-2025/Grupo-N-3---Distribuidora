@@ -1,18 +1,10 @@
-@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
-/*=============== GOOGLE FONTS ===============*/
-
-/* Reset básico */
-* {
-    margin: 0;
-    padding: 0;
-}
-
 * {
     margin: 0px;
     padding: 0px;
 }
-
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap");
 
 /*=============== VARIABLES CSS ===============*/
 :root {
@@ -165,6 +157,7 @@ a {
 /* NAVBAR */
 ul {
     list-style: none;
+    /* Color highlighting when pressed on mobile devices */
     /*-webkit-tap-highlight-color: transparent;*/
 }
 
@@ -172,7 +165,7 @@ a {
     text-decoration: none;
 }
 
-/*=============== CLASSES MEDIANAMENTE REUSABLES ===============*/
+/*=============== REUSABLE CSS CLASSES ===============*/
 .container {
     max-width: 1120px;
     margin-inline: 1.5rem;
@@ -189,7 +182,7 @@ a {
     z-index: var(--z-fixed);
 }
 
-/*=============== NAVBAR ===============*/
+/*=============== NAV ===============*/
 .nav {
     height: var(--header-height);
 }
@@ -242,7 +235,7 @@ a {
     opacity: 0;
 }
 
-/* para mobile */
+/* Navigation for mobile devices */
 @media screen and (max-width: 1118px) {
     .nav__menu {
         position: absolute;
@@ -469,102 +462,571 @@ a {
     }
 }
 
-/* -------------------------------------------------- Pantalla Loggin -------------------------------------------------- */
-/* Contenedor principal */
-.login-container {
-    background: #fff;
-    width: 500px;
-    border: 2px solid #0a3d62;
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    justify-content: inherit;
+
+/*=============== LISTA DE EMPLEADOS ===============*/
+
+.titulo {
+    text-align: center;
+    font-size: var(--h1-font-size);
+    font-family: var(--body-font2);
+    font-weight: var(--font-semi-bold2);
+    margin-bottom: 5rem;
+    color: var(--black-color);
 }
 
-/* Header */
-.login-header {
+.tabla-empleados {
+    width: 100%;
+    border-collapse: collapse; /* asegura que los bordes se unan */
+    background-color: var(--white-color);
+    border-radius: 0.75rem;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    /* Agregado: líneas verticales */
+}
+
+    .tabla-empleados th,
+    .tabla-empleados td {
+        padding: 1rem;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+        border-right: 1px solid #eee; /* línea vertical */
+        font-size: var(--normal-font-size2);
+    }
+
+        /* Elimina la línea derecha en la última columna */
+        .tabla-empleados th:last-child,
+        .tabla-empleados td:last-child {
+            border-right: none;
+        }
+
+    .tabla-empleados th {
+        background-color: var(--black-color2);
+        color: var(--black-color);
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: var(--font-semi-bold2);
+    }
+
+
+    .tabla-empleados tr:hover {
+        background-color: #f9f9f9;
+    }
+
+.btn-editar,
+.btn-eliminar {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 2rem;
+    font-size: var(--small-font-size);
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-editar {
+    background-color: var(--black-color2);
+    color: var(--black-color);
+}
+
+    .btn-editar:hover {
+        background-color: var(--black-color2-light);
+        color: var(--white-color);
+    }
+
+.btn-eliminar {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+    .btn-eliminar:hover {
+        background-color: #c0392b;
+    }
+
+/* Responsive tabla */
+@media screen and (max-width: 768px) {
+    .tabla-empleados thead {
+        display: none;
+    }
+
+    .tabla-empleados,
+    .tabla-empleados tbody,
+    .tabla-empleados tr,
+    .tabla-empleados td {
+        display: block;
+        width: 100%;
+    }
+
+        .tabla-empleados tr {
+            margin-bottom: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            border-radius: 0.75rem;
+            overflow: hidden;
+            padding: 1rem;
+            background-color: var(--white-color);
+        }
+
+        .tabla-empleados td {
+            text-align: right;
+            padding-left: 50%;
+            position: relative;
+        }
+
+            .tabla-empleados td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 1rem;
+                width: 50%;
+                text-align: left;
+                font-weight: var(--font-semi-bold2);
+                color: var(--black-color);
+            }
+}
+
+.full-width {
+    max-width: 100%;
+    margin: 0;
+    padding: 1rem; /* opcional */
+}
+
+/*=============== FONDO DETALLE ===============*/
+.container.full-width {
+    position: relative; /* necesario para el overlay */
+    z-index: 1; /* para mantener contenido por encima */
+}
+
+    .container.full-width::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100vh;
+        background: url('../img/login-bg.jpg') no-repeat center center/cover;
+        opacity: 0.15; /* ajusta la transparencia */
+        z-index: -1; /* detrás del contenido */
+        pointer-events: none; /* evita bloquear clicks */
+    }
+
+
+/*=============== CREAR EMPLEADO ===============*/
+.content {
+    padding: 2rem;
+    font-family: 'Montserrat', sans-serif;
+    color: #333;
+    margin-top: 5rem;
+}
+
+.section-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #e0e0e0;
-    padding: 15px 20px;
-    border-bottom: 2px solid #ccc;
+    margin-bottom: 1.5rem;
 }
 
-.login-header h2 {
-    font-size: 18px;
-    font-weight: bold;
+    .section-header h2 {
+        color: #f7c948; /* Amarillo */
+        font-size: 1.8rem;
+    }
+
+.buttons button {
+    margin-left: 0.5rem;
+    padding: 0.5rem 1rem;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 5px;
+}
+
+.btn.yellow {
+    background-color: #f7c948;
+    color: #000;
+}
+
+.btn.yellow-outline {
+    background-color: transparent;
+    border: 2px solid #f7c948;
+    color: #f7c948;
+}
+
+.btn.red-outline {
+    background-color: transparent;
+    border: 2px solid #e74c3c;
+    color: #e74c3c;
+}
+
+.form {
     display: flex;
-    align-items: center;
-    gap: 8px;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 2rem;
 }
 
-.app-logo {
+    .form input {
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    .form button {
+        width: 150px;
+        padding: 0.5rem;
+        border: none;
+        border-radius: 5px;
+        font-weight: 600;
+        cursor: pointer;
+        background-color: #f7c948;
+        color: #000;
+        margin-top: 0.5rem;
+    }
+
+
+.table-container {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+th, td {
+    padding: 0.75rem;
+    border: 1px solid #ccc;
+}
+
+th {
+    background-color: #f7c948;
+    color: #000;
+}
+
+tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+/*=============== FONDO DETALLE ===============*/
+.content {
+    position: relative; /* necesario para el overlay */
+    z-index: 1; /* para mantener contenido por encima */
+}
+
+    .content::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 120vh;
+        background: url('../img/login-bg.jpg') no-repeat center center/cover;
+        opacity: 0.15; /* ajusta la transparencia */
+        z-index: -1; /* detrás del contenido */
+        pointer-events: none; /* evita bloquear clicks */
+    }
+
+/* =============== MODIFICAR EMPLEADO =============== */
+.search-filter {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: bold;
-}
-
-.app-logo i {
-    background: #0a3d62;
-    color: #fff;
-    padding: 12px;
-    border-radius: 50%;
-    font-size: 18px;
-}
-
-/* Formulario */
-.login-form {
-    padding: 30px 40px;
-}
-
-.form-group {
+    gap: 10px;
     margin-bottom: 20px;
 }
 
-.form-group label {
+    .search-filter input {
+        flex: 1;
+        padding: 8px 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+    }
+
+    .search-filter button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        background-color: #fbbc04; /* amarillo */
+        color: #000;
+        cursor: pointer;
+    }
+
+        .search-filter button:hover {
+            background-color: #e6a800;
+        }
+
+.form input {
     display: block;
-    font-weight: bold;
-    margin-bottom: 6px;
+    width: 100%;
+    margin-bottom: 15px;
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-.input-icon {
+    .form input:disabled {
+        background-color: #eee;
+    }
+
+/* =============== ELIMINAR EMPLEADO =============== */
+.btn.red {
+    background-color: #ff4d4d; /* rojo */
+    color: #fff;
+}
+
+    .btn.red:hover {
+        background-color: #e60000;
+    }
+
+
+/*=============== BIENVENIDA ===============*/
+.welcome-container {
+    background: url('../img/login-bg.jpg') no-repeat center center/cover;
+    height: 100vh; /* toda la ventana */
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     position: relative;
 }
 
-.input-icon input {
+/* Overlay oscuro */
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
     width: 100%;
-    padding: 10px 40px 10px 10px;
-    border: 1px solid #bbb;
-    border-radius: 5px;
-    font-size: 14px;
+    background-color: rgba(0,0,0,0.6);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.input-icon i {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #555;
+/* Texto de bienvenida */
+.welcome-text {
+    position: relative;
+    z-index: 1; /* encima del overlay */
 }
+
+    .welcome-text h1 {
+        font-size: 3rem;
+        margin-bottom: 20px;
+    }
+
+    .welcome-text p {
+        font-size: 1.2rem;
+        margin-bottom: 30px;
+    }
 
 /* Botón */
-.btn {
+.btn.yellow {
+    background-color: #f5c518;
+    color: #000;
+    padding: 12px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.3s;
+}
+
+    .btn.yellow:hover {
+        background-color: #e0b700;
+    }
+
+/* Reset de body para evitar scroll */
+body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/*=============== CERRAR SESION ===============*/
+/* Botón de cerrar sesión en navbar */
+.nav__list .logout-btn {
+    margin-left: auto; /* empuja el botón a la derecha */
+}
+
+    .nav__list .logout-btn .btn.yellow {
+        padding: 0.5rem 1rem;
+        font-size: 0.9rem;
+        border-radius: 5px;
+        background-color: #f5c518;
+        color: #ffffff;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.3s;
+    }
+
+        .nav__list .logout-btn .btn.yellow:hover {
+            background-color: #e0b700;
+            color: #000;
+        }
+
+/*=============== DETALLE PEDIDO ===============*/
+.pedido {
+    margin-top: 120px;
+    padding: 20px;
+}
+
+.pedido__title {
+    font-size: 2rem;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.pedido__table {
     width: 100%;
-    padding: 12px;
-    background: linear-gradient(to right, #009432, #38ada9);
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+    .pedido__table th,
+    .pedido__table td {
+        padding: 15px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+    }
+
+    .pedido__table th {
+        background-color: #f5c518;
+        color: #000;
+        font-weight: 600;
+    }
+
+    .pedido__table tr:hover {
+        background-color: #fafafa;
+    }
+
+.total-label {
+    text-align: right;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.total-value {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #f5c518;
+}
+
+
+/*=============== MODIFICAR PEDIDO ===============*/
+/* ========== FONDO APACIGUADO A TODA PANTALLA ========== */
+.pedido::before {
+    content: "";
+    position: fixed; /* ocupa toda la pantalla */
+    top: 0;
+    left: 0;
+    width: 100vw; /* ancho completo de la ventana */
+    height: 100vh; /* alto completo de la ventana */
+    background: url('../img/login-bg.jpg') no-repeat center center/cover;
+    opacity: 0.15; /* transparencia */
+    z-index: -1; /* detrás del contenido */
+    pointer-events: none; /* no bloquea clicks */
+}
+
+/* El main sigue centrado */
+.pedido {
+    position: relative;
+    z-index: 1;
+    margin-top: 100px;
+    padding: 20px;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+
+/* ========== TITULO ========== */
+.section-header h2 {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+/* ========== TABLA ========== */
+.pedido__table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+    .pedido__table th,
+    .pedido__table td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid #eee;
+    }
+
+    .pedido__table th {
+        background-color: #f5c518;
+        color: #000;
+        font-weight: 600;
+    }
+
+    .pedido__table tr:hover {
+        background-color: #fafafa;
+    }
+
+/* ========== TOTAL ========== */
+.total-label {
+    text-align: right;
+    font-weight: 700;
+    font-size: 1.1rem;
+}
+
+.total-value {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #f5c518;
+}
+
+/* ========== INPUTS ========== */
+.pedido__table input {
+    width: 80px;
+    padding: 5px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* ========== BOTONES ========== */
+.btn {
+    background: #f5c518;
+    color: #000;
+    font-weight: 600;
+    padding: 8px 15px;
     border: none;
-    border-radius: 6px;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
+    border-radius: 8px;
     cursor: pointer;
-    transition: opacity 0.2s;
+    transition: background 0.3s ease;
+    margin: 5px;
 }
 
     .btn:hover {
-        opacity: 0.9;
+        background: #e0b414;
     }
+
+.btn-delete {
+    background: #e74c3c;
+    color: #fff;
+}
+
+    .btn-delete:hover {
+        background: #c0392b;
+    }
+
+/* ========== ACCIONES ========== */
+.actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
