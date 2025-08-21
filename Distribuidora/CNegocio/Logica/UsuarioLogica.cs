@@ -28,7 +28,7 @@ namespace CNegocio.Logica
             {
                 Id = u.Id,
                 PersonaId = u.PersonaId,
-                Activo = u.Activo
+                Activo = u.EstadoId == 1
             }).ToList();
         }
 
@@ -48,7 +48,7 @@ namespace CNegocio.Logica
         }
 
 
-        public async Task<UsuarioDTO> ObtenerUsuarioPorId(int id)
+        public async Task<UsuarioDTO> ObtenerUsuarioPorId(int id) //Vemos si matamos este metodo
         {
             if (id <= 0)
                 throw new ArgumentException("El ID del usuario debe ser mayor que cero.");
@@ -61,8 +61,8 @@ namespace CNegocio.Logica
             {
                 Id = usuario.Id,
                 PersonaId = usuario.PersonaId,
-                Activo = usuario.Activo
-                // Nunca mandes la contraseña al front
+                Activo = usuario.EstadoId == 1
+                // Nunca mandarr la contrasenia al front
             };
         }
 
@@ -80,7 +80,7 @@ namespace CNegocio.Logica
             var usuario = new Usuario
             {
                 PersonaId = usuarioDTO.PersonaId,
-                Activo = usuarioDTO.Activo
+                EstadoId = 1,
             };
 
             // Hash de la contraseña
@@ -98,7 +98,6 @@ namespace CNegocio.Logica
             {
                 Id = usuarioDTO.Id,
                 PersonaId = usuarioDTO.PersonaId,
-                Activo = usuarioDTO.Activo
             };
 
             if (!string.IsNullOrEmpty(usuarioDTO.Contrasenia))
