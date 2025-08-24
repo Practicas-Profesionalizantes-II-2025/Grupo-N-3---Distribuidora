@@ -1,28 +1,44 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
 using MVC.Data;
 using MVC.Models.Entities;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading.Tasks;
+using MVC.Models.DTOs;
 
 namespace MVC.Controllers
 {
     public class CategoriasController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public CategoriasController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
+        public CategoriasController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
         // GET: Categorias
-        public IActionResult listaCategorias()
+        public async Task<IActionResult> listaCategorias()
         {
-            return View();
+            var url = $"{_settings.BaseUrl}/{_settings.CategoriasGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(json);
+
+            return View(lista_categorias);
         }
 
         //// GET: Categorias/Details/5
