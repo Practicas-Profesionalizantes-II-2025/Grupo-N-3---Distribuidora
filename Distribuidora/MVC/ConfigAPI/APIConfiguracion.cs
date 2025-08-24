@@ -4,7 +4,7 @@
     {
         public string BaseUrl { get; set; } = string.Empty;
 
-        // Endpoints
+        // Endpoints Categorias
         public string CategoriasGet { get; set; } = string.Empty;
         public string CategoriasPost { get; set; } = string.Empty;
         public string CategoriasPut { get; set; } = string.Empty;
