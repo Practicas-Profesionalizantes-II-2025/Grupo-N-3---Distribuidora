@@ -6,4 +6,5 @@
         public string CiudadesEndpoint { get; set; }
         public string CategoriasEndpoint { get; set; }
         // agregá más endpoints según se necesite
+    }
 }
