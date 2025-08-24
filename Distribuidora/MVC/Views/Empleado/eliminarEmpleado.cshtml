@@ -20,7 +20,7 @@
         <div class="content">
             <!-- Header de la sección -->
             <div class="section-header">
-                <h2>Modificar cliente</h2>
+                <h2>Eliminar empleado</h2>
             </div>
 
             <!-- Filtro de búsqueda -->
@@ -29,20 +29,22 @@
                 <button class="btn yellow">Buscar</button>
             </div>
 
-            <!-- Formulario para crear o modificar empleados -->
+            <!-- Formulario para eliminar empleados -->
             <div class="form">
-                <input type="text" placeholder="Nombre y Apellido" id="nombreApellido">
-                <input type="text" placeholder="DNI" id="dni" disabled> <!-- campo bloqueado -->
-                <input type="text" placeholder="Teléfono" id="telefono">
-                <input type="text" placeholder="Dirección" id="direccion">
-                <input type="text" placeholder="Ciudad" id="ciudad">
-                <input type="text" placeholder="Código Postal" id="codigoPostal">
-                <input type="email" placeholder="Email" id="email">
-                <input type="text" placeholder="Estado" id="estado">
-                <button class="btn yellow">Guardar</button>
+                <input type="text" placeholder="Nombre y Apellido" id="nombreApellido" disabled>
+                <input type="text" placeholder="DNI" id="dni" disabled>
+                <input type="text" placeholder="Teléfono" id="telefono" disabled>
+                <input type="text" placeholder="Dirección" id="direccion" disabled>
+                <input type="text" placeholder="Ciudad" id="ciudad" disabled>
+                <input type="text" placeholder="Código Postal" id="codigoPostal" disabled>
+                <input type="email" placeholder="Email" id="email" disabled>
+                <input type="text" placeholder="Cargo" id="cargo" disabled>
+                <input type="text" placeholder="Estado" id="estado" disabled>
+                <button class="btn red">Eliminar</button>
             </div>
         </div>
     </main>
+
 
 
     <script href="../js/main.js"></script>

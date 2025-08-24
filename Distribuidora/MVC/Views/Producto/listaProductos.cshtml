@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de clientes</title>
+    <title>Lista de productos</title>
 
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
@@ -19,11 +19,11 @@
 
     <!--=============== CONTENIDO PRINCIPAL ===============-->
     <main class="container full-width">
-        <h2 class="titulo">Lista de clientes</h2>
+        <h2 class="titulo">Lista de productos</h2>
 
         <!-- Filtro de búsqueda -->
         <div class="search-filter">
-            <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
+            <input type="text" placeholder="Buscar por ID, Nombre o Categoría" id="searchInput">
             <button class="btn yellow">Buscar</button>
         </div>
 
@@ -31,38 +31,29 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre y Apellido</th>
-                    <th>DNI</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Ciudad</th>
-                    <th>Código Postal</th>
-                    <th>Email</th>
-                    <th>Estado</th>
+                    <th>Nombre producto</th>
+                    <th>Proveedor</th>
+                    <th>Categoría</th>
+                    <th>Unidades</th>
+                    <th>Precio venta</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>1</td>
-                    <td>Juan Pérez</td>
-                    <td>32165498</td>
-                    <td>351-1234567</td>
-                    <td>Calle Falsa 123</td>
-                    <td>Rosario</td>
-                    <td>2000</td>
-                    <td>juan.perez@email.com</td>
-                    <td>Activo</td>
+                    <td>Coca Cola 1.5 ltrs</td>
+                    <td>Entre copas</td>
+                    <td>Bebida</td>
+                    <td>120</td>
+                    <td>$1.950</td>
                 </tr>
                 <tr>
                     <td>2</td>
-                    <td>María López</td>
-                    <td>35487965</td>
-                    <td>351-9876543</td>
-                    <td>Avenida Siempre Viva 456</td>
-                    <td>Santa Fe</td>
-                    <td>3000</td>
-                    <td>maria.lopez@email.com</td>
-                    <td>Activo</td>
+                    <td>Oreo</td>
+                    <td>Arcor SRL</td>
+                    <td>Masitas</td>
+                    <td>80</td>
+                    <td>$1.200</td>
                 </tr>
 
             </tbody>

@@ -20,26 +20,25 @@
         <div class="content">
             <!-- Header de la sección -->
             <div class="section-header">
-                <h2>Eliminar cliente</h2>
+                <h2>Eliminar distribuidor</h2>
             </div>
 
             <!-- Filtro de búsqueda -->
             <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
-                <button class="btn yellow">Buscar</button>
+                <input type="text" placeholder="Buscar por ID, CUIL/CUIT o Nombre" id="searchInput">
+                <button class="btn yellow" id="buscarProveedor">Buscar</button>
             </div>
 
-            <!-- Formulario para eliminar empleados -->
+            <!-- Formulario para eliminar proveedores -->
             <div class="form">
-                <input type="text" placeholder="Nombre y Apellido" id="nombreApellido" disabled>
-                <input type="text" placeholder="DNI" id="dni" disabled>
+                <input type="text" placeholder="Nombre" id="nombre" disabled>
+                <input type="text" placeholder="CUIL/CUIT" id="cuil" disabled>
                 <input type="text" placeholder="Teléfono" id="telefono" disabled>
                 <input type="text" placeholder="Dirección" id="direccion" disabled>
                 <input type="text" placeholder="Ciudad" id="ciudad" disabled>
+                <input type="text" placeholder="Provincia" id="provincia" disabled>
                 <input type="text" placeholder="Código Postal" id="codigoPostal" disabled>
-                <input type="email" placeholder="Email" id="email" disabled>
-                <input type="text" placeholder="Estado" id="estado" disabled>
-                <button class="btn red">Eliminar</button>
+                <button class="btn red" id="eliminarProveedor">Eliminar</button>
             </div>
         </div>
     </main>

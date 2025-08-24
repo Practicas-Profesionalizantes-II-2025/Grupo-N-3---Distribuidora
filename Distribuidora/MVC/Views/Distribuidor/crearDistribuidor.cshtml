@@ -15,27 +15,25 @@
     <title>Pagina Inicio - Empleados</title>
 </head>
 <body>
-
+ 
     <main>
         <div class="content">
             <!-- Header de la sección -->
             <div class="section-header">
-                <h2>Crear cliente</h2>
+                <h2>Crear distribuidor</h2>
             </div>
 
-            <!-- Formulario para crear empleados -->
+            <!-- Formulario para crear proveedores -->
             <div class="form">
-                <input type="text" placeholder="Nombre y Apellido">
-                <input type="text" placeholder="DNI">
-                <input type="text" placeholder="Teléfono">
-                <input type="text" placeholder="Dirección">
-                <input type="text" placeholder="Ciudad">
-                <input type="text" placeholder="Código Postal">
-                <input type="email" placeholder="Email">
-                <input type="text" placeholder="Estado">
-                <button class="btn yellow">Guardar</button>
+                <input type="text" placeholder="Nombre" id="nombre" required>
+                <input type="text" placeholder="CUIL/CUIT" id="cuil" required>
+                <input type="text" placeholder="Teléfono" id="telefono" required>
+                <input type="text" placeholder="Dirección" id="direccion" required>
+                <input type="text" placeholder="Ciudad" id="ciudad" required>
+                <input type="text" placeholder="Provincia" id="provincia" required>
+                <input type="text" placeholder="Código Postal" id="codigoPostal" required>
+                <button class="btn yellow" id="guardarProveedor">Guardar</button>
             </div>
-
         </div>
     </main>
 

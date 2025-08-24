@@ -1,4 +1,5 @@
-﻿@{
+﻿
+@{
 }
 
 <!DOCTYPE html>
@@ -19,11 +20,11 @@
 
     <!--=============== CONTENIDO PRINCIPAL ===============-->
     <main class="container full-width">
-        <h2 class="titulo">Lista de clientes</h2>
+        <h2 class="titulo">Lista de proveedores</h2>
 
         <!-- Filtro de búsqueda -->
         <div class="search-filter">
-            <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
+            <input type="text" placeholder="Buscar por ID, CUIL/CUIT o Nombre" id="searchInput">
             <button class="btn yellow">Buscar</button>
         </div>
 
@@ -31,47 +32,42 @@
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre y Apellido</th>
-                    <th>DNI</th>
+                    <th>Nombre</th>
+                    <th>CUIL/CUIT</th>
                     <th>Teléfono</th>
                     <th>Dirección</th>
                     <th>Ciudad</th>
+                    <th>Provincia</th>
                     <th>Código Postal</th>
-                    <th>Email</th>
-                    <th>Estado</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
                     <td>1</td>
-                    <td>Juan Pérez</td>
-                    <td>32165498</td>
-                    <td>351-1234567</td>
+                    <td>Proveedor A</td>
+                    <td>20-12345678-9</td>
+                    <td>3493-425869</td>
                     <td>Calle Falsa 123</td>
                     <td>Rosario</td>
+                    <td>Santa Fe</td>
                     <td>2000</td>
-                    <td>juan.perez@email.com</td>
-                    <td>Activo</td>
                 </tr>
                 <tr>
                     <td>2</td>
-                    <td>María López</td>
-                    <td>35487965</td>
-                    <td>351-9876543</td>
+                    <td>Proveedor B</td>
+                    <td>27-98765432-1</td>
+                    <td>3492-693265</td>
                     <td>Avenida Siempre Viva 456</td>
                     <td>Santa Fe</td>
+                    <td>Santa Fe</td>
                     <td>3000</td>
-                    <td>maria.lopez@email.com</td>
-                    <td>Activo</td>
                 </tr>
-
+                <!-- Agregar más filas según necesidad -->
             </tbody>
         </table>
-
     </main>
 
     <!--=============== JS ===============-->
     <script src="../js/main.js"></script>
 </body>
 </html>
-
