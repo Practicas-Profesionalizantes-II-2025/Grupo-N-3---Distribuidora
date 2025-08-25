@@ -24,11 +24,11 @@
             <button class="btn yellow">Buscar</button>
         </div>
 
-        <table class="tabla-empleados">
+        <table class="table">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre categoría</th>
+                    <th>Nombre</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
@@ -39,15 +39,17 @@
                         <td>@cat.Id</td>
                         <td>@cat.Nombre</td>
                         <td>
-                            <!-- Botón modificar -->
-                            <a href="@Url.Action("Editar", "Categorias", new { id = cat.Id })" class="btn btn-warning">
+                            <!-- Botón Editar -->
+                            <a href="@Url.Action("Edit", "Categorias", new { id = cat.Id })" class="btn btn-warning">
                                 <i class="ri-edit-2-line"></i>
                             </a>
 
-                            <!-- Botón eliminar -->
-                            <a href="@Url.Action("Eliminar", "Categorias", new { id = cat.Id })" class="btn btn-danger">
-                                <i class="ri-delete-bin-6-line"></i>
-                            </a>
+                            <!-- Botón Eliminar con POST -->
+                            <form asp-action="Delete" asp-controller="Categorias" asp-route-id="@cat.Id" method="post" style="display:inline">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Seguro que deseas eliminar esta categoría?');">
+                                    <i class="ri-delete-bin-6-line"></i>
+                                </button>
+                            </form>
                         </td>
                     </tr>
                 }

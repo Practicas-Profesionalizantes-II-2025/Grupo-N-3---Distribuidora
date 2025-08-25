@@ -133,22 +133,26 @@ namespace MVC.Controllers
         //}
 
         //// GET: Categorias/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> Delete(int? id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.CategoriasDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
 
-        //    var categoria = await _context.Categoria
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (categoria == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (!response.IsSuccessStatusCode)
+                return View("Error al eliminar la categoria");
 
-        //    return View(categoria);
-        //}
+            var url2 = $"{_settings.BaseUrl}/{_settings.CategoriasGet}";
+            var response2 = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(json);
+
+            return View("listaCategorias", lista_categorias);
+
+        }
 
         //// POST: Categorias/Delete/5
         //[HttpPost, ActionName("Delete")]
