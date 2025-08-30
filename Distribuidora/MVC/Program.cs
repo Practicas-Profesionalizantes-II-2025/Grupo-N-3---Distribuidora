@@ -43,6 +43,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "categorias",
-    pattern: "{controller=Categorias}/{action=listaCategorias}/{id?}");
+    pattern: "{controller=Categorias}/{action=crearCategoria}/{id?}");
 
 app.Run();

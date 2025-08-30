@@ -41,6 +41,22 @@ namespace MVC.Controllers
             return View(lista_categorias);
         }
 
+        // POST: Categorias
+        public IActionResult crearCategoria()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> crearCategoria(CategoriaDTO categoria)
+        {
+            if (!ModelState.IsValid)
+            {
+                var url = $"{_settings.BaseUrl}/{_settings.CategoriasPost}";
+                return RedirectToAction("listaCategorias");
+            }
+                
+        }
+
         //// GET: Categorias/Details/5
         //public async Task<IActionResult> Details(int? id)
         //{

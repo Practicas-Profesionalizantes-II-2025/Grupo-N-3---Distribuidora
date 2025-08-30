@@ -40,16 +40,10 @@
                         <td>@cat.Nombre</td>
                         <td>
                             <!-- Botón Editar -->
-                            <a href="@Url.Action("Edit", "Categorias", new { id = cat.Id })" class="btn btn-warning">
-                                <i class="ri-edit-2-line"></i>
-                            </a>
-
+                            <a asp-action="Editar" asp-route-id="@cat.Id">Editar</a>
                             <!-- Botón Eliminar con POST -->
-                            <form asp-action="Delete" asp-controller="Categorias" asp-route-id="@cat.Id" method="post" style="display:inline">
-                                <button type="submit" class="btn btn-danger" onclick="return confirm('¿Seguro que deseas eliminar esta categoría?');">
-                                    <i class="ri-delete-bin-6-line"></i>
-                                </button>
-                            </form>
+                            <a asp-action="Elimiar" asp-route-id="@cat.Id">Eliminar</a>
+
                         </td>
                     </tr>
                 }
