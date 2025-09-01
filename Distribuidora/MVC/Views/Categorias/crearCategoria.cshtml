@@ -1,6 +1,7 @@
 ﻿@model MVC.Models.DTOs.CategoriaDTO
+
 @{
-    ViewData["Title"] = "Crear Categoría";
+    ViewData["Title"] = "Crear Categoria";
 }
 
 <!DOCTYPE html>
@@ -8,34 +9,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
-
-    <title>Pagina Inicio - Empleados</title>
+    <title>Pagina Inicio - Categorías</title>
+    <link rel="stylesheet" href="~/css/style.css" />
 </head>
 <body>
     <main>
         <div class="content">
-            <!-- Header de la sección -->
             <div class="section-header">
                 <h2>Crear categoría</h2>
             </div>
 
-            <!-- Formulario para crear empleados -->
-            <form asp-action="Crear" method="post" class="form">
+            <!-- Formulario para crear categorías -->
+            <form asp-action="crearCategoria" asp-controller="Categorias" method="post" class="form">
                 <div>
-                    <label for="Nombre">Nombre</label>
-                    <input type="text" placeholder="Nombre cateogría" asp-for="Nombre"/>
+                    <label asp-for="Nombre">Nombre</label>
+                    <input asp-for="Nombre" class="form-control" placeholder="Nombre categoría" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
                 </div>
-                <button type="submit" class="btn yellow">Guardar</button>
+                <div>
+                    <button type="submit" class="btn yellow">Guardar</button>
+                </div>
             </form>
-
         </div>
     </main>
-
-    <script href="../js/main.js"></script>
+    <script src="~/js/main.js"></script>
 </body>
 </html>

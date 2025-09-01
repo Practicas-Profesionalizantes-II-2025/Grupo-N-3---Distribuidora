@@ -4,14 +4,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MVC.ConfigAPI;
 using MVC.Data;
+using MVC.Models.DTOs;
 using MVC.Models.Entities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-using MVC.Models.DTOs;
 
 namespace MVC.Controllers
 {
@@ -47,15 +48,28 @@ namespace MVC.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<IActionResult> crearCategoria(CategoriaDTO categoria)
+        public async Task<IActionResult> crearCategoria([Bind("Id,Nombre")] CategoriaDTO categoria)
         {
             if (!ModelState.IsValid)
             {
-                var url = $"{_settings.BaseUrl}/{_settings.CategoriasPost}";
-                return RedirectToAction("listaCategorias");
+                return View(categoria);
             }
-                
+
+            var url = $"{_settings.BaseUrl}/{_settings.CategoriasPost}";
+            var jsonData = JsonConvert.SerializeObject(categoria);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return View("Error");
+            }
+
+            // Redirigir a la lista de categorías después de guardar
+            return RedirectToAction("listaCategorias");
         }
+
 
         //// GET: Categorias/Details/5
         //public async Task<IActionResult> Details(int? id)
