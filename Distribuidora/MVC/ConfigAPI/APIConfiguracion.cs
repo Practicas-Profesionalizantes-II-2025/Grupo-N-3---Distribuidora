@@ -27,6 +27,30 @@
         public string EmpleadosPost { get; set; } = string.Empty;
         public string EmpleadosPut { get; set; } = string.Empty;
         public string EmpleadosDelete { get; set; } = string.Empty;
+
+        // Endpoints FacturaCabecera
+        public string FacturaCabeceraGet { get; set; } = string.Empty;
+        public string FacturaCabeceraPost { get; set; } = string.Empty;
+        public string FacturaCabeceraPut { get; set; } = string.Empty;
+        public string FacturaCabeceraDelete { get; set; } = string.Empty;
+
+        // Endpoints OrdenDeCompra
+        public string OrdenDeCompraGet { get; set; } = string.Empty;
+        public string OrdenDeCompraPost { get; set; } = string.Empty;
+        public string OrdenDeCompraPut { get; set; } = string.Empty;
+        public string OrdenDeCompraDelete { get; set; } = string.Empty;
+
+        // Endpoints OrdenDeCompraProducto
+        public string OrdenDeCompraProductoGet { get; set; } = string.Empty;
+        public string OrdenDeCompraProductoPost { get; set; } = string.Empty;
+        public string OrdenDeCompraProductoPut { get; set; } = string.Empty;
+        public string OrdenDeCompraProductoDelete { get; set; } = string.Empty;
+
+        // Endpoints OrdenDeVenta
+        public string OrdenDeVentaGet { get; set; } = string.Empty;
+        public string OrdenDeVentaPost { get; set; } = string.Empty;
+        public string OrdenDeVentaPut { get; set; } = string.Empty;
+        public string OrdenDeVentaDelete { get; set; } = string.Empty;
         // agregá más endpoints según se necesite
     }
 }
