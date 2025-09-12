@@ -22,12 +22,14 @@
     <main class="container full-width">
         <h2 class="titulo">Lista de proveedores</h2>
 
-        <!-- Filtro de búsqueda -->
+        <!-- Filtro de búsqueda con crear -->
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, CUIL/CUIT o Nombre" id="searchInput">
             <button class="btn yellow">Buscar</button>
+            <a href="crearProveedor.html" class="btn yellow">Crear proveedor</a>
         </div>
 
+        <!-- Tabla -->
         <table class="tabla-empleados">
             <thead>
                 <tr>
@@ -39,6 +41,7 @@
                     <th>Ciudad</th>
                     <th>Provincia</th>
                     <th>Código Postal</th>
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -51,6 +54,14 @@
                     <td>Rosario</td>
                     <td>Santa Fe</td>
                     <td>2000</td>
+                    <td class="acciones">
+                        <a href="modificarProveedor.html?id=1" class="btn-icon yellow-outline" title="Editar">
+                            <i class="ri-pencil-line"></i>
+                        </a>
+                        <a href="eliminarProveedor.html?id=1" class="btn-icon red-outline" title="Eliminar">
+                            <i class="ri-delete-bin-line"></i>
+                        </a>
+                    </td>
                 </tr>
                 <tr>
                     <td>2</td>
@@ -61,6 +72,14 @@
                     <td>Santa Fe</td>
                     <td>Santa Fe</td>
                     <td>3000</td>
+                    <td class="acciones">
+                        <a href="modificarProveedor.html?id=2" class="btn-icon yellow-outline" title="Editar">
+                            <i class="ri-pencil-line"></i>
+                        </a>
+                        <a href="eliminarProveedor.html?id=2" class="btn-icon red-outline" title="Eliminar">
+                            <i class="ri-delete-bin-line"></i>
+                        </a>
+                    </td>
                 </tr>
                 <!-- Agregar más filas según necesidad -->
             </tbody>

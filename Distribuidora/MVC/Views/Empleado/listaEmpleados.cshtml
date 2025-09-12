@@ -25,6 +25,7 @@
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
             <button class="btn yellow">Buscar</button>
+            <a href="crearEmpleado.html" class="btn green">Crear Empleado</a>
         </div>
 
         <table class="tabla-empleados">
@@ -40,6 +41,7 @@
                     <th>Email</th>
                     <th>Puesto</th>
                     <th>Estado</th>
+                    <th>Acción</th> <!-- Nueva columna -->
                 </tr>
             </thead>
             <tbody>
@@ -54,7 +56,12 @@
                     <td>juan.perez@email.com</td>
                     <td>Repositor</td>
                     <td>Activo</td>
+                    <td class="acciones">
+                        <a href="modificarEmpleado.html?id=1" class="btn-icon edit"><i class="ri-pencil-line"></i></a>
+                        <a href="eliminarEmpleado.html?id=1" class="btn-icon delete"><i class="ri-delete-bin-line"></i></a>
+                    </td>
                 </tr>
+
                 <tr>
                     <td>2</td>
                     <td>María López</td>
@@ -66,7 +73,12 @@
                     <td>maria.lopez@email.com</td>
                     <td>Contador</td>
                     <td>Activo</td>
+                    <td class="acciones">
+                        <a href="modificarEmpleado.html?id=2" class="btn-icon edit"><i class="ri-pencil-line"></i></a>
+                        <a href="eliminarEmpleado.html?id=2" class="btn-icon delete"><i class="ri-delete-bin-line"></i></a>
+                    </td>
                 </tr>
+
                 <tr>
                     <td>3</td>
                     <td>Carlos Gómez</td>
@@ -78,10 +90,13 @@
                     <td>carlos.gomez@email.com</td>
                     <td>Cajero</td>
                     <td>Inactivo</td>
+                    <td class="acciones">
+                        <a href="modificarEmpleado.html?id=3" class="btn-icon edit"><i class="ri-pencil-line"></i></a>
+                        <a href="eliminarEmpleado.html?id=3" class="btn-icon delete"><i class="ri-delete-bin-line"></i></a>
+                    </td>
                 </tr>
             </tbody>
         </table>
-
     </main>
 
     <!--=============== JS ===============-->

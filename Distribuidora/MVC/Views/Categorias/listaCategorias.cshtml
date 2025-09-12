@@ -16,39 +16,64 @@
 </head>
 <body>
     <main class="container full-width">
-        <h2 class="titulo">Lista de categorías</h2>
+        <h2 class="titulo">Lista categoría</h2>
 
-        <!-- Filtro de búsqueda -->
+        <!-- Filtro de búsqueda con crear -->
         <div class="search-filter">
-            <input type="text" placeholder="Buscar por ID o Nombre" id="searchInput">
+            <input type="text" placeholder="Buscar por ID, Nombre o Categoría" id="searchInput">
             <button class="btn yellow">Buscar</button>
+            <a href="crearCategoria.html" class="btn yellow">Crear categoría</a>
         </div>
 
-        <table class="table">
+        <!-- Tabla -->
+        <table class="tabla-empleados">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Nombre</th>
+                    <th>Nombre categoría</th>
                     <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
-                @foreach (var cat in Model)
-                {
-                    <tr>
-                        <td>@cat.Id</td>
-                        <td>@cat.Nombre</td>
-                        <td>
-                            <!-- Botón Editar -->
-                            <a asp-action="Editar" asp-route-id="@cat.Id">Editar</a>
-                            <!-- Botón Eliminar con POST -->
-                            <a asp-action="Elimiar" asp-route-id="@cat.Id">Eliminar</a>
-
-                        </td>
-                    </tr>
-                }
+                <tr>
+                    <td>1</td>
+                    <td>Bebida</td>
+                    <td class="acciones">
+                        <a href="modificarCategoria.html?id=1" class="btn-icon yellow-outline" title="Editar">
+                            <i class="ri-pencil-line"></i>
+                        </a>
+                        <a href="eliminarCategoria.html?id=1" class="btn-icon red-outline" title="Eliminar">
+                            <i class="ri-delete-bin-line"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Limpieza</td>
+                    <td class="acciones">
+                        <a href="modificarCategoria.html?id=2" class="btn-icon yellow-outline" title="Editar">
+                            <i class="ri-pencil-line"></i>
+                        </a>
+                        <a href="eliminarCategoria.html?id=2" class="btn-icon red-outline" title="Eliminar">
+                            <i class="ri-delete-bin-line"></i>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Masitas</td>
+                    <td class="acciones">
+                        <a href="modificarCategoria.html?id=3" class="btn-icon yellow-outline" title="Editar">
+                            <i class="ri-pencil-line"></i>
+                        </a>
+                        <a href="eliminarCategoria.html?id=3" class="btn-icon red-outline" title="Eliminar">
+                            <i class="ri-delete-bin-line"></i>
+                        </a>
+                    </td>
+                </tr>
             </tbody>
         </table>
+
     </main>
 
     <!--=============== JS ===============-->

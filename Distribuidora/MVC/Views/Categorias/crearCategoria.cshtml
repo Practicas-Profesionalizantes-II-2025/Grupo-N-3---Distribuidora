@@ -15,21 +15,17 @@
 <body>
     <main>
         <div class="content">
+            <!-- Header de la sección -->
             <div class="section-header">
                 <h2>Crear categoría</h2>
             </div>
 
-            <!-- Formulario para crear categorías -->
-            <form asp-action="crearCategoria" asp-controller="Categorias" method="post" class="form">
-                <div>
-                    <label asp-for="Nombre">Nombre</label>
-                    <input asp-for="Nombre" class="form-control" placeholder="Nombre categoría" />
-                    <span asp-validation-for="Nombre" class="text-danger"></span>
-                </div>
-                <div>
-                    <button type="submit" class="btn yellow">Guardar</button>
-                </div>
-            </form>
+            <!-- Formulario para crear empleados -->
+            <div class="form">
+                <input type="text" placeholder="Nombre cateogría">
+                <button class="btn yellow">Guardar</button>
+            </div>
+
         </div>
     </main>
     <script src="~/js/main.js"></script>

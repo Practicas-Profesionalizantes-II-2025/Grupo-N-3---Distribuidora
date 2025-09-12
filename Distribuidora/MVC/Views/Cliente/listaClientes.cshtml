@@ -21,12 +21,14 @@
     <main class="container full-width">
         <h2 class="titulo">Lista de clientes</h2>
 
-        <!-- Filtro de búsqueda -->
+        <!-- Filtro de búsqueda + Crear Cliente -->
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
             <button class="btn yellow">Buscar</button>
+            <a href="crearCliente.html" class="btn yellow">Crear Cliente</a>
         </div>
 
+        <!-- Tabla -->
         <table class="tabla-empleados">
             <thead>
                 <tr>
@@ -39,6 +41,7 @@
                     <th>Código Postal</th>
                     <th>Email</th>
                     <th>Estado</th>
+                    <th>Acciones</th> <!-- Columna Acciones -->
                 </tr>
             </thead>
             <tbody>
@@ -52,6 +55,14 @@
                     <td>2000</td>
                     <td>juan.perez@email.com</td>
                     <td>Activo</td>
+                    <td class="acciones">
+                        <a href="modificarCliente.html?id=1" class="btn-icon yellow-outline" title="Editar">
+                            <i class="ri-pencil-line"></i>
+                        </a>
+                        <a href="eliminarCliente.html?id=1" class="btn-icon red-outline" title="Eliminar">
+                            <i class="ri-delete-bin-line"></i>
+                        </a>
+                    </td>
                 </tr>
                 <tr>
                     <td>2</td>
@@ -63,11 +74,17 @@
                     <td>3000</td>
                     <td>maria.lopez@email.com</td>
                     <td>Activo</td>
+                    <td class="acciones">
+                        <a href="modificarCliente.html?id=2" class="btn-icon yellow-outline" title="Editar">
+                            <i class="ri-pencil-line"></i>
+                        </a>
+                        <a href="eliminarCliente.html?id=2" class="btn-icon red-outline" title="Eliminar">
+                            <i class="ri-delete-bin-line"></i>
+                        </a>
+                    </td>
                 </tr>
-
             </tbody>
         </table>
-
     </main>
 
     <!--=============== JS ===============-->
