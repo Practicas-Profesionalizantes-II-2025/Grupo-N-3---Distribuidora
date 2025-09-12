@@ -1,157 +1,127 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
 using MVC.Data;
+using MVC.Models.DTOs;
 using MVC.Models.Entities;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MVC.Controllers
 {
     public class ProductoController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public ProductoController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
+        public ProductoController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
         // GET: Producto
-        public async Task<IActionResult> ProductoIndex()
+        public async Task<IActionResult> Index()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json);
+
+            return View(lista_productos);
+        }
+
+        // GET: Producto/Create
+        public IActionResult Create()
         {
             return View();
         }
 
-        //// GET: Producto/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Producto/Create
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Id,Nombre,ProveedorId,CategoriaId,UnidadesProducto,PrecioProducto,Stock")] ProductoDTO producto)
+        {
+            if (!ModelState.IsValid)
+                return View(producto);
 
-        //    var producto = await _context.Producto
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (producto == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoPost}";
+            var jsonData = JsonConvert.SerializeObject(producto);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //    return View(producto);
-        //}
+            var response = await _httpClient.PostAsync(url, content);
 
-        //// GET: Producto/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //// POST: Producto/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Nombre,ProveedorId,CategoriaId,PrecioProducto")] Producto producto)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(producto);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(producto);
-        //}
+            return RedirectToAction("Index");
+        }
 
-        //// GET: Producto/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Producto/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
 
-        //    var producto = await _context.Producto.FindAsync(id);
-        //    if (producto == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(producto);
-        //}
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
 
-        //// POST: Producto/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,ProveedorId,CategoriaId,PrecioProducto")] Producto producto)
-        //{
-        //    if (id != producto.Id)
-        //    {
-        //        return NotFound();
-        //    }
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(producto);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!ProductoExists(producto.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(producto);
-        //}
+            var json = await response.Content.ReadAsStringAsync();
+            var producto = JsonConvert.DeserializeObject<ProductoDTO>(json);
 
-        //// GET: Producto/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (producto == null)
+                return NotFound();
 
-        //    var producto = await _context.Producto
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (producto == null)
-        //    {
-        //        return NotFound();
-        //    }
+            return View(producto);
+        }
 
-        //    return View(producto);
-        //}
+        // PUT: Producto/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,ProveedorId,CategoriaId,UnidadesProducto,PrecioProducto,Stock")] ProductoDTO producto)
+        {
+            if (id != producto.Id)
+                return NotFound();
 
-        //// POST: Producto/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var producto = await _context.Producto.FindAsync(id);
-        //    if (producto != null)
-        //    {
-        //        _context.Producto.Remove(producto);
-        //    }
+            if (!ModelState.IsValid)
+                return View(producto);
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(producto);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //private bool ProductoExists(int id)
-        //{
-        //    return _context.Producto.Any(e => e.Id == id);
-        //}
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            return RedirectToAction("Index");
+        }
+
+        // DELETE: Producto/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            return RedirectToAction("Index");
+        }
     }
 }

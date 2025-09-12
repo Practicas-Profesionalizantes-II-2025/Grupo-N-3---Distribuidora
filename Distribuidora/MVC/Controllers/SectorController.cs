@@ -1,157 +1,126 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
 using MVC.Data;
+using MVC.Models.DTOs;
 using MVC.Models.Entities;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MVC.Controllers
 {
     public class SectorController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public SectorController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
+        public SectorController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
         // GET: Sector
-        public async Task<IActionResult> SectorIndex()
+        public async Task<IActionResult> Index()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.SectorGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_sectores = JsonConvert.DeserializeObject<List<SectorDTO>>(json);
+
+            return View(lista_sectores);
+        }
+
+        // GET: Sector/Create
+        public IActionResult Create()
         {
             return View();
         }
 
-        //// GET: Sector/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Sector/Create
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Id,Nombre,EstadoId")] SectorDTO sector)
+        {
+            if (!ModelState.IsValid)
+                return View(sector);
 
-        //    var sector = await _context.Sector
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (sector == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.SectorPost}";
+            var jsonData = JsonConvert.SerializeObject(sector);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //    return View(sector);
-        //}
+            var response = await _httpClient.PostAsync(url, content);
 
-        //// GET: Sector/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //// POST: Sector/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Nombre,EstadoId")] Sector sector)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(sector);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(sector);
-        //}
+            return RedirectToAction("Index");
+        }
 
-        //// GET: Sector/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Sector/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
 
-        //    var sector = await _context.Sector.FindAsync(id);
-        //    if (sector == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(sector);
-        //}
+            var url = $"{_settings.BaseUrl}/{_settings.SectorGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
 
-        //// POST: Sector/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,EstadoId")] Sector sector)
-        //{
-        //    if (id != sector.Id)
-        //    {
-        //        return NotFound();
-        //    }
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(sector);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!SectorExists(sector.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(sector);
-        //}
+            var json = await response.Content.ReadAsStringAsync();
+            var sector = JsonConvert.DeserializeObject<SectorDTO>(json);
 
-        //// GET: Sector/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (sector == null)
+                return NotFound();
 
-        //    var sector = await _context.Sector
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (sector == null)
-        //    {
-        //        return NotFound();
-        //    }
+            return View(sector);
+        }
 
-        //    return View(sector);
-        //}
+        // PUT: Sector/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,EstadoId")] SectorDTO sector)
+        {
+            if (id != sector.Id)
+                return NotFound();
 
-        //// POST: Sector/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var sector = await _context.Sector.FindAsync(id);
-        //    if (sector != null)
-        //    {
-        //        _context.Sector.Remove(sector);
-        //    }
+            if (!ModelState.IsValid)
+                return View(sector);
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            var url = $"{_settings.BaseUrl}/{_settings.SectorPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(sector);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //private bool SectorExists(int id)
-        //{
-        //    return _context.Sector.Any(e => e.Id == id);
-        //}
-    }
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            return RedirectToAction("Index");
+        }
+
+        // DELETE: Sector/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var url = $"{_settings.BaseUrl}/{_settings.SectorDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            return RedirectToAction("Index");
+        }
 }

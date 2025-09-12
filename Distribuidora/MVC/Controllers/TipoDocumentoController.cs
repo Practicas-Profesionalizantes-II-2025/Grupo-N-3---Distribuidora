@@ -1,157 +1,127 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
 using MVC.Data;
+using MVC.Models.DTOs;
 using MVC.Models.Entities;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MVC.Controllers
 {
     public class TipoDocumentoController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public TipoDocumentoController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
+        public TipoDocumentoController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
         // GET: TipoDocumento
-        public async Task<IActionResult> TipoDocIndex()
+        public async Task<IActionResult> Index()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_tipos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(json);
+
+            return View(lista_tipos);
+        }
+
+        // GET: TipoDocumento/Create
+        public IActionResult Create()
         {
             return View();
         }
 
-        //// GET: TipoDocumento/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: TipoDocumento/Create
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Id,NombreTipoDocumento")] TipoDocumentoDTO tipoDocumento)
+        {
+            if (!ModelState.IsValid)
+                return View(tipoDocumento);
 
-        //    var tipoDocumento = await _context.TipoDocumento
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (tipoDocumento == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.TipoDocumentoPost}";
+            var jsonData = JsonConvert.SerializeObject(tipoDocumento);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //    return View(tipoDocumento);
-        //}
+            var response = await _httpClient.PostAsync(url, content);
 
-        //// GET: TipoDocumento/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //// POST: TipoDocumento/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,NombreTipoDocumento")] TipoDocumento tipoDocumento)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(tipoDocumento);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(tipoDocumento);
-        //}
+            return RedirectToAction("Index");
+        }
 
-        //// GET: TipoDocumento/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: TipoDocumento/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
 
-        //    var tipoDocumento = await _context.TipoDocumento.FindAsync(id);
-        //    if (tipoDocumento == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(tipoDocumento);
-        //}
+            var url = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
 
-        //// POST: TipoDocumento/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,NombreTipoDocumento")] TipoDocumento tipoDocumento)
-        //{
-        //    if (id != tipoDocumento.Id)
-        //    {
-        //        return NotFound();
-        //    }
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(tipoDocumento);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!TipoDocumentoExists(tipoDocumento.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(tipoDocumento);
-        //}
+            var json = await response.Content.ReadAsStringAsync();
+            var tipoDocumento = JsonConvert.DeserializeObject<TipoDocumentoDTO>(json);
 
-        //// GET: TipoDocumento/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (tipoDocumento == null)
+                return NotFound();
 
-        //    var tipoDocumento = await _context.TipoDocumento
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (tipoDocumento == null)
-        //    {
-        //        return NotFound();
-        //    }
+            return View(tipoDocumento);
+        }
 
-        //    return View(tipoDocumento);
-        //}
+        // PUT: TipoDocumento/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NombreTipoDocumento")] TipoDocumentoDTO tipoDocumento)
+        {
+            if (id != tipoDocumento.Id)
+                return NotFound();
 
-        //// POST: TipoDocumento/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var tipoDocumento = await _context.TipoDocumento.FindAsync(id);
-        //    if (tipoDocumento != null)
-        //    {
-        //        _context.TipoDocumento.Remove(tipoDocumento);
-        //    }
+            if (!ModelState.IsValid)
+                return View(tipoDocumento);
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            var url = $"{_settings.BaseUrl}/{_settings.TipoDocumentoPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(tipoDocumento);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //private bool TipoDocumentoExists(int id)
-        //{
-        //    return _context.TipoDocumento.Any(e => e.Id == id);
-        //}
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            return RedirectToAction("Index");
+        }
+
+        // DELETE: TipoDocumento/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var url = $"{_settings.BaseUrl}/{_settings.TipoDocumentoDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            return RedirectToAction("Index");
+        }
     }
 }
