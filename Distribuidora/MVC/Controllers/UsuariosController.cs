@@ -1,157 +1,126 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
 using MVC.Data;
 using MVC.Models.Entities;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MVC.Controllers
 {
     public class UsuariosController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public UsuariosController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
+        public UsuariosController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
-        // GET: Usuarios
+        // GET: Usuario
         public async Task<IActionResult> Index()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.UsuarioGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_usuarios = JsonConvert.DeserializeObject<List<Usuario>>(json);
+
+            return View(lista_usuarios);
+        }
+
+        // GET: Usuario/Create
+        public IActionResult Create()
         {
             return View();
         }
 
-        //// GET: Usuarios/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Usuario/Create
+        [HttpPost]
+        public async Task<IActionResult> Create([Bind("Id,Contrasenia,PersonaId,Activo")] Usuario usuario)
+        {
+            if (!ModelState.IsValid)
+                return View(usuario);
 
-        //    var usuario = await _context.Usuario
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (usuario == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.UsuarioPost}";
+            var jsonData = JsonConvert.SerializeObject(usuario);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //    return View(usuario);
-        //}
+            var response = await _httpClient.PostAsync(url, content);
 
-        //// GET: Usuarios/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //// POST: Usuarios/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Contrasenia,PersonaId,Activo")] Usuario usuario)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(usuario);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(usuario);
-        //}
+            return RedirectToAction("Index");
+        }
 
-        //// GET: Usuarios/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Usuario/Edit/5
+        public async Task<IActionResult> Edit(int? id)
+        {
+            if (id == null)
+                return NotFound();
 
-        //    var usuario = await _context.Usuario.FindAsync(id);
-        //    if (usuario == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(usuario);
-        //}
+            var url = $"{_settings.BaseUrl}/{_settings.UsuarioGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
 
-        //// POST: Usuarios/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Contrasenia,PersonaId,Activo")] Usuario usuario)
-        //{
-        //    if (id != usuario.Id)
-        //    {
-        //        return NotFound();
-        //    }
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(usuario);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!UsuarioExists(usuario.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(usuario);
-        //}
+            var json = await response.Content.ReadAsStringAsync();
+            var usuario = JsonConvert.DeserializeObject<Usuario>(json);
 
-        //// GET: Usuarios/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (usuario == null)
+                return NotFound();
 
-        //    var usuario = await _context.Usuario
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (usuario == null)
-        //    {
-        //        return NotFound();
-        //    }
+            return View(usuario);
+        }
 
-        //    return View(usuario);
-        //}
+        // PUT: Usuario/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Contrasenia,PersonaId,Activo")] Usuario usuario)
+        {
+            if (id != usuario.Id)
+                return NotFound();
 
-        //// POST: Usuarios/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var usuario = await _context.Usuario.FindAsync(id);
-        //    if (usuario != null)
-        //    {
-        //        _context.Usuario.Remove(usuario);
-        //    }
+            if (!ModelState.IsValid)
+                return View(usuario);
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            var url = $"{_settings.BaseUrl}/{_settings.UsuarioPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(usuario);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //private bool UsuarioExists(int id)
-        //{
-        //    return _context.Usuario.Any(e => e.Id == id);
-        //}
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            return RedirectToAction("Index");
+        }
+
+        // DELETE: Usuario/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var url = $"{_settings.BaseUrl}/{_settings.UsuarioDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            return RedirectToAction("Index");
+        }
     }
 }

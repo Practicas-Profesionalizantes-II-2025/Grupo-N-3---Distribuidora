@@ -88,7 +88,11 @@
         public string TipoDocumentoPut { get; set; } = string.Empty;
         public string TipoDocumentoDelete { get; set; } = string.Empty;
 
-        //
+        // Endpoints Usuario
+        public string UsuarioGet { get; set; } = string.Empty;
+        public string UsuarioPost { get; set; } = string.Empty;
+        public string UsuarioPut { get; set; } = string.Empty;
+        public string UsuarioDelete { get; set; } = string.Empty;
 
         // agregá más endpoints según se necesite
     }
