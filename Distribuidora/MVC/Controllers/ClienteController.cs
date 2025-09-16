@@ -36,7 +36,7 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 ViewBag.Error = await response.Content.ReadAsStringAsync();
-                return View(new List<ProductoDTO>());
+                return View(new List<ClienteDTO>());
             }
 
             var json = await response.Content.ReadAsStringAsync();
@@ -88,7 +88,7 @@ namespace MVC.Controllers
         // DELETE: Cliente/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            var url = $"{_settings.BaseUrl}/{_settings.ProductoDelete}/{id}";
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesDelete}/{id}";
             var response = await _httpClient.DeleteAsync(url);
 
             if (response.IsSuccessStatusCode)
@@ -98,7 +98,7 @@ namespace MVC.Controllers
 
             var listaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ClientesGet}");
             var cliente = JsonConvert.DeserializeObject<List<ClienteDTO>>(listaJson);
-            return View("listaCliente", cliente);
+            return View("listaClientes", cliente);
         }
 
         // GET: Modificar cliente
