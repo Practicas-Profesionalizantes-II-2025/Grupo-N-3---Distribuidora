@@ -19,9 +19,9 @@ namespace API.Controllers
     public class CategoriasController : ControllerBase
     {
         private readonly ICategoriaLogica _IcategoriaLogica;
-        public CategoriasController(ICategoriaLogica _IcategoriaLogica)
+        public CategoriasController(ICategoriaLogica IcategoriaLogica)
         {
-            this._IcategoriaLogica = _IcategoriaLogica;
+            _IcategoriaLogica = IcategoriaLogica;
         }
 
         // GET: api/Categorias
