@@ -1,5 +1,4 @@
-﻿@{
-}
+﻿@model MVC.Models.DTOs.ProductoDTO
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,9 +9,9 @@
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="~/css/style.css">
 
-    <title>Pagina Inicio - Empleados</title>
+    <title>Modificar Producto</title>
 </head>
 <body>
     <main>
@@ -22,24 +21,26 @@
                 <h2>Modificar producto</h2>
             </div>
 
-            <!-- Filtro de búsqueda -->
+            <!-- Filtro de búsqueda (decorativo, lo podés vincular luego con JS si querés) -->
             <div class="search-filter">
                 <input type="text" placeholder="Buscar por ID o Nombre" id="searchInput">
                 <button class="btn yellow">Buscar</button>
             </div>
 
-            <!-- Formulario para crear o modificar empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre producto" id="nombreApellido">
-                <input type="text" placeholder="Proveedor" id="telefono">
-                <input type="text" placeholder="Categoría" id="direccion">
-                <input type="text" placeholder="Cantidad" id="codigoPostal">
-                <input type="text" placeholder="Precio venta" id="ciudad">
-                <button class="btn yellow">Guardar</button>
-            </div>
+            <!-- Formulario para modificar producto -->
+            <form asp-action="modificarProducto" asp-route-id="@Model.Id" method="post" class="form">
+                <input asp-for="Nombre" class="form-control" placeholder="Nombre producto" />
+                <input asp-for="ProveedorId" class="form-control" placeholder="Proveedor" />
+                <input asp-for="CategoriaId" class="form-control" placeholder="Categoría" />
+                <input asp-for="UnidadesProducto" class="form-control" placeholder="Cantidad" />
+                <input asp-for="PrecioProducto" class="form-control" placeholder="Precio venta" />
+
+                <button type="submit" class="btn yellow">Guardar</button>
+                <a asp-action="listaProductos" class="btn red">Cancelar</a>
+            </form>
         </div>
     </main>
 
-    <script href="../js/main.js"></script>
+    <script src="~/js/main.js"></script>
 </body>
 </html>

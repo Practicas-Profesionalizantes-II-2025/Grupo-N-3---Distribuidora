@@ -1,5 +1,4 @@
-﻿@{
-}
+﻿@model MVC.Models.DTOs.ProductoDTO
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,9 +9,9 @@
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="~/css/style.css">
 
-    <title>Pagina Inicio - Empleados</title>
+    <title>Eliminar Producto</title>
 </head>
 <body>
     <main>
@@ -22,24 +21,20 @@
                 <h2>Eliminar producto</h2>
             </div>
 
-            <!-- Filtro de búsqueda -->
-            <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID o Nombre" id="searchInput">
-                <button class="btn yellow">Buscar</button>
-            </div>
+            <!-- Formulario para mostrar y eliminar producto -->
+            <form asp-action="eliminarProducto" asp-route-id="@Model.Id" method="post" class="form">
+                <input asp-for="Nombre" class="form-control" placeholder="Nombre producto" disabled />
+                <input asp-for="ProveedorId" class="form-control" placeholder="Proveedor" disabled />
+                <input asp-for="CategoriaId" class="form-control" placeholder="Categoría" disabled />
+                <input asp-for="UnidadesProducto" class="form-control" placeholder="Cantidad" disabled />
+                <input asp-for="PrecioProducto" class="form-control" placeholder="Precio venta" disabled />
 
-            <!-- Formulario para crear o modificar empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre producto" id="nombreApellido" disabled> <!-- campo bloqueado -->
-                <input type="text" placeholder="Proveedor" id="telefono" disabled> <!-- campo bloqueado -->
-                <input type="text" placeholder="Categoría" id="direccion" disabled>
-                <input type="text" placeholder="Cantidad" id="codigoPostal" disabled>
-                <input type="text" placeholder="Precio venta" id="ciudad" disabled>
-                <button class="btn red">Eliminar</button>
-            </div>
+                <button type="submit" class="btn red">Eliminar</button>
+                <a asp-action="listaProductos" class="btn yellow">Cancelar</a>
+            </form>
         </div>
     </main>
 
-    <script href="../js/main.js"></script>
+    <script src="~/js/main.js"></script>
 </body>
 </html>

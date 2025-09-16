@@ -27,8 +27,8 @@ namespace MVC.Controllers
         // GET: Proveedor/Lista
         public async Task<IActionResult> listaProveedores()
         {
-            var proveedores = await _httpClient.GetFromJsonAsync<List<ProveedorDTO>>("Proveedor");
-            return View(proveedores);
+            var proveedor = await _httpClient.GetFromJsonAsync<List<ProveedorDTO>>("Proveedor");
+            return View(proveedor);
         }
 
         // GET: Proveedor/Crear

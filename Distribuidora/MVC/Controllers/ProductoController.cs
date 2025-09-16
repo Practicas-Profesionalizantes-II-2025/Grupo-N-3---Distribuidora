@@ -1,15 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MVC.ConfigAPI;
-using MVC.Data;
 using MVC.Models.DTOs;
-using MVC.Models.Entities;
 using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -26,28 +22,44 @@ namespace MVC.Controllers
             _settings = settings.Value;
         }
 
-        // GET: Productos
+        // GET: Lista de productos
         public async Task<IActionResult> listaProductos()
         {
             var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+            {
+                // Podés pasar una lista vacía o un ViewBag con el error
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new List<ProductoDTO>());
+            }
 
             var json = await response.Content.ReadAsStringAsync();
-            var lista_productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json);
+            var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json);
 
-            return View(lista_productos);
+            // Obtener proveedores y categorías para mostrar nombres
+            var proveedoresJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ProveedorGet}");
+            var categoriasJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CategoriasGet}");
+
+            var proveedores = JsonConvert.DeserializeObject<List<dynamic>>(proveedoresJson);
+            var categorias = JsonConvert.DeserializeObject<List<dynamic>>(categoriasJson);
+
+            foreach (var p in productos)
+            {
+                p.ProveedorNombre = proveedores.FirstOrDefault(x => x.Id == p.ProveedorId)?.Nombre ?? "N/A";
+                p.CategoriaNombre = categorias.FirstOrDefault(x => x.Id == p.CategoriaId)?.Nombre ?? "N/A";
+            }
+
+            return View(productos);
         }
 
-        // GET: Producto/Create
+        // GET: Crear producto
         public IActionResult crearProducto()
         {
             return View();
         }
 
-        // POST: Producto/Create
         [HttpPost]
         public async Task<IActionResult> crearProducto(ProductoDTO producto)
         {
@@ -60,40 +72,37 @@ namespace MVC.Controllers
 
             var response = await _httpClient.PostAsync(url, content);
 
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaProductos));
 
-            return RedirectToAction("listaProductos");
+            // Si falla, agrego el mensaje al ModelState y vuelvo a la vista
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
+            return View(producto);
         }
 
-        // GET: Producto/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+
+        // GET: Modificar producto
+        public async Task<IActionResult> modificarProducto(int id)
         {
-            if (id == null)
-                return NotFound();
-
-            var url = $"{_settings.BaseUrl}/{_settings.ProductoDelete}/{id}";
-            var response = await _httpClient.DeleteAsync(url);
-
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
+            
             if (!response.IsSuccessStatusCode)
-                return View("Error al eliminar el producto");
+            {
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, $"Error al buscar producto: {errorMsg}");
+                return View(listaProductos);
+            }
 
-            // Volver a obtener la lista actualizada
-            var url2 = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
-            var response2 = await _httpClient.GetAsync(url2);
+            var json = await response.Content.ReadAsStringAsync();
+            var producto = JsonConvert.DeserializeObject<ProductoDTO>(json);
 
-            if (!response2.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response2.Content.ReadAsStringAsync();
-            var lista_productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json);
-
-            return View("listaProductos", lista_productos);
+            return View(producto);
         }
 
-        // PUT: Producto/Edit/5 (opcional)
+        // POST: Modificar producto
         [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,ProveedorId,CategoriaId,UnidadesProducto,PrecioProducto,Stock")] ProductoDTO producto)
+        public async Task<IActionResult> modificarProducto(int id, ProductoDTO producto)
         {
             if (id != producto.Id)
                 return NotFound();
@@ -108,9 +117,31 @@ namespace MVC.Controllers
             var response = await _httpClient.PutAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+            {
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, $"Error al modificar producto: {errorMsg}");
+                return View(producto);
+            }
 
             return RedirectToAction("listaProductos");
+        }
+
+        // GET: Eliminar producto
+        public async Task<IActionResult> eliminarProducto(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaProductos));
+
+            // Si falla, podrías pasar un mensaje de error a la vista de lista o crear una vista específica
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
+
+            // Aquí podés devolver la lista con los productos para que no rompa
+            var listaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ProductoGet}");
+            var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(listaJson);
+            return View("listaProductos", productos);
         }
     }
 }
