@@ -1,5 +1,4 @@
-﻿@{
-}
+﻿@model IEnumerable<MVC.Models.DTOs.ClienteDTO>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -13,7 +12,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
 
     <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="~/css/style.css">
 </head>
 <body>
 
@@ -25,7 +24,7 @@
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
             <button class="btn yellow">Buscar</button>
-            <a href="crearCliente.html" class="btn yellow">Crear Cliente</a>
+            <a href="@Url.Action("CrearCliente", "Cliente")" class="btn yellow">Crear Cliente</a>
         </div>
 
         <!-- Tabla -->
@@ -45,50 +44,33 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Juan Pérez</td>
-                    <td>32165498</td>
-                    <td>351-1234567</td>
-                    <td>Calle Falsa 123</td>
-                    <td>Rosario</td>
-                    <td>2000</td>
-                    <td>juan.perez@email.com</td>
-                    <td>Activo</td>
-                    <td class="acciones">
-                        <a href="modificarCliente.html?id=1" class="btn-icon yellow-outline" title="Editar">
-                            <i class="ri-pencil-line"></i>
-                        </a>
-                        <a href="eliminarCliente.html?id=1" class="btn-icon red-outline" title="Eliminar">
-                            <i class="ri-delete-bin-line"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>María López</td>
-                    <td>35487965</td>
-                    <td>351-9876543</td>
-                    <td>Avenida Siempre Viva 456</td>
-                    <td>Santa Fe</td>
-                    <td>3000</td>
-                    <td>maria.lopez@email.com</td>
-                    <td>Activo</td>
-                    <td class="acciones">
-                        <a href="modificarCliente.html?id=2" class="btn-icon yellow-outline" title="Editar">
-                            <i class="ri-pencil-line"></i>
-                        </a>
-                        <a href="eliminarCliente.html?id=2" class="btn-icon red-outline" title="Eliminar">
-                            <i class="ri-delete-bin-line"></i>
-                        </a>
-                    </td>
-                </tr>
+                @foreach (var cliente in Model)
+                {
+                    <tr>
+                        <td>@cliente.Id</td>
+                        <td>@cliente.Nombre @cliente.Apellido</td>
+                        <td>@cliente.Dni</td>
+                        <td>@cliente.Telefono</td>
+                        <td>@cliente.Direccion</td>
+                        <td>@cliente.Ciudad</td>
+                        <td>@cliente.CodigoPostal</td>
+                        <td>@cliente.Email</td>
+                        <td>@(cliente.Activo ? "Activo" : "Inactivo")</td>
+                        <td class="acciones">
+                            <a href="@Url.Action("ModificarCliente", "Cliente", new { id = cliente.Id })" class="btn-icon yellow-outline" title="Editar">
+                                <i class="ri-pencil-line"></i>
+                            </a>
+                            <a href="@Url.Action("EliminarCliente", "Cliente", new { id = cliente.Id })" class="btn-icon red-outline" title="Eliminar">
+                                <i class="ri-delete-bin-line"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
     </main>
 
     <!--=============== JS ===============-->
-    <script src="../js/main.js"></script>
+    <script src="~/js/main.js"></script>
 </body>
 </html>
-

@@ -43,11 +43,22 @@ namespace CNegocio.Logica
         {
             var cliente = await _clienteRepositorio.ObtenerClientePorId(id);
             if (cliente == null) return null;
+
             return new ClienteDTO
             {
                 Id = cliente.Id,
-                PersonaId = cliente.PersonaId,
                 EstadoId = cliente.EstadoId,
+                PersonaId = cliente.PersonaId,
+                Persona = new PersonaDTO
+                {
+                    Id = cliente.Persona.Id,
+                    Nombre = cliente.Persona.Nombre,
+                    Apellido = cliente.Persona.Apellido,
+                    Nro_Doc = cliente.Persona.Nro_Doc,
+                    Telefono = cliente.Persona.Telefono,
+                    Email = cliente.Persona.Email,
+                    Direccion = cliente.Persona.Direccion,
+                }
             };
         }
         public async Task<ClienteDTO> CrearCliente(ClienteDTO clienteDTO)
@@ -57,13 +68,11 @@ namespace CNegocio.Logica
                 PersonaId = clienteDTO.PersonaId,
                 EstadoId = clienteDTO.EstadoId,
             };
+
             var nuevoCliente = await _clienteRepositorio.CrearCliente(cliente);
-            return new ClienteDTO
-            {
-                Id = nuevoCliente.Id,
-                PersonaId = nuevoCliente.PersonaId,
-                EstadoId = nuevoCliente.EstadoId,
-            };
+
+            // Devolver DTO completo, incluyendo Persona si está cargada
+            return await ObtenerClientePorId(nuevoCliente.Id);
         }
         public async Task ActualizarCliente(ClienteDTO clienteDTO)
         {
@@ -73,7 +82,8 @@ namespace CNegocio.Logica
                 PersonaId = clienteDTO.PersonaId,
                 EstadoId = clienteDTO.EstadoId,
             };
-            _clienteRepositorio.ActualizarCliente(cliente);
+
+           _clienteRepositorio.ActualizarCliente(cliente);
         }
         public async Task EliminarCliente(int id)
         {
@@ -85,14 +95,25 @@ namespace CNegocio.Logica
             return clientes.Select(c => new ClienteDTO
             {
                 Id = c.Id,
-                PersonaId = c.PersonaId,
                 EstadoId = c.EstadoId,
+                PersonaId = c.PersonaId,
+                Persona = new PersonaDTO
+                {
+                    Id = c.Persona.Id,
+                    Nombre = c.Persona.Nombre,
+                    Apellido = c.Persona.Apellido,
+                    Nro_Doc = c.Persona.Nro_Doc,
+                    Telefono = c.Persona.Telefono,
+                    Email = c.Persona.Email,
+                    Direccion = c.Persona.Direccion,
+                }
             }).ToList();
         }
         public async Task<PersonaDTO> ObtenerPersonaPorClienteId(int clienteId)
         {
             var persona = await _clienteRepositorio.ObtenerPersonaPorClienteId(clienteId);
             if (persona == null) return null;
+
             return new PersonaDTO
             {
                 Id = persona.Id,
