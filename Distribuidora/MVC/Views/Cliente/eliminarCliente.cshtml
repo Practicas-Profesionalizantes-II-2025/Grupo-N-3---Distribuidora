@@ -1,5 +1,4 @@
-﻿@{
-}
+﻿@model MVC.Models.DTOs.ClienteDTO
 
 <!DOCTYPE html>
 <html lang="en">
@@ -9,42 +8,43 @@
 
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="" />
+    <link rel="stylesheet" href="../css/style.css" />
 
-    <title>Pagina Inicio - Empleados</title>
+    <title>Eliminar Cliente</title>
 </head>
 <body>
     <main>
         <div class="content">
-            <!-- Header de la sección -->
             <div class="section-header">
                 <h2>Eliminar cliente</h2>
             </div>
 
-            <!-- Filtro de búsqueda -->
             <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
+                <input type="text" placeholder="Buscar por ID o Nombre" id="searchInput">
                 <button class="btn yellow">Buscar</button>
             </div>
 
-            <!-- Formulario para eliminar empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre y Apellido" id="nombreApellido" disabled>
-                <input type="text" placeholder="DNI" id="dni" disabled>
-                <input type="text" placeholder="Teléfono" id="telefono" disabled>
-                <input type="text" placeholder="Dirección" id="direccion" disabled>
-                <input type="text" placeholder="Ciudad" id="ciudad" disabled>
-                <input type="text" placeholder="Código Postal" id="codigoPostal" disabled>
-                <input type="email" placeholder="Email" id="email" disabled>
-                <input type="text" placeholder="Estado" id="estado" disabled>
-                <button class="btn red">Eliminar</button>
-            </div>
+            <form asp-action="EliminarCliente" asp-route-id="@Model.Id" method="post" class="form">
+                <!-- Campos del cliente -->
+                <input asp-for="Id" placeholder="ID Cliente" disabled />
+                <input asp-for="EstadoId" placeholder="ID Estado" disabled />
+
+                <!-- Campos de la persona -->
+                <input asp-for="Persona.Nombre" placeholder="Nombre" disabled />
+                <input asp-for="Persona.Apellido" placeholder="Apellido" disabled />
+                <input asp-for="Persona.Nro_Doc" placeholder="DNI" disabled />
+                <input asp-for="Persona.Telefono" placeholder="Teléfono" disabled />
+                <input asp-for="Persona.Direccion" placeholder="Dirección" disabled />
+                <input asp-for="Persona.CiudadId" placeholder="Ciudad" disabled />
+                <input asp-for="Persona.Email" placeholder="Email" disabled />
+
+                <button type="submit" class="btn red">Eliminar</button>
+                <a asp-action="ListaClientes" class="btn yellow">Cancelar</a>
+            </form>
         </div>
     </main>
 
-
-
-    <script href="../js/main.js"></script>
+    <script src="../js/main.js"></script>
 </body>
 </html>

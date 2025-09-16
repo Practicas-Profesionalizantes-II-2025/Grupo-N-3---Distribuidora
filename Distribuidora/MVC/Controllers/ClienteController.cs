@@ -7,6 +7,7 @@ using MVC.Data;
 using MVC.Models.DTOs;
 using MVC.Models.Entities;
 using Newtonsoft.Json;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -59,58 +60,72 @@ namespace MVC.Controllers
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PostAsync(url, content);
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaClientes));
 
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            return RedirectToAction("listaClientes");
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
+            return View(cliente);
         }
 
         // DELETE: Cliente/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-                return NotFound();
-
-            var url = $"{_settings.BaseUrl}/{_settings.ClientesDelete}/{id}";
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoDelete}/{id}";
             var response = await _httpClient.DeleteAsync(url);
 
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaClientes));
+   
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
 
-            // Volver a traer la lista después de eliminar
-            var url2 = $"{_settings.BaseUrl}/{_settings.ClientesGet}";
-            var response2 = await _httpClient.GetAsync(url2);
-
-            if (!response2.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response2.Content.ReadAsStringAsync();
-            var lista_clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
-
-            return View("listaClientes", lista_clientes);
+            var listaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ClientesGet}");
+            var cliente = JsonConvert.DeserializeObject<List<ClienteDTO>>(listaJson);
+            return View("listaCliente", cliente);
         }
 
-        //// PUT: Cliente/Edit/5
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,PersonaId,EstadoId")] ClienteDTO cliente)
-        //{
-        //    if (id != cliente.Id)
-        //        return NotFound();
-        //
-        //    if (!ModelState.IsValid)
-        //        return View(cliente);
-        //
-        //    var url = $"{_settings.BaseUrl}/{_settings.ClientesPut}/{id}";
-        //    var jsonData = JsonConvert.SerializeObject(cliente);
-        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-        //
-        //    var response = await _httpClient.PutAsync(url, content);
-        //
-        //    if (!response.IsSuccessStatusCode)
-        //        return View("Error");
-        //
-        //    return RedirectToAction("listaClientes");
-        //}
+        // GET: Modificar cliente
+        public async Task<IActionResult> modificarCliente(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, $"Error al buscar cliente: {errorMsg}");
+                return View(listaClientes);
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var cliente = JsonConvert.DeserializeObject<ClienteDTO>(json);
+
+            return View(cliente);
+        }
+
+        // POST: Modificar cliente
+        [HttpPost]
+        public async Task<IActionResult> modificarCliente(int id, ClienteDTO cliente)
+        {
+            if (id != cliente.Id)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return View(cliente);
+
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(cliente);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, $"Error al modificar cliente: {errorMsg}");
+                return View(cliente);
+            }
+
+            return RedirectToAction("listaClientes");
+        }
     }
 }

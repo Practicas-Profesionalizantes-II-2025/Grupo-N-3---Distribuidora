@@ -34,7 +34,11 @@ namespace MVC.Controllers
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+            {
+                // Podés pasar una lista vacía o un ViewBag con el error
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new List<CategoriaDTO>());
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             var lista_categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(json);

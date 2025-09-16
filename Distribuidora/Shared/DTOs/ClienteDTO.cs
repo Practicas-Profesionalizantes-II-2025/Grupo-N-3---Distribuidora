@@ -9,7 +9,8 @@ namespace Shared.DTOs
     public class ClienteDTO
     {
         public int Id { get; set; }
-        public int PersonaId { get; set; }
+        public PersonaDTO Persona { get; set; }
         public int EstadoId { get; set; }
+        public int PersonaId { get; set; } 
     }
 }

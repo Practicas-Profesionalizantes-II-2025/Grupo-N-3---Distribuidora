@@ -20,14 +20,25 @@ namespace CNegocio.Logica
         }
         public async Task<List<ClienteDTO>> ObtenerClientes()
         {
-            var clientes = await _clienteRepositorio.ObtenerClientes();
+            var clientes = await _clienteRepositorio.ObtenerClientes(); // Esto trae Cliente + Persona
+
             return clientes.Select(c => new ClienteDTO
             {
                 Id = c.Id,
-                PersonaId = c.PersonaId,
                 EstadoId = c.EstadoId,
+                Persona = new PersonaDTO
+                {
+                    Id = c.Persona.Id,
+                    Nombre = c.Persona.Nombre,
+                    Apellido = c.Persona.Apellido,
+                    Nro_Doc = c.Persona.Nro_Doc,
+                    Telefono = c.Persona.Telefono,
+                    Email = c.Persona.Email,
+                    Direccion = c.Persona.Direccion,
+                }
             }).ToList();
         }
+
         public async Task<ClienteDTO> ObtenerClientePorId(int id)
         {
             var cliente = await _clienteRepositorio.ObtenerClientePorId(id);
