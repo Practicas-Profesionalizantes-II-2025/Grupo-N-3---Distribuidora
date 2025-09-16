@@ -11,7 +11,7 @@ namespace CDatos.Data
         {
         }
 
-        public DbSet<Categoria> Categorias { get; set; } = null!;
+        public DbSet<Categoria> Categoria { get; set; } = null!;
         public DbSet<Ciudad> Ciudades { get; set; } = null!;
         public DbSet<Cliente> Clientes { get; set; } = null!;
         public DbSet<Empleado> Empleados { get; set; } = null!;

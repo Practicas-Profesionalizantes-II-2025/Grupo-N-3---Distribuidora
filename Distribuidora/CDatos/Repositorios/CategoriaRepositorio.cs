@@ -19,21 +19,21 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Categoria>> ObtenerCategorias()
         {
-            return await _context.Categorias.ToListAsync();
+            return await _context.Categoria.ToListAsync();
         }
         public async Task<Categoria> ObtenerCategoriaPorId(int id)
         {
-            return await _context.Categorias.FindAsync(id);
+            return await _context.Categoria.FindAsync(id);
         }
         public async Task<Categoria> CrearCategoria(Categoria categoria)
         {
-            _context.Categorias.Add(categoria);
+            _context.Categoria.Add(categoria);
             await _context.SaveChangesAsync();
             return categoria;
         }
         public void ActualizarCategoria(Categoria Categoria)
         {
-            var categoriaExistente = _context.Categorias.Find(Categoria.Id);
+            var categoriaExistente = _context.Categoria.Find(Categoria.Id);
             if (categoriaExistente == null)
             {
                 throw new Exception("Categoría no encontrada.");
@@ -45,10 +45,10 @@ namespace CDatos.Repositorios
         }
         public void EliminarCategoria(int id)
         {
-            var Categoria = _context.Categorias.FirstOrDefault(x => x.Id == id);
+            var Categoria = _context.Categoria.FirstOrDefault(x => x.Id == id);
             if (Categoria != null)
             {
-                _context.Categorias.Remove(Categoria);
+                _context.Categoria.Remove(Categoria);
                 _context.SaveChanges();
             }
         }
