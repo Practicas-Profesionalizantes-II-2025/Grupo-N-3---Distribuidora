@@ -106,7 +106,7 @@ namespace MVC.Controllers
         }
 
         // GET: Modificar categoria
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> modificarCategoria(int id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.CategoriasGet}/{id}";
