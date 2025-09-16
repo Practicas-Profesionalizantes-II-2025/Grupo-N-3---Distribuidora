@@ -26,8 +26,8 @@ namespace MVC.Controllers
             _settings = settings.Value;
         }
 
-        // GET: Persona
-        public async Task<IActionResult> Index()
+        // GET: Personas
+        public async Task<IActionResult> listaPersonas()
         {
             var url = $"{_settings.BaseUrl}/{_settings.PersonaGet}";
             var response = await _httpClient.GetAsync(url);
@@ -42,14 +42,14 @@ namespace MVC.Controllers
         }
 
         // GET: Persona/Create
-        public IActionResult Create()
+        public IActionResult crearPersona()
         {
             return View();
         }
 
         // POST: Persona/Create
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,Apellido,Tipo_DocId,Nro_Doc,CiudadId,Email,Direccion,Telefono,EstadoId")] PersonaDTO persona)
+        public async Task<IActionResult> crearPersona([Bind("Id,Nombre,Apellido,Tipo_DocId,Nro_Doc,CiudadId,Email,Direccion,Telefono,EstadoId")] PersonaDTO persona)
         {
             if (!ModelState.IsValid)
                 return View(persona);
@@ -63,53 +63,10 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
                 return View("Error");
 
-            return RedirectToAction("Index");
+            return RedirectToAction("listaPersonas");
         }
 
-        // GET: Persona/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var url = $"{_settings.BaseUrl}/{_settings.PersonaGet}/{id}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response.Content.ReadAsStringAsync();
-            var persona = JsonConvert.DeserializeObject<PersonaDTO>(json);
-
-            if (persona == null)
-                return NotFound();
-
-            return View(persona);
-        }
-
-        // PUT: Persona/Edit/5
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Apellido,Tipo_DocId,Nro_Doc,CiudadId,Email,Direccion,Telefono,EstadoId")] PersonaDTO persona)
-        {
-            if (id != persona.Id)
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return View(persona);
-
-            var url = $"{_settings.BaseUrl}/{_settings.PersonaPut}/{id}";
-            var jsonData = JsonConvert.SerializeObject(persona);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PutAsync(url, content);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            return RedirectToAction("Index");
-        }
-
-        // DELETE: Persona/Delete/5
+        // GET: Persona/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -119,9 +76,40 @@ namespace MVC.Controllers
             var response = await _httpClient.DeleteAsync(url);
 
             if (!response.IsSuccessStatusCode)
+                return View("Error al eliminar la persona");
+
+            var url2 = $"{_settings.BaseUrl}/{_settings.PersonaGet}";
+            var response2 = await _httpClient.GetAsync(url2);
+
+            if (!response2.IsSuccessStatusCode)
                 return View("Error");
 
-            return RedirectToAction("Index");
+            var json = await response2.Content.ReadAsStringAsync();
+            var lista_personas = JsonConvert.DeserializeObject<List<PersonaDTO>>(json);
+
+            return View("listaPersonas", lista_personas);
         }
+
+        //// PUT: Persona/Edit/5 (opcional)
+        //[HttpPost]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Apellido,Tipo_DocId,Nro_Doc,CiudadId,Email,Direccion,Telefono,EstadoId")] PersonaDTO persona)
+        //{
+        //    if (id != persona.Id)
+        //        return NotFound();
+        //
+        //    if (!ModelState.IsValid)
+        //        return View(persona);
+        //
+        //    var url = $"{_settings.BaseUrl}/{_settings.PersonaPut}/{id}";
+        //    var jsonData = JsonConvert.SerializeObject(persona);
+        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        //
+        //    var response = await _httpClient.PutAsync(url, content);
+        //
+        //    if (!response.IsSuccessStatusCode)
+        //        return View("Error");
+        //
+        //    return RedirectToAction("listaPersonas");
+        //}
     }
 }

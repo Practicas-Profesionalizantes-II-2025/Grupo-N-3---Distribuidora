@@ -26,7 +26,7 @@ namespace MVC.Controllers
         }
 
         // GET: FacturaCabecera
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> listaFacturas()
         {
             var url = $"{_settings.BaseUrl}/{_settings.FacturaCabeceraGet}";
             var response = await _httpClient.GetAsync(url);
@@ -40,15 +40,15 @@ namespace MVC.Controllers
             return View(lista_facturas);
         }
 
-        // GET: FacturaCabecera/Create
-        public IActionResult Create()
+        // GET: Crear FacturaCabecera
+        public IActionResult crearFactura()
         {
             return View();
         }
 
-        // POST: FacturaCabecera/Create
+        // POST: Crear FacturaCabecera
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id")] FacturaCabeceraDTO factura)
+        public async Task<IActionResult> crearFactura([Bind("Id")] FacturaCabeceraDTO factura)
         {
             if (!ModelState.IsValid)
                 return View(factura);
@@ -62,50 +62,7 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
                 return View("Error");
 
-            return RedirectToAction("Index");
-        }
-
-        // GET: FacturaCabecera/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var url = $"{_settings.BaseUrl}/{_settings.FacturaCabeceraGet}/{id}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response.Content.ReadAsStringAsync();
-            var factura = JsonConvert.DeserializeObject<FacturaCabeceraDTO>(json);
-
-            if (factura == null)
-                return NotFound();
-
-            return View(factura);
-        }
-
-        // PUT: FacturaCabecera/Edit/5
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id")] FacturaCabeceraDTO factura)
-        {
-            if (id != factura.Id)
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return View(factura);
-
-            var url = $"{_settings.BaseUrl}/{_settings.FacturaCabeceraPut}/{id}";
-            var jsonData = JsonConvert.SerializeObject(factura);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PutAsync(url, content);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            return RedirectToAction("Index");
+            return RedirectToAction("listaFacturas");
         }
 
         // DELETE: FacturaCabecera/Delete/5
@@ -120,7 +77,39 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
                 return View("Error");
 
-            return RedirectToAction("Index");
+            // Volver a traer la lista después de eliminar
+            var url2 = $"{_settings.BaseUrl}/{_settings.FacturaCabeceraGet}";
+            var response2 = await _httpClient.GetAsync(url2);
+
+            if (!response2.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response2.Content.ReadAsStringAsync();
+            var lista_facturas = JsonConvert.DeserializeObject<List<FacturaCabeceraDTO>>(json);
+
+            return View("listaFacturas", lista_facturas);
         }
+
+        //// PUT: FacturaCabecera/Edit/5
+        //[HttpPost]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id")] FacturaCabeceraDTO factura)
+        //{
+        //    if (id != factura.Id)
+        //        return NotFound();
+        //
+        //    if (!ModelState.IsValid)
+        //        return View(factura);
+        //
+        //    var url = $"{_settings.BaseUrl}/{_settings.FacturaCabeceraPut}/{id}";
+        //    var jsonData = JsonConvert.SerializeObject(factura);
+        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        //
+        //    var response = await _httpClient.PutAsync(url, content);
+        //
+        //    if (!response.IsSuccessStatusCode)
+        //        return View("Error");
+        //
+        //    return RedirectToAction("listaFacturas");
+        //}
     }
 }

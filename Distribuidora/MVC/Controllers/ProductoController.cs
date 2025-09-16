@@ -26,8 +26,8 @@ namespace MVC.Controllers
             _settings = settings.Value;
         }
 
-        // GET: Producto
-        public async Task<IActionResult> Index()
+        // GET: Productos
+        public async Task<IActionResult> listaProductos()
         {
             var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
             var response = await _httpClient.GetAsync(url);
@@ -42,14 +42,14 @@ namespace MVC.Controllers
         }
 
         // GET: Producto/Create
-        public IActionResult Create()
+        public IActionResult crearProducto()
         {
             return View();
         }
 
         // POST: Producto/Create
         [HttpPost]
-        public async Task<IActionResult> Create([Bind("Id,Nombre,ProveedorId,CategoriaId,UnidadesProducto,PrecioProducto,Stock")] ProductoDTO producto)
+        public async Task<IActionResult> crearProducto([Bind("Id,Nombre,ProveedorId,CategoriaId,UnidadesProducto,PrecioProducto,Stock")] ProductoDTO producto)
         {
             if (!ModelState.IsValid)
                 return View(producto);
@@ -63,53 +63,10 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
                 return View("Error");
 
-            return RedirectToAction("Index");
+            return RedirectToAction("listaProductos");
         }
 
-        // GET: Producto/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-                return NotFound();
-
-            var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}/{id}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response.Content.ReadAsStringAsync();
-            var producto = JsonConvert.DeserializeObject<ProductoDTO>(json);
-
-            if (producto == null)
-                return NotFound();
-
-            return View(producto);
-        }
-
-        // PUT: Producto/Edit/5
-        [HttpPost]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,ProveedorId,CategoriaId,UnidadesProducto,PrecioProducto,Stock")] ProductoDTO producto)
-        {
-            if (id != producto.Id)
-                return NotFound();
-
-            if (!ModelState.IsValid)
-                return View(producto);
-
-            var url = $"{_settings.BaseUrl}/{_settings.ProductoPut}/{id}";
-            var jsonData = JsonConvert.SerializeObject(producto);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PutAsync(url, content);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            return RedirectToAction("Index");
-        }
-
-        // DELETE: Producto/Delete/5
+        // GET: Producto/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -119,9 +76,41 @@ namespace MVC.Controllers
             var response = await _httpClient.DeleteAsync(url);
 
             if (!response.IsSuccessStatusCode)
+                return View("Error al eliminar el producto");
+
+            // Volver a obtener la lista actualizada
+            var url2 = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var response2 = await _httpClient.GetAsync(url2);
+
+            if (!response2.IsSuccessStatusCode)
                 return View("Error");
 
-            return RedirectToAction("Index");
+            var json = await response2.Content.ReadAsStringAsync();
+            var lista_productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json);
+
+            return View("listaProductos", lista_productos);
         }
+
+        //// PUT: Producto/Edit/5 (opcional)
+        //[HttpPost]
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,ProveedorId,CategoriaId,UnidadesProducto,PrecioProducto,Stock")] ProductoDTO producto)
+        //{
+        //    if (id != producto.Id)
+        //        return NotFound();
+        //
+        //    if (!ModelState.IsValid)
+        //        return View(producto);
+        //
+        //    var url = $"{_settings.BaseUrl}/{_settings.ProductoPut}/{id}";
+        //    var jsonData = JsonConvert.SerializeObject(producto);
+        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        //
+        //    var response = await _httpClient.PutAsync(url, content);
+        //
+        //    if (!response.IsSuccessStatusCode)
+        //        return View("Error");
+        //
+        //    return RedirectToAction("listaProductos");
+        //}
     }
 }

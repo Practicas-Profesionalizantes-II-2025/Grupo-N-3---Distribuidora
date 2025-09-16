@@ -17,114 +17,77 @@ namespace MVC.Controllers
 {
     public class OrdenVentaController : Controller
     {
-        public class OrdenDeVentaController : Controller
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
+
+        public OrdenVentaController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
         {
-            private readonly HttpClient _httpClient;
-            private readonly ApiSettings _settings;
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
-            public OrdenDeVentaController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
-            {
-                _httpClient = httpClientFactory.CreateClient("API");
-                _settings = settings.Value;
-            }
+        // GET: OrdenDeVentas
+        public async Task<IActionResult> listaOrdenes()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}";
+            var response = await _httpClient.GetAsync(url);
 
-            // GET: OrdenDeVenta
-            public async Task<IActionResult> Index()
-            {
-                var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}";
-                var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-                if (!response.IsSuccessStatusCode)
-                    return View("Error");
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_ordenes = JsonConvert.DeserializeObject<List<OrdenDeVentaDTO>>(json);
 
-                var json = await response.Content.ReadAsStringAsync();
-                var lista_ordenes = JsonConvert.DeserializeObject<List<OrdenDeVentaDTO>>(json);
+            return View(lista_ordenes);
+        }
 
-                return View(lista_ordenes);
-            }
+        // GET: OrdenDeVenta/Create
+        public IActionResult crearOrden()
+        {
+            return View();
+        }
 
-            // GET: OrdenDeVenta/Create
-            public IActionResult Create()
-            {
-                return View();
-            }
-
-            // POST: OrdenDeVenta/Create
-            [HttpPost]
-            public async Task<IActionResult> Create([Bind("Id,Fecha,FacturaId,EmpleadoId,ClienteId,DistribuidorId")] OrdenDeVentaDTO orden)
-            {
-                if (!ModelState.IsValid)
-                    return View(orden);
-
-                var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaPost}";
-                var jsonData = JsonConvert.SerializeObject(orden);
-                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-                var response = await _httpClient.PostAsync(url, content);
-
-                if (!response.IsSuccessStatusCode)
-                    return View("Error");
-
-                return RedirectToAction("Index");
-            }
-
-            // GET: OrdenDeVenta/Edit/5
-            public async Task<IActionResult> Edit(int? id)
-            {
-                if (id == null)
-                    return NotFound();
-
-                var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}/{id}";
-                var response = await _httpClient.GetAsync(url);
-
-                if (!response.IsSuccessStatusCode)
-                    return View("Error");
-
-                var json = await response.Content.ReadAsStringAsync();
-                var orden = JsonConvert.DeserializeObject<OrdenDeVentaDTO>(json);
-
-                if (orden == null)
-                    return NotFound();
-
+        // POST: OrdenDeVenta/Create
+        [HttpPost]
+        public async Task<IActionResult> crearOrden([Bind("Id,Fecha,FacturaId,EmpleadoId,ClienteId,DistribuidorId")] OrdenDeVentaDTO orden)
+        {
+            if (!ModelState.IsValid)
                 return View(orden);
-            }
 
-            // PUT: OrdenDeVenta/Edit/5
-            [HttpPost]
-            public async Task<IActionResult> Edit(int id, [Bind("Id,Fecha,FacturaId,EmpleadoId,ClienteId,DistribuidorId")] OrdenDeVentaDTO orden)
-            {
-                if (id != orden.Id)
-                    return NotFound();
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaPost}";
+            var jsonData = JsonConvert.SerializeObject(orden);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-                if (!ModelState.IsValid)
-                    return View(orden);
+            var response = await _httpClient.PostAsync(url, content);
 
-                var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaPut}/{id}";
-                var jsonData = JsonConvert.SerializeObject(orden);
-                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-                var response = await _httpClient.PutAsync(url, content);
+            return RedirectToAction("listaOrdenes");
+        }
 
-                if (!response.IsSuccessStatusCode)
-                    return View("Error");
+        // GET: OrdenDeVenta/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
 
-                return RedirectToAction("Index");
-            }
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
 
-            // DELETE: OrdenDeVenta/Delete/5
-            public async Task<IActionResult> Delete(int? id)
-            {
-                if (id == null)
-                    return NotFound();
+            if (!response.IsSuccessStatusCode)
+                return View("Error al eliminar la orden");
 
-                var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaDelete}/{id}";
-                var response = await _httpClient.DeleteAsync(url);
+            var url2 = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}";
+            var response2 = await _httpClient.GetAsync(url2);
 
-                if (!response.IsSuccessStatusCode)
-                    return View("Error");
+            if (!response2.IsSuccessStatusCode)
+                return View("Error");
 
-                return RedirectToAction("Index");
-            }
+            var json = await response2.Content.ReadAsStringAsync();
+            var lista_ordenes = JsonConvert.DeserializeObject<List<OrdenDeVentaDTO>>(json);
+
+            return View("listaOrdenes", lista_ordenes);
         }
     }
 }
