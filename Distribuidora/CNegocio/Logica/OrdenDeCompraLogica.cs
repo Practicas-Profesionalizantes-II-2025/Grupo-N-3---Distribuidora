@@ -18,16 +18,34 @@ namespace CNegocio.Logica
             _ordenDeCompraRepositorio = ordenDeCompraRepositorio ?? throw new ArgumentNullException(nameof(ordenDeCompraRepositorio));
         }
 
+        #region obtener ordenes
         public async Task<List<OrdenDeCompraDTO>> ObtenerOrdenesDeCompra()
         {
-            var ordenesDeCompra = await _ordenDeCompraRepositorio.ObtenerOrdenesDeCompra();
-            return ordenesDeCompra?.Select(o => new OrdenDeCompraDTO
+            var ordenes = await _ordenDeCompraRepositorio.ObtenerOrdenesDeCompra();
+            return ordenes.Select(o => new OrdenDeCompraDTO
             {
                 Id = o.Id,
+                FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
+                Empleado = o.Empleado == null ? null : new EmpleadoDTO
+                {
+                    Id = o.Empleado.Id,
+                    PersonaId = o.Empleado.PersonaId,
+                    Foto = o.Empleado.Foto,
+                    EstadoId = o.Empleado.EstadoId,
+                    Persona = new PersonaDTO
+                    {
+                        Nombre = o.Empleado.Persona.Nombre,
+                        Apellido = o.Empleado.Persona.Apellido,
+                    }
+                },
                 DistribuidorId = o.DistribuidorId,
-                FechaOrden = o.FechaOrden
-            }).ToList() ?? new List<OrdenDeCompraDTO>();
+                Distribuidor = o.Distribuidor == null ? null : new ProveedorDTO
+                {
+                    Id = o.Distribuidor.Id,
+                    Nombre = o.Distribuidor.Nombre
+                }
+            }).ToList();
         }
 
         public async Task<OrdenDeCompraDTO> ObtenerOrdenDeCompraPorId(int id)
@@ -42,9 +60,24 @@ namespace CNegocio.Logica
             return new OrdenDeCompraDTO
             {
                 Id = ordenDeCompra.Id,
+                FechaOrden = ordenDeCompra.FechaOrden,
                 EmpleadoId = ordenDeCompra.EmpleadoId,
+                Empleado = ordenDeCompra.Empleado?.Persona == null ? null : new EmpleadoDTO
+                {
+                    Id = ordenDeCompra.Empleado.Id,
+                    PersonaId = ordenDeCompra.Empleado.PersonaId,
+                    Persona = new PersonaDTO
+                    {
+                        Nombre = ordenDeCompra.Empleado.Persona?.Nombre,
+                        Apellido = ordenDeCompra.Empleado.Persona?.Apellido
+                    }
+                },
                 DistribuidorId = ordenDeCompra.DistribuidorId,
-                FechaOrden = ordenDeCompra.FechaOrden
+                Distribuidor = ordenDeCompra.Distribuidor == null ? null : new ProveedorDTO
+                {
+                    Id = ordenDeCompra.Distribuidor.Id,
+                    Nombre = ordenDeCompra.Distribuidor.Nombre
+                }
             };
         }
 
@@ -57,9 +90,23 @@ namespace CNegocio.Logica
             return ordenesDeCompra.Select(o => new OrdenDeCompraDTO
             {
                 Id = o.Id,
+                FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
+                Empleado = o.Empleado?.Persona == null ? null : new EmpleadoDTO
+                {
+                    Id = o.Empleado.Id,
+                    Persona = new PersonaDTO
+                    {
+                        Nombre = o.Empleado.Persona.Nombre,
+                        Apellido = o.Empleado.Persona.Apellido
+                    }
+                },
                 DistribuidorId = o.DistribuidorId,
-                FechaOrden = o.FechaOrden
+                Distribuidor = o.Distribuidor == null ? null : new ProveedorDTO
+                {
+                    Id = o.Distribuidor.Id,
+                    Nombre = o.Distribuidor.Nombre
+                }
             }).ToList();
         }
 
@@ -72,12 +119,27 @@ namespace CNegocio.Logica
             return ordenesDeCompra.Select(o => new OrdenDeCompraDTO
             {
                 Id = o.Id,
+                FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
+                Empleado = o.Empleado?.Persona == null ? null : new EmpleadoDTO
+                {
+                    Id = o.Empleado.Id,
+                    PersonaId = o.Empleado.PersonaId,
+                    Persona = new PersonaDTO
+                    {
+                        Nombre = o.Empleado.Persona?.Nombre,
+                        Apellido = o.Empleado.Persona?.Apellido
+                    }
+                },
                 DistribuidorId = o.DistribuidorId,
-                FechaOrden = o.FechaOrden
+                Distribuidor = o.Distribuidor == null ? null : new ProveedorDTO
+                {
+                    Id = o.Distribuidor.Id,
+                    Nombre = o.Distribuidor.Nombre
+                }
             }).ToList();
         }
-
+        #endregion obtener ordenes
         public async Task CrearOrdenDeCompra(OrdenDeCompraDTO ordenDeCompraDTO)
         {
             if (ordenDeCompraDTO == null)

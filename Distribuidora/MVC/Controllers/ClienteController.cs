@@ -34,11 +34,29 @@ namespace MVC.Controllers
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+            {
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new List<ProductoDTO>());
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             var lista_clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
 
+            var personaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.PersonaGet}");
+            var lista_personas = JsonConvert.DeserializeObject<List<PersonaDTO>>(personaJson);
+
+            foreach (var cliente in lista_clientes)
+            {
+                var persona = lista_personas.FirstOrDefault(p => p.Id == cliente.PersonaId);
+                if (persona != null)
+                {
+                    cliente.Persona = new PersonaDTO
+                    {
+                        Nombre = persona.Nombre,
+                        Apellido = persona.Apellido
+                    };
+                }
+            }
             return View(lista_clientes);
         }
 

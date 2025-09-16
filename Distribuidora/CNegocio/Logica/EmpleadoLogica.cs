@@ -23,29 +23,47 @@ namespace CNegocio.Logica
             return empleados.Select(e => new EmpleadoDTO
             {
                 Id = e.Id,
+                EstadoId = e.EstadoId,
                 PersonaId = e.PersonaId,
                 Foto = e.Foto,
-                EstadoId = e.EstadoId,
+                Persona = new PersonaDTO
+                {
+                    Id = e.Persona.Id,
+                    Nombre = e.Persona.Nombre,
+                    Apellido = e.Persona.Apellido,
+                    Nro_Doc = e.Persona.Nro_Doc,
+                    Telefono = e.Persona.Telefono,
+                    Email = e.Persona.Email,
+                    Direccion = e.Persona.Direccion,
+                }
             }).ToList();
         }
         public async Task<EmpleadoDTO> ObtenerEmpleadoPorId(int id)
         {
-            if (id <= 0)
-                throw new ArgumentException("El ID del empleado debe ser mayor que cero.");
+            if (id <= 0) throw new ArgumentException("El ID del empleado debe ser mayor que cero.");
 
             var empleado = await _empleadoRepositorio.ObtenerEmpleadoPorId(id);
-            if (empleado == null)
-                throw new ArgumentException($"No se encontró un empleado con el ID {id}");
+            if (empleado == null) return null;
 
             return new EmpleadoDTO
             {
                 Id = empleado.Id,
+                EstadoId = empleado.EstadoId,
                 PersonaId = empleado.PersonaId,
                 Foto = empleado.Foto,
-                EstadoId = empleado.EstadoId,
+                Persona = new PersonaDTO
+                {
+                    Id = empleado.Persona.Id,
+                    Nombre = empleado.Persona.Nombre,
+                    Apellido = empleado.Persona.Apellido,
+                    Nro_Doc = empleado.Persona.Nro_Doc,
+                    Telefono = empleado.Persona.Telefono,
+                    Email = empleado.Persona.Email,
+                    Direccion = empleado.Persona.Direccion,
+                }
             };
         }
-        public async Task CrearEmpleado(EmpleadoDTO empleadoDTO)
+        public async Task<EmpleadoDTO> CrearEmpleado(EmpleadoDTO empleadoDTO)
         {
             List<string> camposErroneos = new List<string>();
             if (empleadoDTO.PersonaId <= 0)
@@ -68,6 +86,7 @@ namespace CNegocio.Logica
                 EstadoId = empleadoDTO.EstadoId,
             };
             var nuevoEmpleado = await _empleadoRepositorio.CrearEmpleado(empleado);
+            return await ObtenerEmpleadoPorId(nuevoEmpleado.Id);
         }
         public async Task ActualizarEmpleado(EmpleadoDTO empleadoDTO)
         {
@@ -106,9 +125,19 @@ namespace CNegocio.Logica
             return empleados.Select(e => new EmpleadoDTO
             {
                 Id = e.Id,
+                EstadoId = e.EstadoId,
                 PersonaId = e.PersonaId,
                 Foto = e.Foto,
-                EstadoId = e.EstadoId,
+                Persona = new PersonaDTO
+                {
+                    Id = e.Persona.Id,
+                    Nombre = e.Persona.Nombre,
+                    Apellido = e.Persona.Apellido,
+                    Nro_Doc = e.Persona.Nro_Doc,
+                    Telefono = e.Persona.Telefono,
+                    Email = e.Persona.Email,
+                    Direccion = e.Persona.Direccion,
+                }
             }).ToList();
         }
         #region Validaciones

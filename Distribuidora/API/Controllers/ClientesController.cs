@@ -24,14 +24,14 @@ namespace API.Controllers
 
         // GET: api/Clientes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetClientes()
+        public async Task<ActionResult<IEnumerable<ClienteDTO>>> ClientesGet()
         {
             return await _IClienteLogica.ObtenerClientes();
         }
 
         // GET: api/Clientes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClienteDTO>> GetCliente(int id)
+        public async Task<ActionResult<ClienteDTO>> ClientesGet(int id)
         {
             var cliente = await _IClienteLogica.ObtenerClientePorId(id);
 
@@ -46,7 +46,7 @@ namespace API.Controllers
         // PUT: api/Clientes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCliente(int id, ClienteDTO cliente)
+        public async Task<IActionResult> ClientesPut(int id, ClienteDTO cliente)
         {
             if (id != cliente.Id)
             {
@@ -60,16 +60,16 @@ namespace API.Controllers
         // POST: api/Clientes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ClienteDTO>> PostCliente(ClienteDTO cliente)
+        public async Task<ActionResult<ClienteDTO>> ClientesPost(ClienteDTO cliente)
         {
             _IClienteLogica.CrearCliente(cliente);
 
-            return CreatedAtAction("GetCliente", new { id = cliente.Id }, cliente);
+            return CreatedAtAction("ClienteGet", new { id = cliente.Id }, cliente);
         }
 
         // DELETE: api/Clientes/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCliente(int id)
+        public async Task<IActionResult> ClienteDelete(int id)
         {
             _IClienteLogica.EliminarCliente(id);
 

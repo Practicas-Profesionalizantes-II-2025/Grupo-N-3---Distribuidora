@@ -30,7 +30,6 @@ namespace MVC.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                // Podés pasar una lista vacía o un ViewBag con el error
                 ViewBag.Error = await response.Content.ReadAsStringAsync();
                 return View(new List<ProductoDTO>());
             }
