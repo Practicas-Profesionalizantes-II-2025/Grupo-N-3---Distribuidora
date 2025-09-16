@@ -8,7 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // DbContext
 builder.Services.AddDbContext<MVCContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MVCContext")
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DataContext")
         ?? throw new InvalidOperationException("Connection string 'MVCContext' not found.")));
 
 // Configuración de ApiSettings

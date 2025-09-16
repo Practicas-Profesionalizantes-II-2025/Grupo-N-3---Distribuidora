@@ -20,14 +20,14 @@
                 <h2>Crear categoría</h2>
             </div>
 
-            <!-- Formulario para crear empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre cateogría">
-                <button class="btn yellow">Guardar</button>
-            </div>
+            <!-- Formulario para crear categoría -->
+            <form asp-action="crearCategoria" method="post" class="form">
+                <input type="text" name="Nombre" placeholder="Nombre categoría" value="@Model?.Nombre" required>
+                <button type="submit" class="btn yellow">Guardar</button>
+            </form>
 
         </div>
     </main>
-    <script src="~/js/main.js"></script> 
+    <script src="~/js/main.js"></script>
 </body>
 </html>

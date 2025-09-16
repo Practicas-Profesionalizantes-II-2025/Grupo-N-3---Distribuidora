@@ -1,8 +1,7 @@
-﻿@{
-}
+﻿@model MVC.Models.DTOs.CategoriaDTO
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +9,9 @@
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="~/css/site.css">
 
-    <title>Pagina Inicio - Empleados</title>
+    <title>Modificar categoría</title>
 </head>
 <body>
     <main>
@@ -22,21 +21,19 @@
                 <h2>Modificar categoría</h2>
             </div>
 
-            <!-- Filtro de búsqueda -->
-            <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID o Nombre" id="searchInput">
-                <button class="btn yellow">Buscar</button>
-            </div>
+            <!-- Formulario -->
+            <form asp-action="modificarCategoria" asp-controller="Categorias" method="post">
+                <div class="form">
+                    <input type="hidden" asp-for="Id" />
+                    <input type="text" asp-for="Nombre" placeholder="Nombre categoría" class="input-text" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
 
-            <!-- Formulario para crear o modificar empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre categoría" id="nombreApellido">
-                <button class="btn yellow">Guardar</button>
-            </div>
+                    <button type="submit" class="btn yellow">Guardar</button>
+                </div>
+            </form>
         </div>
     </main>
 
-
-    <script href="../js/main.js"></script>
+    <script src="~/js/site.js"></script>
 </body>
 </html>

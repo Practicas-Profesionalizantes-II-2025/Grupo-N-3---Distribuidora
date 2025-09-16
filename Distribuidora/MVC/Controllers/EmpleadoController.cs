@@ -74,7 +74,7 @@ namespace MVC.Controllers
         }
 
         // DELETE: Empleado/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> eliminarEmpleado(int? id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.EmpleadosDelete}/{id}";
             var response = await _httpClient.DeleteAsync(url);
@@ -89,7 +89,7 @@ namespace MVC.Controllers
             return View("listaEmpleado", empleado);
         }
 
-        // GET: Modificar cliente
+        // GET: Modificar empleado
         public async Task<IActionResult> modificarEmpleado(int id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.EmpleadosGet}/{id}";
@@ -107,19 +107,18 @@ namespace MVC.Controllers
 
             return View(empleado);
         }
-        /*
-        // POST: Modificar cliente
-        [HttpPost]
-        public async Task<IActionResult> modificarCliente(int id, ClienteDTO cliente)
+        
+        // POST: Modificar empleado
+        public async Task<IActionResult> modificarCliente(int id, EmpleadoDTO empleado)
         {
-            if (id != cliente.Id)
+            if (id != empleado.Id)
                 return NotFound();
 
             if (!ModelState.IsValid)
-                return View(cliente);
+                return View(empleado);
 
-            var url = $"{_settings.BaseUrl}/{_settings.ClientesPut}/{id}";
-            var jsonData = JsonConvert.SerializeObject(cliente);
+            var url = $"{_settings.BaseUrl}/{_settings.EmpleadosPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(empleado);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
             var response = await _httpClient.PutAsync(url, content);
@@ -127,12 +126,12 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 var errorMsg = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError(string.Empty, $"Error al modificar cliente: {errorMsg}");
-                return View(cliente);
+                ModelState.AddModelError(string.Empty, $"Error al modificar empleado: {errorMsg}");
+                return View(empleado);
             }
 
-            return RedirectToAction("listaClientes");
-        }*/
+            return RedirectToAction("listaEmpleado");
+        }
         
     }
 }

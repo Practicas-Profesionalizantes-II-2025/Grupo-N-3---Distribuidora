@@ -22,7 +22,7 @@
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, Nombre o Categoría" id="searchInput">
             <button class="btn yellow">Buscar</button>
-            <a href="crearCategoria.html" class="btn yellow">Crear categoría</a>
+            <a asp-controller="Categorias" asp-action="crearCategoria" class="btn yellow">Crear categoría</a>
         </div>
 
         <!-- Tabla -->
@@ -35,45 +35,25 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Bebida</td>
-                    <td class="acciones">
-                        <a href="modificarCategoria.html?id=1" class="btn-icon yellow-outline" title="Editar">
-                            <i class="ri-pencil-line"></i>
-                        </a>
-                        <a href="eliminarCategoria.html?id=1" class="btn-icon red-outline" title="Eliminar">
-                            <i class="ri-delete-bin-line"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Limpieza</td>
-                    <td class="acciones">
-                        <a href="modificarCategoria.html?id=2" class="btn-icon yellow-outline" title="Editar">
-                            <i class="ri-pencil-line"></i>
-                        </a>
-                        <a href="eliminarCategoria.html?id=2" class="btn-icon red-outline" title="Eliminar">
-                            <i class="ri-delete-bin-line"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Masitas</td>
-                    <td class="acciones">
-                        <a href="modificarCategoria.html?id=3" class="btn-icon yellow-outline" title="Editar">
-                            <i class="ri-pencil-line"></i>
-                        </a>
-                        <a href="eliminarCategoria.html?id=3" class="btn-icon red-outline" title="Eliminar">
-                            <i class="ri-delete-bin-line"></i>
-                        </a>
-                    </td>
-                </tr>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.Id</td>
+                        <td>@item.Nombre</td>
+                        <td class="acciones">
+                            <a asp-controller="Categorias" asp-action="modificarCategoria" asp-route-id="@item.Id"
+                               class="btn-icon yellow-outline" title="Editar">
+                                <i class="ri-pencil-line"></i>
+                            </a>
+                            <a asp-controller="Categorias" asp-action="eliminarCategoria" asp-route-id="@item.Id"
+                               class="btn-icon red-outline" title="Eliminar">
+                                <i class="ri-delete-bin-line"></i>
+                            </a>
+                        </td>
+                    </tr>
+                }
             </tbody>
         </table>
-
     </main>
 
     <!--=============== JS ===============-->
