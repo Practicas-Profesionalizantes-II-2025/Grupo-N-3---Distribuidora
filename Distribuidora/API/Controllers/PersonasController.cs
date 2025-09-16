@@ -18,9 +18,9 @@ namespace API.Controllers
     {
         private readonly IPersonaLogica _IPersonaLogica;
 
-        public PersonasController(IPersonaLogica _IPersonaLogica)
+        public PersonasController(IPersonaLogica IPersonaLogica)
         {
-            this._IPersonaLogica = _IPersonaLogica;
+            _IPersonaLogica = IPersonaLogica;
         }
 
         // GET: api/Personas

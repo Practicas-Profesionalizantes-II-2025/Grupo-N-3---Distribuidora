@@ -18,9 +18,9 @@ namespace API.Controllers
     {
         private readonly IOrdenDeCompraLogica _ordenDeCompraLogic;
 
-        public OrdenDeComprasController(IOrdenDeCompraLogica _ordenDeCompraLogic)
+        public OrdenDeComprasController(IOrdenDeCompraLogica ordenDeCompraLogic)
         {
-            this._ordenDeCompraLogic = _ordenDeCompraLogic;
+            _ordenDeCompraLogic = ordenDeCompraLogic;
         }
 
         // GET: api/OrdenDeCompras

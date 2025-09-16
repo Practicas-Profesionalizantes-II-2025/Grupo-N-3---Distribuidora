@@ -17,9 +17,9 @@ namespace API.Controllers
     public class ClientesController : ControllerBase
     {
         private readonly IClienteLogica _IClienteLogica;
-        public ClientesController(IClienteLogica _IClienteLogica)
+        public ClientesController(IClienteLogica IClienteLogica)
         {
-            this._IClienteLogica = _IClienteLogica;
+            _IClienteLogica = IClienteLogica;
         }
 
         // GET: api/Clientes

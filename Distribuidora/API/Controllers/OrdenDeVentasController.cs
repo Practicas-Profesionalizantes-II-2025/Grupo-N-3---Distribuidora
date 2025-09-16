@@ -18,9 +18,9 @@ namespace API.Controllers
     {
         private readonly IOrdenDeVentaLogica _ordenDeVentaLogica;
 
-        public OrdenDeVentasController(DataContext context)
+        public OrdenDeVentasController(IOrdenDeVentaLogica context)
         {
-            this._ordenDeVentaLogica = _ordenDeVentaLogica;
+            _ordenDeVentaLogica = context;
         }
 
         // GET: api/OrdenDeVentas

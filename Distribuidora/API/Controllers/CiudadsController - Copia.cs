@@ -20,9 +20,9 @@ namespace API.Controllers
         private readonly ICiudadLogica _IciudadLogica;
 
 
-        public UsuarioController(ICiudadLogica _IciudadLogica)
+        public UsuarioController(ICiudadLogica IciudadLogica)
         {
-            this._IciudadLogica = _IciudadLogica;
+            _IciudadLogica = IciudadLogica;
         }
 
         // GET: api/Ciudads
