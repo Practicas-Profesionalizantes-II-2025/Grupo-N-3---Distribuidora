@@ -70,17 +70,12 @@ namespace MVC.Controllers
             return RedirectToAction("listaCategorias");
         }
 
-        //// GET: Categorias/Delete
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Categorias/EliminarCategoria
+        [HttpGet]
+        public async Task<IActionResult> eliminarCategoria()
         {
-            var url = $"{_settings.BaseUrl}/{_settings.CategoriasDelete}/{id}";
-            var response = await _httpClient.DeleteAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error al eliminar la categoria");
-
-            var url2 = $"{_settings.BaseUrl}/{_settings.CategoriasGet}";
-            var response2 = await _httpClient.GetAsync(url);
+            var url = $"{_settings.BaseUrl}/{_settings.CategoriasGet}";
+            var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
                 return View("Error");
@@ -88,29 +83,48 @@ namespace MVC.Controllers
             var json = await response.Content.ReadAsStringAsync();
             var lista_categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(json);
 
-            return View("listaCategorias", lista_categorias);
+            return View(lista_categorias); // muestra la vista con el select
         }
 
-        //// PUT: Categorias/Edit/5
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre")] CategoriaDTO categoria)
-        //{
-        //    if (id != categoria.Id)
-        //        return NotFound();
+        // POST: Categorias/EliminarCategoria
+        [HttpPost]
+        public async Task<IActionResult> eliminarCategoria(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.CategoriasDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
 
-        //    if (!ModelState.IsValid)
-        //        return View(categoria);
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //    var url = $"{_settings.BaseUrl}/{_settings.CategoriasPut}/{id}";
-        //    var jsonData = JsonConvert.SerializeObject(categoria);
-        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            // Refresca la lista
+            var url2 = $"{_settings.BaseUrl}/{_settings.CategoriasGet}";
+            var response2 = await _httpClient.GetAsync(url2);
+            var json = await response2.Content.ReadAsStringAsync();
+            var lista_categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(json);
 
-        //    var response = await _httpClient.PutAsync(url, content);
+            return View(lista_categorias);
+        }
 
-        //    if (!response.IsSuccessStatusCode)
-        //        return View("Error");
+        // PUT: Categorias/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre")] CategoriaDTO categoria)
+        {
+            if (id != categoria.Id)
+                return NotFound();
 
-        //    return RedirectToAction("listaCategorias");
-        //}
+            if (!ModelState.IsValid)
+                return View(categoria);
+
+            var url = $"{_settings.BaseUrl}/{_settings.CategoriasPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(categoria);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            return RedirectToAction("listaCategorias");
+        }
     }
 }

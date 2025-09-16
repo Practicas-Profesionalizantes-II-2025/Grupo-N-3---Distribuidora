@@ -49,7 +49,7 @@ namespace MVC.Controllers
 
         // POST: Producto/Create
         [HttpPost]
-        public async Task<IActionResult> crearProducto([Bind("Id,Nombre,ProveedorId,CategoriaId,UnidadesProducto,PrecioProducto,Stock")] ProductoDTO producto)
+        public async Task<IActionResult> crearProducto(ProductoDTO producto)
         {
             if (!ModelState.IsValid)
                 return View(producto);
@@ -91,26 +91,26 @@ namespace MVC.Controllers
             return View("listaProductos", lista_productos);
         }
 
-        //// PUT: Producto/Edit/5 (opcional)
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,ProveedorId,CategoriaId,UnidadesProducto,PrecioProducto,Stock")] ProductoDTO producto)
-        //{
-        //    if (id != producto.Id)
-        //        return NotFound();
-        //
-        //    if (!ModelState.IsValid)
-        //        return View(producto);
-        //
-        //    var url = $"{_settings.BaseUrl}/{_settings.ProductoPut}/{id}";
-        //    var jsonData = JsonConvert.SerializeObject(producto);
-        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-        //
-        //    var response = await _httpClient.PutAsync(url, content);
-        //
-        //    if (!response.IsSuccessStatusCode)
-        //        return View("Error");
-        //
-        //    return RedirectToAction("listaProductos");
-        //}
+        // PUT: Producto/Edit/5 (opcional)
+        [HttpPost]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,ProveedorId,CategoriaId,UnidadesProducto,PrecioProducto,Stock")] ProductoDTO producto)
+        {
+            if (id != producto.Id)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+                return View(producto);
+
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(producto);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            return RedirectToAction("listaProductos");
+        }
     }
 }

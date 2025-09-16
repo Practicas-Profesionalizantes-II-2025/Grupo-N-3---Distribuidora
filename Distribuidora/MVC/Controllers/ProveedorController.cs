@@ -18,104 +18,75 @@ namespace MVC.Controllers
     public class ProveedorController : Controller
     {
         private readonly HttpClient _httpClient;
-        private readonly ApiSettings _settings;
 
-        public ProveedorController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        public ProveedorController(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("API");
-            _settings = settings.Value;
+            _httpClient = httpClientFactory.CreateClient("ApiClient");
         }
 
-        // GET: Proveedor
+        // GET: Proveedor/Lista
         public async Task<IActionResult> listaProveedores()
         {
-            var url = $"{_settings.BaseUrl}/{_settings.ProveedorGet}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response.Content.ReadAsStringAsync();
-            var lista_proveedores = JsonConvert.DeserializeObject<List<ProveedorDTO>>(json);
-
-            return View(lista_proveedores);
+            var proveedores = await _httpClient.GetFromJsonAsync<List<ProveedorDTO>>("Proveedor");
+            return View(proveedores);
         }
 
-        // GET: Proveedor/Create
-        public IActionResult crearProveedor()
-        {
-            return View();
-        }
+        // GET: Proveedor/Crear
+        public IActionResult CrearProveedor() => View();
 
-        // POST: Proveedor/Create
+        // POST: Proveedor/Crear
         [HttpPost]
-        public async Task<IActionResult> crearProveedor([Bind("Id,Nombre,Direccion,Telefono,Email")] ProveedorDTO proveedor)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> CrearProveedor(ProveedorDTO dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(proveedor);
-            }
+            if (!ModelState.IsValid) return View(dto);
 
-            var url = $"{_settings.BaseUrl}/{_settings.ProveedorPost}";
-            var jsonData = JsonConvert.SerializeObject(proveedor);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsJsonAsync("Proveedor", dto);
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaProveedores));
 
-            var response = await _httpClient.PostAsync(url, content);
-
-            if (!response.IsSuccessStatusCode)
-            {
-                return View("Error");
-            }
-
-            // Redirigir a la lista de proveedores después de guardar
-            return RedirectToAction("listaProveedores");
+            ModelState.AddModelError("", await response.Content.ReadAsStringAsync());
+            return View(dto);
         }
 
-        // GET: Proveedor/Delete
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Proveedor/Editar/5
+        public async Task<IActionResult> EditarProveedor(int id)
         {
-            if (id == null)
-                return NotFound();
-
-            var url = $"{_settings.BaseUrl}/{_settings.ProveedorDelete}/{id}";
-            var response = await _httpClient.DeleteAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error al eliminar el proveedor");
-
-            // Volver a obtener la lista actualizada
-            var url2 = $"{_settings.BaseUrl}/{_settings.ProveedorGet}";
-            var response2 = await _httpClient.GetAsync(url2);
-
-            if (!response2.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response2.Content.ReadAsStringAsync();
-            var lista_proveedores = JsonConvert.DeserializeObject<List<ProveedorDTO>>(json);
-
-            return View("listaProveedores", lista_proveedores);
+            var proveedor = await _httpClient.GetFromJsonAsync<ProveedorDTO>($"Proveedor/{id}");
+            if (proveedor == null) return NotFound();
+            return View(proveedor);
         }
 
-        //// PUT: Proveedor/Edit/5 (opcional)
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Direccion,Telefono,Email")] ProveedorDTO proveedor)
-        //{
-        //    if (id != proveedor.Id)
-        //        return NotFound();
-        //
-        //    if (!ModelState.IsValid)
-        //        return View(proveedor);
-        //
-        //    var url = $"{_settings.BaseUrl}/{_settings.ProveedorPut}/{id}";
-        //    var jsonData = JsonConvert.SerializeObject(proveedor);
-        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-        //
-        //    var response = await _httpClient.PutAsync(url, content);
-        //
-        //    if (!response.IsSuccessStatusCode)
-        //        return View("Error");
-        //
-        //    return RedirectToAction("listaProveedores");
-        //}
+        // POST: Proveedor/Editar/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EditarProveedor(int id, ProveedorDTO dto)
+        {
+            if (!ModelState.IsValid) return View(dto);
+
+            var response = await _httpClient.PutAsJsonAsync($"Proveedor/{id}", dto);
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaProveedores));
+
+            ModelState.AddModelError("", await response.Content.ReadAsStringAsync());
+            return View(dto);
+        }
+
+        // GET: Proveedor/Eliminar/5
+        public async Task<IActionResult> EliminarProveedor(int id)
+        {
+            var proveedor = await _httpClient.GetFromJsonAsync<ProveedorDTO>($"Proveedor/{id}");
+            if (proveedor == null) return NotFound();
+            return View(proveedor);
+        }
+
+        // POST: Proveedor/Eliminar/5
+        [HttpPost, ActionName("EliminarProveedor")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> EliminarConfirmado(int id)
+        {
+            await _httpClient.DeleteAsync($"Proveedor/{id}");
+            return RedirectToAction(nameof(listaProveedores));
+        }
     }
 }

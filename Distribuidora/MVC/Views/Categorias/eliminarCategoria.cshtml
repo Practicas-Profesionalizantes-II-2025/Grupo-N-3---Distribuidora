@@ -1,42 +1,45 @@
 ﻿@model List<MVC.Models.DTOs.CategoriaDTO>
 
+@{
+    ViewData["Title"] = "Eliminar Categoría";
+}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de categorías</title>
-
-    <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-
-    <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="/css/site.css">
+    <title>Eliminar Categoría</title>
+    <link rel="stylesheet" href="~/css/style.css" />
 </head>
 <body>
     <main>
         <div class="content">
-            <!-- Header de la sección -->
             <div class="section-header">
                 <h2>Eliminar categoría</h2>
             </div>
 
-            <!-- Filtro de búsqueda -->
-            <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID o Nombre" id="searchInput">
-                <button class="btn yellow">Buscar</button>
-            </div>
-
-            <!-- Formulario para eliminar empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre categoría" id="nombreApellido" disabled>
-                <button class="btn red">Eliminar</button>
-            </div>
+            @if (Model != null && Model.Count > 0)
+            {
+                <form asp-action="eliminarCategoria" method="post">
+                    <div class="form">
+                        <select name="id" id="categoriaSelect">
+                            @foreach (var categoria in Model)
+                            {
+                                <option value="@categoria.Id">@categoria.Nombre</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form">
+                        <button type="submit" class="btn red">Eliminar</button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <p>No hay categorías disponibles para eliminar.</p>
+            }
         </div>
     </main>
-
-    <!--=============== JS ===============-->
-    <script src="/js/site.js"></script>
 </body>
 </html>

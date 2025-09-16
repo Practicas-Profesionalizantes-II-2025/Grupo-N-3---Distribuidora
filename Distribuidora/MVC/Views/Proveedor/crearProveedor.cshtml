@@ -1,9 +1,11 @@
-﻿
+﻿@model MVC.Models.DTOs.ProveedorDTO
+
 @{
+    ViewData["Title"] = "Crear Proveedor";
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,9 +13,9 @@
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="~/css/style.css">
 
-    <title>Pagina Inicio - Empleados</title>
+    <title>@ViewData["Title"]</title>
 </head>
 <body>
     <main>
@@ -24,19 +26,15 @@
             </div>
 
             <!-- Formulario para crear proveedores -->
-            <div class="form">
-                <input type="text" placeholder="Nombre" id="nombre" required>
-                <input type="text" placeholder="CUIL/CUIT" id="cuil" required>
-                <input type="text" placeholder="Teléfono" id="telefono" required>
-                <input type="text" placeholder="Dirección" id="direccion" required>
-                <input type="text" placeholder="Ciudad" id="ciudad" required>
-                <input type="text" placeholder="Provincia" id="provincia" required>
-                <input type="text" placeholder="Código Postal" id="codigoPostal" required>
-                <button class="btn yellow" id="guardarProveedor">Guardar</button>
-            </div>
+            <form asp-action="CrearProveedor" method="post" class="form">
+                <input asp-for="Nombre" type="text" placeholder="Nombre" required>
+                <input asp-for="Telefono" type="text" placeholder="Teléfono" required>
+                <input asp-for="Direccion" type="text" placeholder="Dirección" required>
+                <button type="submit" class="btn yellow">Guardar</button>
+            </form>
         </div>
     </main>
 
-    <script href="../js/main.js"></script>
+    <script src="~/js/main.js"></script>
 </body>
 </html>

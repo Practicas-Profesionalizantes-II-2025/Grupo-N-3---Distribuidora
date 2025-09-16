@@ -1,92 +1,44 @@
-﻿
-@{
-}
+﻿@model IEnumerable<MVC.Models.DTOs.ProveedorDTO>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de clientes</title>
+<main class="container full-width">
+    <h2 class="titulo">lista de proveedores</h2>
 
-    <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+    <!-- Filtro de búsqueda con crear -->
+    <div class="search-filter">
+        <input type="text" placeholder="Buscar por ID, CUIL/CUIT o Nombre" id="searchInput">
+        <button class="btn yellow">Buscar</button>
+        <a asp-action="CrearProveedor" class="btn yellow">Crear proveedor</a>
+    </div>
 
-    <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="../css/style.css">
-</head>
-<body>
-
-    <!--=============== CONTENIDO PRINCIPAL ===============-->
-    <main class="container full-width">
-        <h2 class="titulo">Lista de proveedores</h2>
-
-        <!-- Filtro de búsqueda con crear -->
-        <div class="search-filter">
-            <input type="text" placeholder="Buscar por ID, CUIL/CUIT o Nombre" id="searchInput">
-            <button class="btn yellow">Buscar</button>
-            <a href="crearProveedor.html" class="btn yellow">Crear proveedor</a>
-        </div>
-
-        <!-- Tabla -->
-        <table class="tabla-empleados">
-            <thead>
+    <!-- Tabla -->
+    <table class="tabla-proveedores">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var proveedor in Model)
+            {
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>CUIL/CUIT</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Ciudad</th>
-                    <th>Provincia</th>
-                    <th>Código Postal</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Proveedor A</td>
-                    <td>20-12345678-9</td>
-                    <td>3493-425869</td>
-                    <td>Calle Falsa 123</td>
-                    <td>Rosario</td>
-                    <td>Santa Fe</td>
-                    <td>2000</td>
+                    <td>@proveedor.Id</td>
+                    <td>@proveedor.Nombre</td>
+                    <td>@proveedor.Telefono</td>
+                    <td>@proveedor.Direccion</td>
                     <td class="acciones">
-                        <a href="modificarProveedor.html?id=1" class="btn-icon yellow-outline" title="Editar">
+                        <a asp-action="ModificarProveedor" asp-route-id="@proveedor.Id" class="btn-icon yellow-outline" title="Editar">
                             <i class="ri-pencil-line"></i>
                         </a>
-                        <a href="eliminarProveedor.html?id=1" class="btn-icon red-outline" title="Eliminar">
+                        <a asp-action="EliminarProveedor" asp-route-id="@proveedor.Id" class="btn-icon red-outline" title="Eliminar">
                             <i class="ri-delete-bin-line"></i>
                         </a>
                     </td>
                 </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Proveedor B</td>
-                    <td>27-98765432-1</td>
-                    <td>3492-693265</td>
-                    <td>Avenida Siempre Viva 456</td>
-                    <td>Santa Fe</td>
-                    <td>Santa Fe</td>
-                    <td>3000</td>
-                    <td class="acciones">
-                        <a href="modificarProveedor.html?id=2" class="btn-icon yellow-outline" title="Editar">
-                            <i class="ri-pencil-line"></i>
-                        </a>
-                        <a href="eliminarProveedor.html?id=2" class="btn-icon red-outline" title="Eliminar">
-                            <i class="ri-delete-bin-line"></i>
-                        </a>
-                    </td>
-                </tr>
-                <!-- Agregar más filas según necesidad -->
-            </tbody>
-        </table>
-    </main>
-
-    <!--=============== JS ===============-->
-    <script src="../js/main.js"></script>
-</body>
-</html>
+            }
+        </tbody>
+    </table>
+</main>
