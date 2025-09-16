@@ -55,10 +55,10 @@
                         <td>@cliente.Persona.CiudadId</td>
                         <td>@cliente.Persona.Email</td>
                         <td class="acciones">
-                            <a href="@Url.Action("ModificarCliente", "Cliente", new { id = cliente.Id })" class="btn-icon yellow-outline" title="Editar">
+                            <a href="@Url.Action("ModificarCliente", "Clientes", new { id = cliente.Id })" class="btn-icon yellow-outline" title="Editar">
                                 <i class="ri-pencil-line"></i>
                             </a>
-                            <a href="@Url.Action("EliminarCliente", "Cliente", new { id = cliente.Id })" class="btn-icon red-outline" title="Eliminar">
+                            <a href="@Url.Action("EliminarCliente", "Clientes", new { id = cliente.Id })" class="btn-icon red-outline" title="Eliminar">
                                 <i class="ri-delete-bin-line"></i>
                             </a>
                         </td>

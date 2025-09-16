@@ -14,10 +14,10 @@ namespace CDatos.Repositorios
     {
         private readonly DataContext _context;
         private readonly IPersonaRepositorio _personaRepositorio;
-        public ClienteRepositorio(DataContext context)
+        public ClienteRepositorio(DataContext context, IPersonaRepositorio personaRepositorio)
         {
             _context = context;
-            _personaRepositorio = _personaRepositorio;
+            _personaRepositorio = personaRepositorio;
         }
         public async Task<List<Cliente>> ObtenerClientes()
         {

@@ -64,7 +64,7 @@ namespace API.Controllers
         {
             _IClienteLogica.CrearCliente(cliente);
 
-            return CreatedAtAction("ClienteGet", new { id = cliente.Id }, cliente);
+            return CreatedAtAction("ClientesGet", new { id = cliente.Id }, cliente);
         }
 
         // DELETE: api/Clientes/5

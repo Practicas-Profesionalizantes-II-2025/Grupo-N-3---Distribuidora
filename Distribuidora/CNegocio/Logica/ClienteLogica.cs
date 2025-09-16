@@ -1,22 +1,24 @@
-﻿using System;
+﻿using CDatos.Repositorios.IRepositorios;
+using CNegocio.Logica.ILogica;
+using Shared.DTOs;
+using Shared.Entities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
-using CDatos.Repositorios.IRepositorios;
-using CNegocio.Logica.ILogica;
-using Shared.DTOs;
-using Shared.Entities;
 
 namespace CNegocio.Logica
 {
     public class ClienteLogica : IClienteLogica
     {
         private readonly IClienteRepositorio _clienteRepositorio;
-        public ClienteLogica(IClienteRepositorio clienteRepositorio)
+        private readonly IPersonaRepositorio _personaRepositorio;
+
+        public ClienteLogica(IClienteRepositorio clienteRepositorio, IPersonaRepositorio personaRepositorio)
         {
             _clienteRepositorio = clienteRepositorio;
+            _personaRepositorio = personaRepositorio;
         }
         public async Task<List<ClienteDTO>> ObtenerClientes()
         {
@@ -63,15 +65,29 @@ namespace CNegocio.Logica
         }
         public async Task<ClienteDTO> CrearCliente(ClienteDTO clienteDTO)
         {
+            var persona = new Persona
+            {
+                Nombre = clienteDTO.Persona.Nombre,
+                Apellido = clienteDTO.Persona.Apellido,
+                Tipo_DocId = clienteDTO.Persona.Tipo_DocId,
+                Nro_Doc = clienteDTO.Persona.Nro_Doc,
+                CiudadId = clienteDTO.Persona.CiudadId,
+                Direccion = clienteDTO.Persona.Direccion,
+                Telefono = clienteDTO.Persona.Telefono,
+                Email = clienteDTO.Persona.Email,
+                EstadoId = 1 
+            };
+
+            await _personaRepositorio.CrearPersona(persona); 
+
             var cliente = new Cliente
             {
-                PersonaId = clienteDTO.PersonaId,
-                EstadoId = clienteDTO.EstadoId,
+                PersonaId = persona.Id,
+                EstadoId = clienteDTO.EstadoId
             };
 
             var nuevoCliente = await _clienteRepositorio.CrearCliente(cliente);
 
-            // Devolver DTO completo, incluyendo Persona si está cargada
             return await ObtenerClientePorId(nuevoCliente.Id);
         }
         public async Task ActualizarCliente(ClienteDTO clienteDTO)

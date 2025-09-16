@@ -52,8 +52,16 @@ namespace MVC.Controllers
                 {
                     cliente.Persona = new PersonaDTO
                     {
+                        Id = persona.Id,
                         Nombre = persona.Nombre,
-                        Apellido = persona.Apellido
+                        Apellido = persona.Apellido,
+                        Tipo_DocId = persona.Tipo_DocId,
+                        Nro_Doc = persona.Nro_Doc,
+                        CiudadId = persona.CiudadId,
+                        Email = persona.Email,
+                        Direccion = persona.Direccion,
+                        Telefono = persona.Telefono,
+                        EstadoId = persona.EstadoId
                     };
                 }
             }
@@ -68,25 +76,63 @@ namespace MVC.Controllers
 
         // POST: Crear Cliente
         [HttpPost]
-        public async Task<IActionResult> crearCliente([Bind("Id,PersonaId,EstadoId")] ClienteDTO cliente)
+        public async Task<IActionResult> crearCliente(ClienteDTO cliente)
         {
             if (!ModelState.IsValid)
                 return View(cliente);
 
-            var url = $"{_settings.BaseUrl}/{_settings.ClientesPost}";
-            var jsonData = JsonConvert.SerializeObject(cliente);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            // 1️⃣ Crear la persona primero
+            var personaJson = JsonConvert.SerializeObject(cliente.Persona);
+            var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
+            var personaResponse = await _httpClient.PostAsync($"{_settings.BaseUrl}/{_settings.PersonaPost}", personaContent);
 
-            var response = await _httpClient.PostAsync(url, content);
-            if (response.IsSuccessStatusCode)
-                return RedirectToAction(nameof(listaClientes));
+            if (!personaResponse.IsSuccessStatusCode)
+            {
+                var error = await personaResponse.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, "Error creando persona: " + error);
+                return View(cliente);
+            }
 
-            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
-            return View(cliente);
+            // Obtener la persona creada con su Id
+            var personaCreadaJson = await personaResponse.Content.ReadAsStringAsync();
+            var personaCreada = JsonConvert.DeserializeObject<PersonaDTO>(personaCreadaJson);
+
+            // 2️⃣ Crear el cliente con el PersonaId recién creado
+            cliente.PersonaId = personaCreada.Id;
+            cliente.Persona = null; // opcional, ya no necesitamos enviar todo el objeto
+
+            var clienteJson = JsonConvert.SerializeObject(cliente);
+            var clienteContent = new StringContent(clienteJson, Encoding.UTF8, "application/json");
+            var clienteResponse = await _httpClient.PostAsync($"{_settings.BaseUrl}/{_settings.ClientesPost}", clienteContent);
+
+            if (!clienteResponse.IsSuccessStatusCode)
+            {
+                var error = await clienteResponse.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, "Error creando cliente: " + error);
+                return View(cliente);
+            }
+
+            return RedirectToAction(nameof(listaClientes));
         }
 
+        // GET : Eliminar Cliente
+        [HttpGet]
+        public async Task<IActionResult> eliminarCliente()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
+
+            return View(lista_clientes);
+        }
         // DELETE: Cliente/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        [HttpPost]
+        public async Task<IActionResult> eliminarCliente(int? id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.ClientesDelete}/{id}";
             var response = await _httpClient.DeleteAsync(url);
@@ -102,6 +148,7 @@ namespace MVC.Controllers
         }
 
         // GET: Modificar cliente
+        [HttpGet]
         public async Task<IActionResult> modificarCliente(int id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}/{id}";

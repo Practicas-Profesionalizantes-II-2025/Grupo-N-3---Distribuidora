@@ -1,44 +1,46 @@
-﻿@{
+﻿@model MVC.Models.DTOs.ClienteDTO
+
+@{
+    ViewData["Title"] = "Crear Cliente";
 }
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="" />
-    <link rel="stylesheet" href="../css/style.css" />
-
-    <title>Pagina Inicio - Clientes</title>
-</head>
-<body>
-
-    <main>
-        <div class="content">
-            <!-- Header de la sección -->
-            <div class="section-header">
-                <h2>Crear cliente</h2>
-            </div>
-
-            <!-- Formulario para crear clientes -->
-            <div class="form">
-                <input type="text" placeholder="Nombre y Apellido">
-                <input type="text" placeholder="DNI">
-                <input type="text" placeholder="Teléfono">
-                <input type="text" placeholder="Dirección">
-                <input type="text" placeholder="Ciudad">
-                <input type="text" placeholder="Código Postal">
-                <input type="email" placeholder="Email">
-                <input type="text" placeholder="Estado">
-                <button class="btn yellow">Guardar</button>
-            </div>
-
+<main>
+    <div class="content">
+        <div class="section-header">
+            <h2>Crear Cliente</h2>
         </div>
-    </main>
 
-    <script src="../js/main.js"></script>
-</body>
-</html>
+        <form asp-action="crearCliente" method="post">
+            <div class="form">
+
+                <!-- Datos de Persona -->
+                <input type="text" asp-for="Persona.Nombre" placeholder="Nombre" class="input-text" />
+                <input type="text" asp-for="Persona.Apellido" placeholder="Apellido" class="input-text" />
+
+                <select asp-for="Persona.Tipo_DocId" class="input-text">
+                    <option value="">Seleccionar tipo documento</option>
+                    <option value="1">DNI</option>
+                    <option value="2">Pasaporte</option>
+                    <option value="3">Libreta De Enrolamiento</option>
+                </select>
+
+                <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de Documento" class="input-text" />
+
+                <select asp-for="Persona.CiudadId" class="input-text" size="5">
+                    <option value="1">Ciudad A</option>
+                    <option value="2">Ciudad B</option>
+                    <!-- Más ciudades si las agregas en tu DataContext -->
+                </select>
+
+                <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" />
+                <input type="text" asp-for="Persona.Telefono" placeholder="Teléfono" class="input-text" />
+                <input type="email" asp-for="Persona.Email" placeholder="Email" class="input-text" />
+
+                <!-- Estado del cliente (no editable) -->
+                <input type="hidden" asp-for="EstadoId" value="1" />
+
+                <button type="submit" class="btn yellow">Guardar</button>
+            </div>
+        </form>
+    </div>
+</main>
