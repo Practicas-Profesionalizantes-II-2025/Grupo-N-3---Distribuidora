@@ -22,13 +22,7 @@
                 <h2>Modificar distribuidor</h2>
             </div>
 
-            <!-- Filtro de búsqueda -->
-            <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID, CUIL/CUIT o Nombre" id="searchInput">
-                <button class="btn yellow" id="buscarProveedor">Buscar</button>
-            </div>
-
-            <!-- Formulario para modificar proveedores -->
+            <!-- Formulario para modificar distribuidor -->
             <div class="form">
                 <input type="text" placeholder="Nombre" id="nombre">
                 <input type="text" placeholder="CUIL/CUIT" id="cuil" disabled> <!-- campo bloqueado -->
@@ -37,7 +31,14 @@
                 <input type="text" placeholder="Ciudad" id="ciudad">
                 <input type="text" placeholder="Provincia" id="provincia">
                 <input type="text" placeholder="Código Postal" id="codigoPostal">
-                <button class="btn yellow" id="guardarProveedor">Guardar</button>
+            </div>
+
+            <!-- contenedor exclusivo para centrar -->
+            <div class="form-buttons-wrapper">
+                <div class="form-buttons">
+                    <button class="btn yellow">Guardar</button>
+                    <a href="listaDistribuidores.html" class="btn back">Volver</a>
+                </div>
             </div>
         </div>
     </main>

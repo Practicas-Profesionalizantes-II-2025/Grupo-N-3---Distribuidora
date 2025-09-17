@@ -16,8 +16,6 @@
     <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-
-    <!--=============== CONTENIDO PRINCIPAL ===============-->
     <main class="container full-width">
         <h2 class="titulo">Lista de distribuidores</h2>
 
@@ -28,61 +26,55 @@
             <a href="crearDistribuidor.html" class="btn yellow">Crear distribuidor</a>
         </div>
 
-        <!-- Tabla -->
-        <table class="tabla-empleados">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>CUIL/CUIT</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Ciudad</th>
-                    <th>Provincia</th>
-                    <th>Código Postal</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Distribuidor A</td>
-                    <td>20-12345678-9</td>
-                    <td>3493-425869</td>
-                    <td>Calle Falsa 123</td>
-                    <td>Rosario</td>
-                    <td>Santa Fe</td>
-                    <td>2000</td>
-                    <td class="acciones">
-                        <a href="modificarDistribuidor.html?id=1" class="btn-icon yellow-outline" title="Editar">
-                            <i class="ri-pencil-line"></i>
-                        </a>
-                        <a href="eliminarDistribuidor.html?id=1" class="btn-icon red-outline" title="Eliminar">
-                            <i class="ri-delete-bin-line"></i>
-                        </a>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Distribuidor B</td>
-                    <td>27-98765432-1</td>
-                    <td>3492-693265</td>
-                    <td>Avenida Siempre Viva 456</td>
-                    <td>Santa Fe</td>
-                    <td>Santa Fe</td>
-                    <td>3000</td>
-                    <td class="acciones">
-                        <a href="modificarDistribuidor.html?id=2" class="btn-icon yellow-outline" title="Editar">
-                            <i class="ri-pencil-line"></i>
-                        </a>
-                        <a href="eliminarDistribuidor.html?id=2" class="btn-icon red-outline" title="Eliminar">
-                            <i class="ri-delete-bin-line"></i>
-                        </a>
-                    </td>
-                </tr>
-                <!-- Agregar más filas según necesidad -->
-            </tbody>
-        </table>
+        <div class="tabla-container">
+            <!-- Tabla -->
+            <table class="tabla-empleados">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>CUIL/CUIT</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Ciudad</th>
+                        <th>Provincia</th>
+                        <th>Código Postal</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>1</td>
+                        <td>Distribuidor A</td>
+                        <td>20-12345678-9</td>
+                        <td>3493-425869</td>
+                        <td>Calle Falsa 123</td>
+                        <td>Rosario</td>
+                        <td>Santa Fe</td>
+                        <td>2000</td>
+                        <td class="acciones">
+                            <a href="modificarDistribuidor.html" class="btn-icon edit"><i class="ri-pencil-line"></i></a>
+                            <a href="#" class="btn-icon delete" onclick="confirmDelete(this)"><i class="ri-delete-bin-line"></i></a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>2</td>
+                        <td>Distribuidor B</td>
+                        <td>27-98765432-1</td>
+                        <td>3492-693265</td>
+                        <td>Avenida Siempre Viva 456</td>
+                        <td>Santa Fe</td>
+                        <td>Santa Fe</td>
+                        <td>3000</td>
+                        <td class="acciones">
+                            <a href="modificarDistribuidor.html" class="btn-icon edit"><i class="ri-pencil-line"></i></a>
+                            <a href="#" class="btn-icon delete" onclick="confirmDelete(this)"><i class="ri-delete-bin-line"></i></a>
+                        </td>
+                    </tr>
+                    <!-- Agregar más filas según necesidad -->
+                </tbody>
+            </table>
+        </div>
     </main>
 
     <!--=============== JS ===============-->

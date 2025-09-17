@@ -6,40 +6,55 @@
 
 <main>
     <div class="content">
+        <!-- Header de la sección -->
         <div class="section-header">
             <h2>Crear Cliente</h2>
         </div>
 
+        <!-- Formulario -->
         <form asp-action="crearCliente" method="post">
             <div class="form">
-
-                <!-- Datos de Persona -->
+                <!-- Nombre y Apellido -->
                 <input type="text" asp-for="Persona.Nombre" placeholder="Nombre" class="input-text" />
                 <input type="text" asp-for="Persona.Apellido" placeholder="Apellido" class="input-text" />
 
+                <!-- Tipo y Número de Documento -->
                 <select asp-for="Persona.Tipo_DocId" class="input-text">
-                    <option value="">Seleccionar tipo documento</option>
+                    <option value="">Tipo de documento</option>
                     <option value="1">DNI</option>
                     <option value="2">Pasaporte</option>
-                    <option value="3">Libreta De Enrolamiento</option>
+                    <option value="3">Libreta de Enrolamiento</option>
                 </select>
+                <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de documento" class="input-text" />
 
-                <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de Documento" class="input-text" />
+                <!-- Teléfono -->
+                <input id="telefono" type="tel" asp-for="Persona.Telefono" placeholder="Número de teléfono" class="input-text" />
 
-                <select asp-for="Persona.CiudadId" class="input-text" size="5">
+                <!-- Dirección -->
+                <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" />
+
+                <!-- Código Postal y Ciudad -->
+                <input type="text" id="cp" placeholder="Código Postal" class="input-text" />
+                <select asp-for="Persona.CiudadId" id="ciudad" class="input-text">
+                    <option value="">Seleccione ciudad</option>
                     <option value="1">Ciudad A</option>
                     <option value="2">Ciudad B</option>
                     <!-- Más ciudades si las agregas en tu DataContext -->
                 </select>
 
-                <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" />
-                <input type="text" asp-for="Persona.Telefono" placeholder="Teléfono" class="input-text" />
+                <!-- Email -->
                 <input type="email" asp-for="Persona.Email" placeholder="Email" class="input-text" />
 
-                <!-- Estado del cliente (no editable) -->
+                <!-- Estado (hidden, no editable) -->
                 <input type="hidden" asp-for="EstadoId" value="1" />
+            </div>
 
-                <button type="submit" class="btn yellow">Guardar</button>
+            <!-- Botones -->
+            <div class="form-buttons-wrapper">
+                <div class="form-buttons">
+                    <button type="submit" class="btn yellow">Guardar</button>
+                    <a href="listaClientes.html" class="btn back">Volver</a>
+                </div>
             </div>
         </form>
     </div>
