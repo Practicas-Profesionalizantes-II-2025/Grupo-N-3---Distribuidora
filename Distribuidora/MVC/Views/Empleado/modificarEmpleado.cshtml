@@ -22,26 +22,51 @@
                 <h2>Modificar empleado</h2>
             </div>
 
-            <!-- Filtro de búsqueda -->
-            <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
-                <button class="btn yellow">Buscar</button>
+            <!-- Formulario para crear empleados -->
+            <div class="form">
+                <input type="text" placeholder="Nombre">
+                <input type="text" placeholder="Apellido">
+
+                <!-- Tipo y número de documento -->
+                <select>
+                    <option value="">Tipo de documento</option>
+                    <option value="dni">DNI</option>
+                    <option value="lc">LC</option>
+                    <option value="le">LE</option>
+                    <option value="pasaporte">Pasaporte</option>
+                </select>
+                <input type="text" placeholder="Número de documento" id="dni" disabled> <!-- campo bloqueado -->
+                <!-- Campo Teléfono -->
+                <input id="telefono" type="tel" placeholder="Número de teléfono">
+
+                <input type="text" placeholder="Dirección">
+
+                <!-- CP + ciudad -->
+                <input type="text" id="cp" placeholder="Código Postal">
+                <select id="ciudad">
+                    <option value="">Seleccione ciudad</option>
+                </select>
+
+                <input type="email" placeholder="Email">
+                <input type="text" placeholder="Cargo">
+
+                <select>
+                    <option value="">Estado</option>
+                    <option value="dni">Activo</option>
+                    <option value="lc">Inactivo</option>
+                </select>
+
             </div>
 
-            <!-- Formulario para crear o modificar empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre y Apellido" id="nombreApellido">
-                <input type="text" placeholder="DNI" id="dni" disabled> <!-- campo bloqueado -->
-                <input type="text" placeholder="Teléfono" id="telefono">
-                <input type="text" placeholder="Dirección" id="direccion">
-                <input type="text" placeholder="Ciudad" id="ciudad">
-                <input type="text" placeholder="Código Postal" id="codigoPostal">
-                <input type="email" placeholder="Email" id="email">
-                <input type="text" placeholder="Cargo" id="cargo">
-                <input type="text" placeholder="Estado" id="estado">
-                <button class="btn yellow">Guardar</button>
+            <!-- contenedor exclusivo para centrar -->
+            <div class="form-buttons-wrapper">
+                <div class="form-buttons">
+                    <button class="btn yellow">Guardar</button>
+                    <a href="listaEmpleados.html" class="btn back">Volver</a>
+                </div>
             </div>
         </div>
+
     </main>
 
 
