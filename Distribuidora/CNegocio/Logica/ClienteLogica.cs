@@ -37,15 +37,9 @@ namespace CNegocio.Logica
                     Telefono = c.Persona.Telefono,
                     Email = c.Persona.Email,
                     Direccion = c.Persona.Direccion,
-                    CiudadId = c.Persona.CiudadId
+                    CiudadId = c.Persona.CiudadId,
+                    EstadoId = c.Persona.EstadoId,
                 },
-                Ciudad = new CiudadDTO
-                {
-                    Id = c.Persona.Ciudad.Id,
-                    Nombre = c.Persona.Ciudad.Nombre,
-                    Cp = c.Persona.Ciudad.Cp,
-                    Acp = c.Persona.Ciudad.Acp
-                }
             }).ToList();
 
             return clientesDTO;

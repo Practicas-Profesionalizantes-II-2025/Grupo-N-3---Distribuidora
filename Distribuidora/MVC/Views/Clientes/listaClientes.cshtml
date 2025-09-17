@@ -1,72 +1,50 @@
 ﻿@model IEnumerable<MVC.Models.DTOs.ClienteDTO>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de clientes</title>
+<main class="container full-width">
+    <h2 class="titulo">Lista de clientes</h2>
 
-    <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+    <div class="search-filter">
+        <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
+        <button class="btn yellow">Buscar</button>
+        <a href="@Url.Action("crearCliente", "Clientes")" class="btn yellow">Crear Cliente</a>
+    </div>
 
-    <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="~/css/style.css">
-</head>
-<body>
-
-    <main class="container full-width">
-        <h2 class="titulo">Lista de clientes</h2>
-
-        <div class="search-filter">
-            <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
-            <button class="btn yellow">Buscar</button>
-            <a href="@Url.Action("crearCliente", "Clientes")" class="btn yellow">Crear Cliente</a>
-        </div>
-
-        <table class="tabla-empleados">
-            <thead>
+    <table class="tabla-empleados">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre y Apellido</th>
+                <th>DNI</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>CiudadId</th> <!-- ahora solo mostramos el Id -->
+                <th>Email</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var cliente in Model)
+            {
                 <tr>
-                    <th>ID</th>
-                    <th>Nombre y Apellido</th>
-                    <th>DNI</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Ciudad</th>
-                    <th>Código Postal</th>
-                    <th>Email</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
+                    <td>@cliente.Id</td>
+                    <td>@cliente.Persona.Nombre @cliente.Persona.Apellido</td>
+                    <td>@cliente.Persona.Nro_Doc</td>
+                    <td>@cliente.Persona.Telefono</td>
+                    <td>@cliente.Persona.Direccion</td>
+                    <td>@cliente.Persona.CiudadId</td>
+                    <td>@cliente.Persona.Email</td>
+                    <td>@cliente.EstadoId</td>
+                    <td class="acciones">
+                        <a href="@Url.Action("ModificarCliente", "Clientes", new { id = cliente.Id })" class="btn-icon yellow-outline" title="Editar">
+                            <i class="ri-pencil-line"></i>
+                        </a>
+                        <a href="@Url.Action("EliminarCliente", "Clientes", new { id = cliente.Id })" class="btn-icon red-outline" title="Eliminar">
+                            <i class="ri-delete-bin-line"></i>
+                        </a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var cliente in Model)
-                {
-                    <tr>
-                        <td>@cliente.Id</td>
-                        <td>@cliente.Persona.Nombre @cliente.Persona.Apellido</td>
-                        <td>@cliente.Persona.Nro_Doc</td>
-                        <td>@cliente.Persona.Telefono</td>
-                        <td>@cliente.Persona.Direccion</td>
-                        <td>@(cliente.Ciudad != null ? cliente.Ciudad.Nombre : "Sin ciudad")</td>
-                        <td>@(cliente.Ciudad != null ? cliente.Ciudad.Cp : "-")</td>
-                        <td>@cliente.Persona.Email</td>
-                        <td>@cliente.EstadoId</td>
-                        <td class="acciones">
-                            <a href="@Url.Action("ModificarCliente", "Clientes", new { id = cliente.Id })" class="btn-icon yellow-outline" title="Editar">
-                                <i class="ri-pencil-line"></i>
-                            </a>
-                            <a href="@Url.Action("EliminarCliente", "Clientes", new { id = cliente.Id })" class="btn-icon red-outline" title="Eliminar">
-                                <i class="ri-delete-bin-line"></i>
-                            </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    </main>
-
-    <script src="~/js/main.js"></script>
-</body>
-</html>
+            }
+        </tbody>
+    </table>
+</main>

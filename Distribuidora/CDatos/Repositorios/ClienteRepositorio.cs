@@ -24,7 +24,6 @@ namespace CDatos.Repositorios
         {
             return await _context.Cliente
                 .Include(c => c.Persona)
-                .ThenInclude(p => p.Ciudad)
                 .ToListAsync();
         }
 
@@ -32,7 +31,6 @@ namespace CDatos.Repositorios
         {
             return await _context.Cliente
                 .Include(c => c.Persona)
-                    .ThenInclude(p => p.Ciudad)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
 
@@ -69,7 +67,6 @@ namespace CDatos.Repositorios
         {
             return await _context.Cliente
                 .Include(c => c.Persona)
-                    .ThenInclude(p => p.Ciudad)
                 .Where(c => c.Persona.Nro_Doc == dni)
                 .ToListAsync();
         }
@@ -78,7 +75,6 @@ namespace CDatos.Repositorios
         {
             var cliente = await _context.Cliente
                 .Include(c => c.Persona)
-                    .ThenInclude(p => p.Ciudad)
                 .FirstOrDefaultAsync(c => c.Id == clienteId);
 
             return cliente?.Persona;
