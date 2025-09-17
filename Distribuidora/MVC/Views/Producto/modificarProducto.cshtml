@@ -21,24 +21,26 @@
                 <h2>Modificar producto</h2>
             </div>
 
-            <!-- Filtro de búsqueda (decorativo, lo podés vincular luego con JS si querés) -->
-            <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID o Nombre" id="searchInput">
-                <button class="btn yellow">Buscar</button>
+            <!-- Formulario para crear o modificar empleados -->
+            <div class="form">
+                <input type="text" placeholder="Nombre producto" id="nombreApellido">
+                <input type="text" placeholder="Proveedor" id="telefono">
+                <input type="text" placeholder="Categoría" id="direccion">
+                <input type="text" placeholder="Cantidad" id="codigoPostal">
+                <input type="text" placeholder="Precio costo" id="ciudad">
+                <input type="text" placeholder="Precio venta" id="ciudad">
             </div>
-
-            <!-- Formulario para modificar producto -->
-            <form asp-action="modificarProducto" asp-route-id="@Model.Id" method="post" class="form">
-                <input asp-for="Nombre" class="form-control" placeholder="Nombre producto" />
-                <input asp-for="ProveedorId" class="form-control" placeholder="Proveedor" />
-                <input asp-for="CategoriaId" class="form-control" placeholder="Categoría" />
-                <input asp-for="UnidadesProducto" class="form-control" placeholder="Cantidad" />
-                <input asp-for="PrecioProducto" class="form-control" placeholder="Precio venta" />
-
-                <button type="submit" class="btn yellow">Guardar</button>
-                <a asp-action="listaProductos" class="btn red">Cancelar</a>
-            </form>
         </div>
+
+        <!-- contenedor exclusivo para centrar -->
+        <div class="form-buttons-wrapper">
+            <div class="form-buttons">
+                <button class="btn yellow">Guardar</button>
+                <a href="listaProductos.html" class="btn back">Volver</a>
+            </div>
+        </div>
+        </div>
+
     </main>
 
     <script src="~/js/main.js"></script>

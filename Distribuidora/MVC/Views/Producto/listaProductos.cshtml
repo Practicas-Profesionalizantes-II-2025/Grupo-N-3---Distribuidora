@@ -6,31 +6,17 @@
 
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<main class="container full-width">
+    <h2 class="titulo">Lista de productos</h2>
 
-    <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
+    <!-- Filtro de búsqueda + Crear Producto -->
+    <div class="search-filter">
+        <input type="text" placeholder="Buscar por ID, Nombre o Categoría" id="searchInput">
+        <button class="btn yellow">Buscar</button>
+        <a href="crearProducto.html" class="btn yellow">Crear producto</a>
+    </div>
 
-    <title>@ViewData["Title"]</title>
-</head>
-<body>
-    <!--=============== CONTENIDO PRINCIPAL ===============-->
-    <main class="container full-width">
-        <h2 class="titulo">@ViewData["Title"]</h2>
-
-        <!-- Filtro de búsqueda + Crear Producto -->
-        <div class="search-filter">
-            <form asp-action="listaProductos" method="get" class="search-form">
-                <input type="text" name="searchString" placeholder="Buscar por ID, Nombre o Categoría" id="searchInput" />
-                <button type="submit" class="btn yellow">Buscar</button>
-            </form>
-            <a asp-action="crearProducto" class="btn yellow">Crear producto</a>
-        </div>
-
+    <div class="tabla-container">
         <table class="tabla-empleados">
             <thead>
                 <tr>
@@ -39,42 +25,60 @@
                     <th>Proveedor</th>
                     <th>Categoría</th>
                     <th>Unidades</th>
+                    <th>Precio costo</th>
                     <th>Precio venta</th>
-                    <th>Acciones</th>
+                    <th>Acción</th> <!-- columna nueva -->
                 </tr>
             </thead>
             <tbody>
-                @if (Model != null && Model.Any())
-                {
-                    foreach (var producto in Model)
-                    {
-                        <tr>
-                            <td>@producto.Id</td>
-                            <td>@producto.Nombre</td>
-                            <td>@producto.ProveedorNombre</td> <!-- mostrar nombre legible -->
-                            <td>@producto.CategoriaNombre</td> <!-- mostrar nombre legible -->
-                            <td>@producto.UnidadesProducto</td>
-                            <td>@producto.PrecioProducto.ToString("C")</td>
-                            <td class="acciones">
-                                <a asp-action="modificarProducto" asp-route-id="@producto.Id" class="btn-icon yellow-outline" title="Editar">
-                                    <i class="ri-pencil-line"></i>
-                                </a>
-                                <a asp-action="eliminarProducto" asp-route-id="@producto.Id" class="btn-icon red-outline" title="Eliminar">
-                                    <i class="ri-delete-bin-line"></i>
-                                </a>
-                            </td>
-                        </tr>
-                    }
-                }
-                else
-                {
-                    <tr>
-                        <td colspan="7">No hay productos registrados.</td>
-                    </tr>
-                }
+                <tr>
+                    <td>1</td>
+                    <td>Coca Cola 1.5 ltrs</td>
+                    <td>Entre copas</td>
+                    <td>Bebida</td>
+                    <td>120</td>
+                    <td>$1.150</td>
+                    <td>$1.950</td>
+                    <td class="acciones">
+                        <a href="modificarProducto.html" class="btn-icon edit"><i class="ri-pencil-line"></i></a>
+                        <a href="#" class="btn-icon delete" onclick="confirmDelete(this)"><i class="ri-delete-bin-line"></i></a>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td>Oreo</td>
+                    <td>Arcor SRL</td>
+                    <td>Masitas</td>
+                    <td>80</td>
+                    <td>$950</td>
+                    <td>$1.200</td>
+                    <td class="acciones">
+                        <a href="modificarProducto.html" class="btn-icon edit"><i class="ri-pencil-line"></i></a>
+                        <a href="#" class="btn-icon delete" onclick="confirmDelete(this)"><i class="ri-delete-bin-line"></i></a>
+                    </td>
+                </tr>
             </tbody>
         </table>
-    </main>
+    </div>
+
+</main>
+
+<!-- Modal de Confirmación -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <i class="ri-alert-line" style="font-size: 2rem; color: #ff4d4d;"></i>
+            <h3>Confirmar eliminación</h3>
+        </div>
+        <p>¿Estás seguro que deseas eliminar este producto?</p>
+        <div class="modal-buttons">
+            <button class="btn confirm" id="confirmBtn">Sí, eliminar</button>
+            <button class="btn cancel" id="cancelBtn">Cancelar</button>
+        </div>
+    </div>
+</div>
+
 
     <!--=============== JS ===============-->
     <script src="../js/main.js"></script>
