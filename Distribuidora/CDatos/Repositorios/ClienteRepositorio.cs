@@ -21,11 +21,15 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Cliente>> ObtenerClientes()
         {
-            return await _context.Clientes.ToListAsync();
+            return await _context.Clientes
+                .Include(c => c.Persona) 
+                .ToListAsync();
         }
         public async Task<Cliente> ObtenerClientePorId(int id)
         {
-            return await _context.Clientes.FindAsync(id);
+            return await _context.Clientes
+                .Include(c => c.Persona)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
         public async Task<Cliente> CrearCliente(Cliente cliente)
         {
@@ -56,20 +60,19 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Cliente>> ObtenerClientesPorDni(string dni)
         {
-            var personaId = (_personaRepositorio.ObtenerPersonasPorDni(dni)).Id;
             return await _context.Clientes
-                .Where(c => c.PersonaId == personaId)
+                .Include(c => c.Persona)
+                .Where(c => c.Persona.Nro_Doc == dni)
                 .ToListAsync();
         }
         // obtener persona por ClienteId
         public async Task<Persona> ObtenerPersonaPorClienteId(int clienteId)
         {
-            var cliente = await _context.Clientes.FindAsync(clienteId);
-            if (cliente == null)
-            {
-                return null;
-            }
-            return await _context.Personas.FindAsync(cliente.PersonaId);
+            var cliente = await _context.Clientes
+                 .Include(c => c.Persona)
+                 .FirstOrDefaultAsync(c => c.Id == clienteId);
+
+            return cliente?.Persona;
         }
     }
 }

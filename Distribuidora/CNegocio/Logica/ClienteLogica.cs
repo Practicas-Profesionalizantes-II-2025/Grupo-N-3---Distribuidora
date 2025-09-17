@@ -24,7 +24,7 @@ namespace CNegocio.Logica
         {
             var clientes = await _clienteRepositorio.ObtenerClientes(); // Esto trae Cliente + Persona
 
-            return clientes.Select(c => new ClienteDTO
+            return clientes.Select(c => new ClienteDTO  
             {
                 Id = c.Id,
                 EstadoId = c.EstadoId,

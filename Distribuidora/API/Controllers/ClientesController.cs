@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CDatos.Data;
+using CNegocio.Logica;
+using CNegocio.Logica.ILogica;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CDatos.Data;
-using Shared.Entities;
-using CNegocio.Logica.ILogica;
 using Shared.DTOs;
+using Shared.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -43,6 +44,18 @@ namespace API.Controllers
             return cliente;
         }
 
+        // GET: api/Cliente/dni/12345678
+        [HttpGet("dni/{dni}")]
+        public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetClientesPorDni(string dni)
+        {
+            var clientes = await _IClienteLogica.ObtenerClientesPorDni(dni);
+            if (clientes == null || !clientes.Any())
+                return NotFound($"No hay clientes con DNI {dni}.");
+
+            return Ok(clientes);
+        }
+
+
         // PUT: api/Clientes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -62,7 +75,13 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<ClienteDTO>> ClientesPost(ClienteDTO cliente)
         {
-            _IClienteLogica.CrearCliente(cliente);
+            var clienteDto = new ClienteDTO
+            {
+                PersonaId = cliente.PersonaId,
+                EstadoId = cliente.EstadoId
+            };
+
+            var nuevoCliente = await _IClienteLogica.CrearCliente(clienteDto);
 
             return CreatedAtAction("ClientesGet", new { id = cliente.Id }, cliente);
         }

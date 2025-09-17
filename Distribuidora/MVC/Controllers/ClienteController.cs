@@ -42,29 +42,6 @@ namespace MVC.Controllers
             var json = await response.Content.ReadAsStringAsync();
             var lista_clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
 
-            var personaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.PersonaGet}");
-            var lista_personas = JsonConvert.DeserializeObject<List<PersonaDTO>>(personaJson);
-
-            foreach (var cliente in lista_clientes)
-            {
-                var persona = lista_personas.FirstOrDefault(p => p.Id == cliente.PersonaId);
-                if (persona != null)
-                {
-                    cliente.Persona = new PersonaDTO
-                    {
-                        Id = persona.Id,
-                        Nombre = persona.Nombre,
-                        Apellido = persona.Apellido,
-                        Tipo_DocId = persona.Tipo_DocId,
-                        Nro_Doc = persona.Nro_Doc,
-                        CiudadId = persona.CiudadId,
-                        Email = persona.Email,
-                        Direccion = persona.Direccion,
-                        Telefono = persona.Telefono,
-                        EstadoId = persona.EstadoId
-                    };
-                }
-            }
             return View(lista_clientes);
         }
 
@@ -82,8 +59,22 @@ namespace MVC.Controllers
                 return View(cliente);
 
             // 1️⃣ Crear la persona primero
-            var personaJson = JsonConvert.SerializeObject(cliente.Persona);
+            var personaDto = new PersonaDTO
+            {
+                Nombre = Request.Form["Nombre"],
+                Apellido = Request.Form["Apellido"],
+                Tipo_DocId = int.Parse(Request.Form["Tipo_DocId"]),
+                Nro_Doc = Request.Form["Nro_Doc"],
+                CiudadId = int.Parse(Request.Form["CiudadId"]),
+                Email = Request.Form["Email"],
+                Direccion = Request.Form["Direccion"],
+                Telefono = Request.Form["Telefono"],
+                EstadoId = 1
+            };
+
+            var personaJson = JsonConvert.SerializeObject(personaDto);
             var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
+
             var personaResponse = await _httpClient.PostAsync($"{_settings.BaseUrl}/{_settings.PersonaPost}", personaContent);
 
             if (!personaResponse.IsSuccessStatusCode)
@@ -93,13 +84,11 @@ namespace MVC.Controllers
                 return View(cliente);
             }
 
-            // Obtener la persona creada con su Id
             var personaCreadaJson = await personaResponse.Content.ReadAsStringAsync();
             var personaCreada = JsonConvert.DeserializeObject<PersonaDTO>(personaCreadaJson);
 
-            // 2️⃣ Crear el cliente con el PersonaId recién creado
+            // 2️⃣ Crear el cliente usando solo PersonaId y EstadoId
             cliente.PersonaId = personaCreada.Id;
-            cliente.Persona = null; // opcional, ya no necesitamos enviar todo el objeto
 
             var clienteJson = JsonConvert.SerializeObject(cliente);
             var clienteContent = new StringContent(clienteJson, Encoding.UTF8, "application/json");
@@ -112,7 +101,7 @@ namespace MVC.Controllers
                 return View(cliente);
             }
 
-            return RedirectToAction(nameof(listaClientes));
+            return RedirectToAction("listaClientes");
         }
 
         // GET : Eliminar Cliente
