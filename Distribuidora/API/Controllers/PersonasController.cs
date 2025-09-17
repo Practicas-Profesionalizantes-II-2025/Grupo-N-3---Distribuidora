@@ -48,7 +48,7 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPersona(int id, PersonaDTO persona)
         {
-            _IPersonaLogica.ActualizarPersona(persona);
+            await _IPersonaLogica.ActualizarPersona(persona);
 
             return NoContent();
         }
@@ -58,7 +58,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Persona>> PostPersona(PersonaDTO persona)
         {
-            _IPersonaLogica.CrearPersona(persona);
+            await _IPersonaLogica.CrearPersona(persona);
 
             return CreatedAtAction("GetPersona", new { id = persona.Id }, persona);
         }
@@ -67,7 +67,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePersona(int id)
         {
-            _IPersonaLogica.EliminarPersona(id);
+            await _IPersonaLogica.EliminarPersona(id);
 
             return NoContent();
         }

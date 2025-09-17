@@ -63,6 +63,7 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
                 return View("Error");
 
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
             return RedirectToAction("listaPersonas");
         }
 

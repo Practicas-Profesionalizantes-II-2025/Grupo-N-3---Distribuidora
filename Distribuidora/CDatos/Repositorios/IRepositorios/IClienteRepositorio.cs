@@ -12,7 +12,7 @@ namespace CDatos.Repositorios.IRepositorios
         Task<List<Cliente>> ObtenerClientes();
         Task<Cliente> ObtenerClientePorId(int id);
         Task<Cliente> CrearCliente(Cliente cliente);
-        void ActualizarCliente(Cliente cliente);
+        Task ActualizarCliente(Cliente cliente);
         void EliminarCliente(int id);
         Task<List<Cliente>> ObtenerClientesPorDni(string dni);
         Task<Persona> ObtenerPersonaPorClienteId(int clienteId);
