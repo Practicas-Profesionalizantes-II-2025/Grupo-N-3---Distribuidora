@@ -19,20 +19,20 @@ namespace CDatos.Repositorios
         }
         public async Task<Persona> ObtenerPersonaPorId(int id)
         {
-            return await _context.Personas.FindAsync(id);
+            return await _context.Persona.FindAsync(id);
         }
         public async Task<List<Persona>> ObtenerPersonas()
         {
-            return await _context.Personas.ToListAsync();
+            return await _context.Persona.ToListAsync();
         }
         public async Task CrearPersona(Persona persona)
         {
-            _context.Personas.Add(persona);
+            _context.Persona.Add(persona);
             await _context.SaveChangesAsync();
         }
         public async Task ActualizarPersona(Persona persona)
         {
-            var personaExistente = _context.Personas.Find(persona.Id);
+            var personaExistente = _context.Persona.Find(persona.Id);
             if (personaExistente == null)
             {
                 throw new Exception("Persona no encontrada.");
@@ -50,13 +50,13 @@ namespace CDatos.Repositorios
             var persona = await ObtenerPersonaPorId(id);
             if (persona != null)
             {
-                _context.Personas.Remove(persona);
+                _context.Persona.Remove(persona);
                 await _context.SaveChangesAsync();
             }
         }
         public async Task<List<Persona>> ObtenerPersonasPorDni(string dni)
         {
-            return await _context.Personas
+            return await _context.Persona
                 .Where(c => c.Nro_Doc == dni)
                 .ToListAsync();
         }

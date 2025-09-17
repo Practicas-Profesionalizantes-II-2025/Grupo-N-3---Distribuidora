@@ -19,21 +19,21 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Ciudad>> ObtenerCiudades()
         {
-            return await _context.Ciudades.ToListAsync();
+            return await _context.Ciudad.ToListAsync();
         }
         public async Task<Ciudad> ObtenerCiudadPorId(int id)
         {
-            return await _context.Ciudades.FindAsync(id);
+            return await _context.Ciudad.FindAsync(id);
         }
         public async Task<Ciudad> CrearCiudad(Ciudad ciudad)
         {
-            _context.Ciudades.Add(ciudad);
+            _context.Ciudad.Add(ciudad);
             await _context.SaveChangesAsync();
             return ciudad;
         }
         public void ActualizarCiudad(Ciudad ciudad)
         {
-            var ciudadExistente = _context.Ciudades.Find(ciudad.Id);
+            var ciudadExistente = _context.Ciudad.Find(ciudad.Id);
             if (ciudadExistente == null)
             {
                 throw new Exception("Ciudad no encontrada.");
@@ -46,10 +46,10 @@ namespace CDatos.Repositorios
         }
         public void EliminarCiudad(int id)
         {
-            var Ciudad = _context.Ciudades.FirstOrDefault(x => x.Id == id);
+            var Ciudad = _context.Ciudad.FirstOrDefault(x => x.Id == id);
             if (Ciudad != null)
             {
-                _context.Ciudades.Remove(Ciudad);
+                _context.Ciudad.Remove(Ciudad);
                 _context.SaveChanges();
             }
         }

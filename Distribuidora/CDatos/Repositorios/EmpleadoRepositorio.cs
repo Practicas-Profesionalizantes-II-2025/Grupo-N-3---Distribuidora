@@ -21,21 +21,21 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Empleado>> ObtenerEmpleados()
         {
-            return await _context.Empleados.ToListAsync();
+            return await _context.Empleado.ToListAsync();
         }
         public async Task<Empleado> ObtenerEmpleadoPorId(int id)
         {
-            return await _context.Empleados.FindAsync(id);
+            return await _context.Empleado.FindAsync(id);
         }
         public async Task<Empleado> CrearEmpleado(Empleado empleado)
         {
-            _context.Empleados.Add(empleado);
+            _context.Empleado.Add(empleado);
             await _context.SaveChangesAsync();
             return empleado;
         }
         public void ActualizarEmpleado(Empleado empleado)
         {
-            var empleadoExistente = _context.Empleados.Find(empleado.Id);
+            var empleadoExistente = _context.Empleado.Find(empleado.Id);
             if (empleadoExistente == null)
             {
                 throw new Exception("Empleado no encontrado.");
@@ -48,17 +48,17 @@ namespace CDatos.Repositorios
         }
         public void EliminarEmpleado(int id)
         {
-            var empleado = _context.Empleados.FirstOrDefault(x => x.Id == id);
+            var empleado = _context.Empleado.FirstOrDefault(x => x.Id == id);
             if (empleado != null)
             {
-                _context.Empleados.Remove(empleado);
+                _context.Empleado.Remove(empleado);
                 _context.SaveChanges();
             }
         }
         public async Task<List<Empleado>> ObtenerEmpleadosPorDni(string dni)
         {
             var personaId = (_personaRepositorio.ObtenerPersonasPorDni(dni)).Id;
-            return await _context.Empleados
+            return await _context.Empleado
                 .Where(c => c.PersonaId == personaId)
                 .ToListAsync();
         }

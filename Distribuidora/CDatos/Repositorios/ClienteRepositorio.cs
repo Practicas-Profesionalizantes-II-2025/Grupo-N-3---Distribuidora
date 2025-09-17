@@ -21,25 +21,26 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Cliente>> ObtenerClientes()
         {
-            return await _context.Clientes
-                .Include(c => c.Persona) 
+            return await _context.Cliente
+                .Include(c => c.Persona)
                 .ToListAsync();
+
         }
         public async Task<Cliente> ObtenerClientePorId(int id)
         {
-            return await _context.Clientes
+            return await _context.Cliente
                 .Include(c => c.Persona)
                 .FirstOrDefaultAsync(c => c.Id == id);
         }
         public async Task<Cliente> CrearCliente(Cliente cliente)
         {
-            _context.Clientes.Add(cliente);
+            _context.Cliente.Add(cliente);
             await _context.SaveChangesAsync();
             return cliente;
         }
         public void ActualizarCliente(Cliente cliente)
         {
-            var clienteExistente = _context.Clientes.Find(cliente.Id);
+            var clienteExistente = _context.Cliente.Find(cliente.Id);
             if (clienteExistente == null)
             {
                 throw new Exception("Cliente no encontrado.");
@@ -51,16 +52,16 @@ namespace CDatos.Repositorios
         }
         public void EliminarCliente(int id)
         {
-            var cliente = _context.Clientes.FirstOrDefault(x => x.Id == id);
+            var cliente = _context.Cliente.FirstOrDefault(x => x.Id == id);
             if (cliente != null)
             {
-                _context.Clientes.Remove(cliente);
+                _context.Cliente.Remove(cliente);
                 _context.SaveChanges();
             }
         }
         public async Task<List<Cliente>> ObtenerClientesPorDni(string dni)
         {
-            return await _context.Clientes
+            return await _context.Cliente
                 .Include(c => c.Persona)
                 .Where(c => c.Persona.Nro_Doc == dni)
                 .ToListAsync();
@@ -68,7 +69,7 @@ namespace CDatos.Repositorios
         // obtener persona por ClienteId
         public async Task<Persona> ObtenerPersonaPorClienteId(int clienteId)
         {
-            var cliente = await _context.Clientes
+            var cliente = await _context.Cliente
                  .Include(c => c.Persona)
                  .FirstOrDefaultAsync(c => c.Id == clienteId);
 

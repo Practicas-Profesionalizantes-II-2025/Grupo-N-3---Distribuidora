@@ -12,20 +12,20 @@ namespace CDatos.Data
         }
 
         public DbSet<Categoria> Categoria { get; set; } = null!;
-        public DbSet<Ciudad> Ciudades { get; set; } = null!;
-        public DbSet<Cliente> Clientes { get; set; } = null!;
-        public DbSet<Empleado> Empleados { get; set; } = null!;
+        public DbSet<Ciudad> Ciudad { get; set; } = null!;
+        public DbSet<Cliente> Cliente { get; set; } = null!;
+        public DbSet<Empleado> Empleado { get; set; } = null!;
         public DbSet<Estado> Estados { get; set; } = null!;
-        public DbSet<OrdenDeCompra> OrdenesDeCompra { get; set; } = null!;
-        public DbSet<OrdenDeCompraProducto> OrdenesDeCompraProducto { get; set; } = null!;
-        public DbSet<OrdenDeVenta> OrdenesDeVenta { get; set; } = null!;
-        public DbSet<OrdenDeVentaProducto> OrdenesDeVentaProducto { get; set; } = null!;
-        public DbSet<Persona> Personas { get; set; } = null!;
+        public DbSet<OrdenDeCompra> OrdenDeCompra { get; set; } = null!;
+        public DbSet<OrdenDeCompraProducto> OrdenDeCompraProducto { get; set; } = null!;
+        public DbSet<OrdenDeVenta> OrdenDeVenta { get; set; } = null!;
+        public DbSet<OrdenDeVentaProducto> OrdenDeVentaProducto { get; set; } = null!;
+        public DbSet<Persona> Persona { get; set; } = null!;
         public DbSet<Producto> Productos { get; set; } = null!;
-        public DbSet<Proveedor> Proveedores { get; set; } = null!;
-        public DbSet<Sector> Sectores { get; set; } = null!;
-        public DbSet<TipoDocumento> TiposDocumento { get; set; } = null!;
-        public DbSet<Usuario> Usuarios { get; set; } = null!;
+        public DbSet<Proveedor> Proveedor { get; set; } = null!;
+        public DbSet<Sector> Sector { get; set; } = null!;
+        public DbSet<TipoDocumento> TipoDocumento { get; set; } = null!;
+        public DbSet<Usuario> Usuario { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

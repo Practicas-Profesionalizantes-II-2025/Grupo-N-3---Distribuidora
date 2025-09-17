@@ -18,6 +18,7 @@ namespace Shared.Entities
         public string Direccion { get; set; }
         public string Telefono { get; set; }
         public int EstadoId { get; set; }
+        public ICollection<Cliente> Clientes { get; set; } = new List<Cliente>();
 
     }
 }

@@ -19,20 +19,20 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Proveedor>> ObtenerProveedores()
         {
-            return await _context.Proveedores.ToListAsync();
+            return await _context.Proveedor.ToListAsync();
         }
         public async Task<Proveedor> ObtenerProveedorPorId(int id)
         {
-            return await _context.Proveedores.FindAsync(id);
+            return await _context.Proveedor.FindAsync(id);
         }
         public async Task CrearProveedor(Proveedor proveedor)
         {
-            _context.Proveedores.Add(proveedor);
+            _context.Proveedor.Add(proveedor);
             await _context.SaveChangesAsync();
         }
         public async Task ActualizarProveedor(Proveedor proveedor)
         {
-            var proveedorExistente = _context.Proveedores.Find(proveedor.Id);
+            var proveedorExistente = _context.Proveedor.Find(proveedor.Id);
             if (proveedorExistente == null)
             {
                 throw new Exception("Proveedor no encontrado.");
@@ -48,7 +48,7 @@ namespace CDatos.Repositorios
             var proveedor = await ObtenerProveedorPorId(id);
             if (proveedor != null)
             {
-                _context.Proveedores.Remove(proveedor);
+                _context.Proveedor.Remove(proveedor);
                 await _context.SaveChangesAsync();
             }
         }

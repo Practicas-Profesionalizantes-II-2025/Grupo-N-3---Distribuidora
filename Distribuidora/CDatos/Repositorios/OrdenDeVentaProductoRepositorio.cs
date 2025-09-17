@@ -19,20 +19,20 @@ namespace CDatos.Repositorios
         }
         public async Task<List<OrdenDeVentaProducto>> ObtenerOrdenesDeVentaProductos()
         {
-            return await _context.OrdenesDeVentaProducto.ToListAsync();
+            return await _context.OrdenDeVentaProducto.ToListAsync();
         }
         public async Task<OrdenDeVentaProducto> ObtenerOrdenDeVentaProductoPorId(int id)
         {
-            return await _context.OrdenesDeVentaProducto.FindAsync(id);
+            return await _context.OrdenDeVentaProducto.FindAsync(id);
         }
         public async Task CrearOrdenDeVentaProducto(OrdenDeVentaProducto ordenDeVentaProducto)
         {
-            _context.OrdenesDeVentaProducto.Add(ordenDeVentaProducto);
+            _context.OrdenDeVentaProducto.Add(ordenDeVentaProducto);
             await _context.SaveChangesAsync();
         }
         public async Task ActualizarOrdenDeVentaProducto(OrdenDeVentaProducto ordenDeVentaProducto)
         {
-            var ordenDeVentaProductoExistente = _context.OrdenesDeVentaProducto.Find(ordenDeVentaProducto.Id);
+            var ordenDeVentaProductoExistente = _context.OrdenDeVentaProducto.Find(ordenDeVentaProducto.Id);
             if (ordenDeVentaProductoExistente == null)
             {
                 throw new Exception("Orden de Venta-Producto no encontrada.");
@@ -47,13 +47,13 @@ namespace CDatos.Repositorios
             var ordenDeVentaProducto = await ObtenerOrdenDeVentaProductoPorId(id);
             if (ordenDeVentaProducto != null)
             {
-                _context.OrdenesDeVentaProducto.Remove(ordenDeVentaProducto);
+                _context.OrdenDeVentaProducto.Remove(ordenDeVentaProducto);
                 await _context.SaveChangesAsync();
             }
         }
         public async Task<List<OrdenDeVentaProducto>> ObtenerOrdenesDeVentaProductosPorOrdenDeVentaId(int ordenDeVentaId)
         {
-            return await _context.OrdenesDeVentaProducto
+            return await _context.OrdenDeVentaProducto
                 .Where(ovp => ovp.OrdenVentaId == ordenDeVentaId)
                 .ToListAsync();
         }

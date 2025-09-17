@@ -19,20 +19,20 @@ namespace CDatos.Repositorios
         }
         public async Task<List<OrdenDeVenta>> ObtenerOrdenesDeVenta()
         {
-            return await _context.OrdenesDeVenta.ToListAsync();
+            return await _context.OrdenDeVenta.ToListAsync();
         }
         public async Task<OrdenDeVenta> ObtenerOrdenDeVentaPorId(int id)
         {
-            return await _context.OrdenesDeVenta.FindAsync(id);
+            return await _context.OrdenDeVenta.FindAsync(id);
         }
         public async Task CrearOrdenDeVenta(OrdenDeVenta ordenDeVenta)
         {
-            _context.OrdenesDeVenta.Add(ordenDeVenta);
+            _context.OrdenDeVenta.Add(ordenDeVenta);
             await _context.SaveChangesAsync();
         }
         public async Task ActualizarOrdenDeVenta(OrdenDeVenta ordenDeVenta)
         {
-            var ordenDeVentaExistente = _context.OrdenesDeVenta.Find(ordenDeVenta.Id);
+            var ordenDeVentaExistente = _context.OrdenDeVenta.Find(ordenDeVenta.Id);
             if (ordenDeVentaExistente == null)
             {
                 throw new Exception("Orden de Venta no encontrada.");
@@ -50,26 +50,26 @@ namespace CDatos.Repositorios
             var ordenDeVenta = await ObtenerOrdenDeVentaPorId(id);
             if (ordenDeVenta != null)
             {
-                _context.OrdenesDeVenta.Remove(ordenDeVenta);
+                _context.OrdenDeVenta.Remove(ordenDeVenta);
                 await _context.SaveChangesAsync();
             }
         }
         // Obtener lista de Ordenes de venta segun el atributo de clave foranea (EmpleadoId, ClienteId, DistribuidorId)
         public async Task<List<OrdenDeVenta>> ObtenerOrdenesDeVentaPorEmpleadoId(int empleadoId)
         {
-            return await _context.OrdenesDeVenta
+            return await _context.OrdenDeVenta
                 .Where(c => c.EmpleadoId == empleadoId)
                 .ToListAsync();
         }
         public async Task<List<OrdenDeVenta>> ObtenerOrdenesDeVentaPorClienteId(int clienteId)
         {
-            return await _context.OrdenesDeVenta
+            return await _context.OrdenDeVenta
                 .Where(c => c.ClienteId == clienteId)
                 .ToListAsync();
         }
         public async Task<List<OrdenDeVenta>> ObtenerOrdenesDeVentaPorDistribuidoraId(int distribuidoraId)
         {
-            return await _context.OrdenesDeVenta
+            return await _context.OrdenDeVenta
                 .Where(c => c.ClienteId == distribuidoraId)
                 .ToListAsync();
         }

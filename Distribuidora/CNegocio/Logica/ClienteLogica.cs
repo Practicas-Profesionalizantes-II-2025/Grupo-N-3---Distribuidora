@@ -24,11 +24,12 @@ namespace CNegocio.Logica
         {
             var clientes = await _clienteRepositorio.ObtenerClientes(); // Esto trae Cliente + Persona
 
-            return clientes.Select(c => new ClienteDTO  
+            return clientes.Select(c => new ClienteDTO
             {
                 Id = c.Id,
                 EstadoId = c.EstadoId,
-                Persona = new PersonaDTO
+                PersonaId = c.PersonaId,
+                Persona = new PersonaDTO // Aquí mapeamos los datos de persona
                 {
                     Id = c.Persona.Id,
                     Nombre = c.Persona.Nombre,
@@ -37,6 +38,7 @@ namespace CNegocio.Logica
                     Telefono = c.Persona.Telefono,
                     Email = c.Persona.Email,
                     Direccion = c.Persona.Direccion,
+                    CiudadId = c.Persona.CiudadId
                 }
             }).ToList();
         }
@@ -50,45 +52,25 @@ namespace CNegocio.Logica
             {
                 Id = cliente.Id,
                 EstadoId = cliente.EstadoId,
-                PersonaId = cliente.PersonaId,
-                Persona = new PersonaDTO
-                {
-                    Id = cliente.Persona.Id,
-                    Nombre = cliente.Persona.Nombre,
-                    Apellido = cliente.Persona.Apellido,
-                    Nro_Doc = cliente.Persona.Nro_Doc,
-                    Telefono = cliente.Persona.Telefono,
-                    Email = cliente.Persona.Email,
-                    Direccion = cliente.Persona.Direccion,
-                }
+                PersonaId = cliente.PersonaId
             };
         }
         public async Task<ClienteDTO> CrearCliente(ClienteDTO clienteDTO)
         {
-            var persona = new Persona
-            {
-                Nombre = clienteDTO.Persona.Nombre,
-                Apellido = clienteDTO.Persona.Apellido,
-                Tipo_DocId = clienteDTO.Persona.Tipo_DocId,
-                Nro_Doc = clienteDTO.Persona.Nro_Doc,
-                CiudadId = clienteDTO.Persona.CiudadId,
-                Direccion = clienteDTO.Persona.Direccion,
-                Telefono = clienteDTO.Persona.Telefono,
-                Email = clienteDTO.Persona.Email,
-                EstadoId = 1 
-            };
-
-            await _personaRepositorio.CrearPersona(persona); 
-
             var cliente = new Cliente
             {
-                PersonaId = persona.Id,
+                PersonaId = clienteDTO.PersonaId, // Persona ya creada
                 EstadoId = clienteDTO.EstadoId
             };
 
             var nuevoCliente = await _clienteRepositorio.CrearCliente(cliente);
 
-            return await ObtenerClientePorId(nuevoCliente.Id);
+            return new ClienteDTO
+            {
+                Id = nuevoCliente.Id,
+                PersonaId = nuevoCliente.PersonaId,
+                EstadoId = nuevoCliente.EstadoId
+            };
         }
         public async Task ActualizarCliente(ClienteDTO clienteDTO)
         {
@@ -96,10 +78,10 @@ namespace CNegocio.Logica
             {
                 Id = clienteDTO.Id,
                 PersonaId = clienteDTO.PersonaId,
-                EstadoId = clienteDTO.EstadoId,
+                EstadoId = clienteDTO.EstadoId
             };
 
-           _clienteRepositorio.ActualizarCliente(cliente);
+            _clienteRepositorio.ActualizarCliente(cliente);
         }
         public async Task EliminarCliente(int id)
         {
@@ -108,21 +90,12 @@ namespace CNegocio.Logica
         public async Task<List<ClienteDTO>> ObtenerClientesPorDni(string dni)
         {
             var clientes = await _clienteRepositorio.ObtenerClientesPorDni(dni);
+
             return clientes.Select(c => new ClienteDTO
             {
                 Id = c.Id,
                 EstadoId = c.EstadoId,
-                PersonaId = c.PersonaId,
-                Persona = new PersonaDTO
-                {
-                    Id = c.Persona.Id,
-                    Nombre = c.Persona.Nombre,
-                    Apellido = c.Persona.Apellido,
-                    Nro_Doc = c.Persona.Nro_Doc,
-                    Telefono = c.Persona.Telefono,
-                    Email = c.Persona.Email,
-                    Direccion = c.Persona.Direccion,
-                }
+                PersonaId = c.PersonaId
             }).ToList();
         }
         public async Task<PersonaDTO> ObtenerPersonaPorClienteId(int clienteId)
@@ -138,7 +111,7 @@ namespace CNegocio.Logica
                 Nro_Doc = persona.Nro_Doc,
                 Telefono = persona.Telefono,
                 Email = persona.Email,
-                Direccion = persona.Direccion,
+                Direccion = persona.Direccion
             };
         }
     }
