@@ -16,18 +16,15 @@
 </head>
 <body>
 
-    <!--=============== CONTENIDO PRINCIPAL ===============-->
     <main class="container full-width">
         <h2 class="titulo">Lista de clientes</h2>
 
-        <!-- Filtro de búsqueda + Crear Cliente -->
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
             <button class="btn yellow">Buscar</button>
             <a href="@Url.Action("crearCliente", "Clientes")" class="btn yellow">Crear Cliente</a>
         </div>
 
-        <!-- Tabla -->
         <table class="tabla-empleados">
             <thead>
                 <tr>
@@ -40,7 +37,7 @@
                     <th>Código Postal</th>
                     <th>Email</th>
                     <th>Estado</th>
-                    <th>Acciones</th> <!-- Columna Acciones -->
+                    <th>Acciones</th>
                 </tr>
             </thead>
             <tbody>
@@ -52,8 +49,10 @@
                         <td>@cliente.Persona.Nro_Doc</td>
                         <td>@cliente.Persona.Telefono</td>
                         <td>@cliente.Persona.Direccion</td>
-                        <td>@cliente.Persona.CiudadId</td>
+                        <td>@(cliente.Ciudad != null ? cliente.Ciudad.Nombre : "Sin ciudad")</td>
+                        <td>@(cliente.Ciudad != null ? cliente.Ciudad.Cp : "-")</td>
                         <td>@cliente.Persona.Email</td>
+                        <td>@cliente.EstadoId</td>
                         <td class="acciones">
                             <a href="@Url.Action("ModificarCliente", "Clientes", new { id = cliente.Id })" class="btn-icon yellow-outline" title="Editar">
                                 <i class="ri-pencil-line"></i>
@@ -68,7 +67,6 @@
         </table>
     </main>
 
-    <!--=============== JS ===============-->
     <script src="~/js/main.js"></script>
 </body>
 </html>

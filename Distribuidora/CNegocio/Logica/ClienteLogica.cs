@@ -5,7 +5,6 @@ using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace CNegocio.Logica
@@ -20,16 +19,16 @@ namespace CNegocio.Logica
             _clienteRepositorio = clienteRepositorio;
             _personaRepositorio = personaRepositorio;
         }
+
         public async Task<List<ClienteDTO>> ObtenerClientes()
         {
-            var clientes = await _clienteRepositorio.ObtenerClientes(); // Esto trae Cliente + Persona
+            var clientes = await _clienteRepositorio.ObtenerClientes();
 
-            return clientes.Select(c => new ClienteDTO
+            var clientesDTO = clientes.Select(c => new ClienteDTO
             {
                 Id = c.Id,
                 EstadoId = c.EstadoId,
-                PersonaId = c.PersonaId,
-                Persona = new PersonaDTO // Aquí mapeamos los datos de persona
+                Persona = new PersonaDTO
                 {
                     Id = c.Persona.Id,
                     Nombre = c.Persona.Nombre,
@@ -39,8 +38,17 @@ namespace CNegocio.Logica
                     Email = c.Persona.Email,
                     Direccion = c.Persona.Direccion,
                     CiudadId = c.Persona.CiudadId
+                },
+                Ciudad = new CiudadDTO
+                {
+                    Id = c.Persona.Ciudad.Id,
+                    Nombre = c.Persona.Ciudad.Nombre,
+                    Cp = c.Persona.Ciudad.Cp,
+                    Acp = c.Persona.Ciudad.Acp
                 }
             }).ToList();
+
+            return clientesDTO;
         }
 
         public async Task<ClienteDTO> ObtenerClientePorId(int id)
@@ -55,11 +63,12 @@ namespace CNegocio.Logica
                 PersonaId = cliente.PersonaId
             };
         }
+
         public async Task<ClienteDTO> CrearCliente(ClienteDTO clienteDTO)
         {
             var cliente = new Cliente
             {
-                PersonaId = clienteDTO.PersonaId, // Persona ya creada
+                PersonaId = clienteDTO.PersonaId,
                 EstadoId = clienteDTO.EstadoId
             };
 
@@ -72,6 +81,7 @@ namespace CNegocio.Logica
                 EstadoId = nuevoCliente.EstadoId
             };
         }
+
         public async Task ActualizarCliente(ClienteDTO clienteDTO)
         {
             var cliente = new Cliente
@@ -83,10 +93,12 @@ namespace CNegocio.Logica
 
             _clienteRepositorio.ActualizarCliente(cliente);
         }
+
         public async Task EliminarCliente(int id)
         {
             _clienteRepositorio.EliminarCliente(id);
         }
+
         public async Task<List<ClienteDTO>> ObtenerClientesPorDni(string dni)
         {
             var clientes = await _clienteRepositorio.ObtenerClientesPorDni(dni);
@@ -98,6 +110,7 @@ namespace CNegocio.Logica
                 PersonaId = c.PersonaId
             }).ToList();
         }
+
         public async Task<PersonaDTO> ObtenerPersonaPorClienteId(int clienteId)
         {
             var persona = await _clienteRepositorio.ObtenerPersonaPorClienteId(clienteId);
@@ -111,7 +124,8 @@ namespace CNegocio.Logica
                 Nro_Doc = persona.Nro_Doc,
                 Telefono = persona.Telefono,
                 Email = persona.Email,
-                Direccion = persona.Direccion
+                Direccion = persona.Direccion,
+                CiudadId = persona.CiudadId
             };
         }
     }
