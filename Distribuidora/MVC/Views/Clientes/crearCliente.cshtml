@@ -2,6 +2,21 @@
 
 @{
     ViewData["Title"] = "Crear Cliente";
+
+    // Lista de tipos de documento
+    var tiposDoc = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "DNI" },
+        new SelectListItem { Value = "2", Text = "Pasaporte" },
+        new SelectListItem { Value = "3", Text = "Libreta De Enrolamiento" }
+    };
+
+    // Lista de ciudades (hardcodeadas, podés cambiarlo por conexión al DataContext si querés)
+    var ciudades = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "1", Text = "Ciudad A" },
+        new SelectListItem { Value = "2", Text = "Ciudad B" }
+    };
 }
 
 <main>
@@ -17,19 +32,14 @@
                 <input type="text" asp-for="Persona.Nombre" placeholder="Nombre" class="input-text" />
                 <input type="text" asp-for="Persona.Apellido" placeholder="Apellido" class="input-text" />
 
-                <select asp-for="Persona.Tipo_DocId" class="input-text">
+                <select asp-for="Persona.Tipo_DocId" class="input-text" asp-items="tiposDoc">
                     <option value="">Seleccionar tipo documento</option>
-                    <option value="1">DNI</option>
-                    <option value="2">Pasaporte</option>
-                    <option value="3">Libreta De Enrolamiento</option>
                 </select>
 
                 <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de Documento" class="input-text" />
 
-                <select asp-for="Persona.CiudadId" class="input-text" size="5">
-                    <option value="1">Ciudad A</option>
-                    <option value="2">Ciudad B</option>
-                    <!-- Más ciudades si las agregas en tu DataContext -->
+                <select asp-for="Persona.CiudadId" class="input-text" asp-items="ciudades" size="5">
+                    <option value="">Seleccionar ciudad</option>
                 </select>
 
                 <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" />

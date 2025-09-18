@@ -105,7 +105,7 @@ namespace CNegocio.Logica
             await _personaRepositorio.ActualizarPersona(persona);
 
             var clienteExistente = await _clienteRepositorio.ObtenerClientePorId(clienteDTO.Id);
-            if (clienteExistente == null)
+            if (clienteExistente == null)   
                 throw new Exception("Cliente no encontrado.");
 
             clienteExistente.EstadoId = clienteDTO.EstadoId;

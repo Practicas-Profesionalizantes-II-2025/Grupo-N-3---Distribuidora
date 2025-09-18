@@ -18,9 +18,11 @@ namespace API.Controllers
     public class ClientesController : ControllerBase
     {
         private readonly IClienteLogica _clienteLogica;
-        public ClientesController(IClienteLogica clienteLogica)
+        private readonly IPersonaLogica _personaLogica;
+        public ClientesController(IClienteLogica clienteLogica, IPersonaLogica personaLogica)
         {
             _clienteLogica = clienteLogica;
+            _personaLogica = personaLogica;
         }
 
         // GET: api/Clientes
@@ -75,22 +77,24 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<ClienteDTO>> PostCliente(ClienteDTO cliente)
         {
+            var personaCreada = await _personaLogica.CrearPersona(cliente.Persona);
+
             var clienteDto = new ClienteDTO
             {
-                PersonaId = cliente.PersonaId,
+                PersonaId = personaCreada.Id,
                 EstadoId = cliente.EstadoId
             };
 
             var nuevoCliente = await _clienteLogica.CrearCliente(clienteDto);
 
-            return CreatedAtAction("ClientesGet", new { id = cliente.Id }, cliente);
+            return CreatedAtAction(nameof(GetCliente), new { id = nuevoCliente.Id }, nuevoCliente);
         }
 
         // DELETE: api/Clientes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCliente(int id)
         {
-            await _clienteLogica.EliminarCliente(id);
+            _clienteLogica.EliminarCliente(id);
 
             return NoContent();
         }

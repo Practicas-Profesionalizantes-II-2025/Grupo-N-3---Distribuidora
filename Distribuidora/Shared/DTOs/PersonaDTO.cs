@@ -12,8 +12,9 @@ namespace Shared.DTOs
         public string Nombre { get; set; }
         public string Apellido { get; set; }
         public int Tipo_DocId { get; set; }
-        public string Nro_Doc { get; set; }
         public int CiudadId { get; set; }
+        public string Nro_Doc { get; set; }
+
         public string Email { get; set; }
         public string Direccion { get; set; }
         public string Telefono { get; set; }

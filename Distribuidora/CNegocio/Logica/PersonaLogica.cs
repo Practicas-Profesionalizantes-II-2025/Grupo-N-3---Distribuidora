@@ -56,9 +56,9 @@ namespace CNegocio.Logica
                 EstadoId = persona.EstadoId
             };
         }
-        public async Task CrearPersona(PersonaDTO personaDTO)
+        public async Task<PersonaDTO> CrearPersona(PersonaDTO personaDTO)
         {
-            List<string> camposErroneos = ValidarPersona(personaDTO, esNueva: false);
+            List<string> camposErroneos = ValidarPersona(personaDTO, esNueva: true);
 
             if (camposErroneos.Count > 0)
                 throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
@@ -75,7 +75,22 @@ namespace CNegocio.Logica
                 Telefono = personaDTO.Telefono,
                 EstadoId = personaDTO.EstadoId
             };
+
             await _personaRepositorio.CrearPersona(persona);
+
+            return new PersonaDTO
+            {
+                Id = persona.Id,
+                Nombre = persona.Nombre,
+                Apellido = persona.Apellido,
+                Tipo_DocId = persona.Tipo_DocId,
+                Nro_Doc = persona.Nro_Doc,
+                CiudadId = persona.CiudadId,
+                Email = persona.Email,
+                Direccion = persona.Direccion,
+                Telefono = persona.Telefono,
+                EstadoId = persona.EstadoId
+            };
         }
         public async Task ActualizarPersona(PersonaDTO personaDTO)
         {
@@ -167,7 +182,7 @@ namespace CNegocio.Logica
 
         private bool ContainsInvalidCharacter(string text)
         {
-            char[] caracteres = { '!', '"', '#', '$', '%', '/', '(', ')', '=', '.', ',' };
+            char[] caracteres = { '!', '"', '#', '$', '%', '/', '(', ')', '=', ',' };
             return caracteres.Any(c => text.Contains(c));
         }
 

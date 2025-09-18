@@ -1,17 +1,16 @@
-﻿@model MVC.Models.DTOs.ClienteDTO
+﻿@model List<MVC.Models.DTOs.ClienteDTO>
+
+@{
+    ViewData["Title"] = "Eliminar Cliente";
+}
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="" />
-    <link rel="stylesheet" href="../css/style.css" />
-
     <title>Eliminar Cliente</title>
+    <link rel="stylesheet" href="~/css/style.css" />
 </head>
 <body>
     <main>
@@ -20,31 +19,29 @@
                 <h2>Eliminar cliente</h2>
             </div>
 
-            <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID o Nombre" id="searchInput">
-                <button class="btn yellow">Buscar</button>
-            </div>
-
-            <form asp-action="EliminarCliente" asp-route-id="@Model.Id" method="post" class="form">
-                <!-- Campos del cliente -->
-                <input asp-for="Id" placeholder="ID Cliente" disabled />
-                <input asp-for="EstadoId" placeholder="ID Estado" disabled />
-
-                <!-- Campos de la persona -->
-                <input asp-for="Persona.Nombre" placeholder="Nombre" disabled />
-                <input asp-for="Persona.Apellido" placeholder="Apellido" disabled />
-                <input asp-for="Persona.Nro_Doc" placeholder="DNI" disabled />
-                <input asp-for="Persona.Telefono" placeholder="Teléfono" disabled />
-                <input asp-for="Persona.Direccion" placeholder="Dirección" disabled />
-                <input asp-for="Persona.CiudadId" placeholder="Ciudad" disabled />
-                <input asp-for="Persona.Email" placeholder="Email" disabled />
-
-                <button type="submit" class="btn red">Eliminar</button>
-                <a asp-action="ListaClientes" class="btn yellow">Cancelar</a>
-            </form>
+            @if (Model != null && Model.Count > 0)
+            {
+                <form asp-action="EliminarCliente" method="post">
+                    <div class="form">
+                        <select name="id" id="clienteSelect">
+                            @foreach (var cliente in Model)
+                            {
+                                <option value="@cliente.Id">
+                                    @cliente.Persona?.Nombre @cliente.Persona?.Apellido (@cliente.Id)
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form">
+                        <button type="submit" class="btn red">Eliminar</button>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <p>No hay clientes disponibles para eliminar.</p>
+            }
         </div>
     </main>
-
-    <script src="../js/main.js"></script>
 </body>
 </html>
