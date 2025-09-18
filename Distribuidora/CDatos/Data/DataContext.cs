@@ -108,8 +108,8 @@ namespace CDatos.Data
             // Productos
             modelBuilder.Entity<Producto>().HasData(
                 new Producto { Id = 1, Nombre = "Televisor",    ProveedorId = 1, CategoriaId = 1, PrecioProducto = 10000,   Stock = 10 },
-                new Producto { Id = 2, Nombre = "Celular",      ProveedorId = 1, CategoriaId = 1, PrecioProducto = 5000,    Stock = 20 },
-                new Producto { Id = 3, Nombre = "Pan",          ProveedorId = 2, CategoriaId = 2, PrecioProducto = 100,     Stock = 100 }
+                new Producto { Id = 2, Nombre = "Celular",      ProveedorId = 1, CategoriaId = 2, PrecioProducto = 5000,    Stock = 20 },
+                new Producto { Id = 3, Nombre = "Pan",          ProveedorId = 2, CategoriaId = 3, PrecioProducto = 100,     Stock = 100 }
             );
 
             // Ordenes de Compra

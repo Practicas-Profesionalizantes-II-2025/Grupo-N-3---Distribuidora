@@ -87,7 +87,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ciudades");
+                    b.ToTable("Ciudad");
 
                     b.HasData(
                         new
@@ -126,7 +126,7 @@ namespace CDatos.Migrations
 
                     b.HasIndex("PersonaId");
 
-                    b.ToTable("Clientes");
+                    b.ToTable("Cliente");
 
                     b.HasData(
                         new
@@ -192,7 +192,7 @@ namespace CDatos.Migrations
 
                     b.HasIndex("PersonaId");
 
-                    b.ToTable("Empleados");
+                    b.ToTable("Empleado");
 
                     b.HasData(
                         new
@@ -297,7 +297,7 @@ namespace CDatos.Migrations
 
                     b.HasIndex("EmpleadoId");
 
-                    b.ToTable("OrdenesDeCompra");
+                    b.ToTable("OrdenDeCompra");
 
                     b.HasData(
                         new
@@ -335,7 +335,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeCompraProducto");
+                    b.ToTable("OrdenDeCompraProducto");
 
                     b.HasData(
                         new
@@ -389,7 +389,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeVenta");
+                    b.ToTable("OrdenDeVenta");
 
                     b.HasData(
                         new
@@ -433,7 +433,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeVentaProducto");
+                    b.ToTable("OrdenDeVentaProducto");
 
                     b.HasData(
                         new
@@ -502,7 +502,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Personas");
+                    b.ToTable("Persona");
 
                     b.HasData(
                         new
@@ -684,6 +684,9 @@ namespace CDatos.Migrations
                     b.Property<int>("ProveedorId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Productos");
@@ -695,23 +698,26 @@ namespace CDatos.Migrations
                             CategoriaId = 1,
                             Nombre = "Televisor",
                             PrecioProducto = 10000f,
-                            ProveedorId = 1
+                            ProveedorId = 1,
+                            Stock = 10
                         },
                         new
                         {
                             Id = 2,
-                            CategoriaId = 1,
+                            CategoriaId = 2,
                             Nombre = "Celular",
                             PrecioProducto = 5000f,
-                            ProveedorId = 1
+                            ProveedorId = 1,
+                            Stock = 20
                         },
                         new
                         {
                             Id = 3,
-                            CategoriaId = 2,
+                            CategoriaId = 3,
                             Nombre = "Pan",
                             PrecioProducto = 100f,
-                            ProveedorId = 2
+                            ProveedorId = 2,
+                            Stock = 100
                         });
                 });
 
@@ -744,7 +750,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Proveedores");
+                    b.ToTable("Proveedor");
 
                     b.HasData(
                         new
@@ -784,7 +790,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sectores");
+                    b.ToTable("Sector");
 
                     b.HasData(
                         new
@@ -815,7 +821,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TiposDocumento");
+                    b.ToTable("TipoDocumento");
 
                     b.HasData(
                         new
@@ -861,7 +867,7 @@ namespace CDatos.Migrations
 
                     b.HasIndex("PersonaId");
 
-                    b.ToTable("Usuarios");
+                    b.ToTable("Usuario");
 
                     b.HasData(
                         new
@@ -885,7 +891,7 @@ namespace CDatos.Migrations
             modelBuilder.Entity("Shared.Entities.Cliente", b =>
                 {
                     b.HasOne("Shared.Entities.Persona", "Persona")
-                        .WithMany()
+                        .WithMany("Clientes")
                         .HasForeignKey("PersonaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -932,6 +938,11 @@ namespace CDatos.Migrations
                         .IsRequired();
 
                     b.Navigation("Persona");
+                });
+
+            modelBuilder.Entity("Shared.Entities.Persona", b =>
+                {
+                    b.Navigation("Clientes");
                 });
 #pragma warning restore 612, 618
         }

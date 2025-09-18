@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CDatos.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250821143141_add10")]
-    partial class add10
+    [Migration("20250918164559_add1")]
+    partial class add1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -42,7 +42,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("Categoria");
 
                     b.HasData(
                         new
@@ -90,7 +90,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ciudades");
+                    b.ToTable("Ciudad");
 
                     b.HasData(
                         new
@@ -127,7 +127,9 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clientes");
+                    b.HasIndex("PersonaId");
+
+                    b.ToTable("Cliente");
 
                     b.HasData(
                         new
@@ -191,7 +193,9 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Empleados");
+                    b.HasIndex("PersonaId");
+
+                    b.ToTable("Empleado");
 
                     b.HasData(
                         new
@@ -292,7 +296,11 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeCompra");
+                    b.HasIndex("DistribuidorId");
+
+                    b.HasIndex("EmpleadoId");
+
+                    b.ToTable("OrdenDeCompra");
 
                     b.HasData(
                         new
@@ -330,7 +338,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeCompraProducto");
+                    b.ToTable("OrdenDeCompraProducto");
 
                     b.HasData(
                         new
@@ -384,7 +392,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeVenta");
+                    b.ToTable("OrdenDeVenta");
 
                     b.HasData(
                         new
@@ -428,7 +436,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeVentaProducto");
+                    b.ToTable("OrdenDeVentaProducto");
 
                     b.HasData(
                         new
@@ -497,7 +505,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Personas");
+                    b.ToTable("Persona");
 
                     b.HasData(
                         new
@@ -679,6 +687,9 @@ namespace CDatos.Migrations
                     b.Property<int>("ProveedorId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Productos");
@@ -690,23 +701,26 @@ namespace CDatos.Migrations
                             CategoriaId = 1,
                             Nombre = "Televisor",
                             PrecioProducto = 10000f,
-                            ProveedorId = 1
+                            ProveedorId = 1,
+                            Stock = 10
                         },
                         new
                         {
                             Id = 2,
-                            CategoriaId = 1,
+                            CategoriaId = 2,
                             Nombre = "Celular",
                             PrecioProducto = 5000f,
-                            ProveedorId = 1
+                            ProveedorId = 1,
+                            Stock = 20
                         },
                         new
                         {
                             Id = 3,
-                            CategoriaId = 2,
+                            CategoriaId = 3,
                             Nombre = "Pan",
                             PrecioProducto = 100f,
-                            ProveedorId = 2
+                            ProveedorId = 2,
+                            Stock = 100
                         });
                 });
 
@@ -739,7 +753,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Proveedores");
+                    b.ToTable("Proveedor");
 
                     b.HasData(
                         new
@@ -779,7 +793,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sectores");
+                    b.ToTable("Sector");
 
                     b.HasData(
                         new
@@ -810,7 +824,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TiposDocumento");
+                    b.ToTable("TipoDocumento");
 
                     b.HasData(
                         new
@@ -854,7 +868,9 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Usuarios");
+                    b.HasIndex("PersonaId");
+
+                    b.ToTable("Usuario");
 
                     b.HasData(
                         new
@@ -873,6 +889,63 @@ namespace CDatos.Migrations
                             NombreUsuario = "cliente1",
                             PersonaId = 7
                         });
+                });
+
+            modelBuilder.Entity("Shared.Entities.Cliente", b =>
+                {
+                    b.HasOne("Shared.Entities.Persona", "Persona")
+                        .WithMany("Clientes")
+                        .HasForeignKey("PersonaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Persona");
+                });
+
+            modelBuilder.Entity("Shared.Entities.Empleado", b =>
+                {
+                    b.HasOne("Shared.Entities.Persona", "Persona")
+                        .WithMany()
+                        .HasForeignKey("PersonaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Persona");
+                });
+
+            modelBuilder.Entity("Shared.Entities.OrdenDeCompra", b =>
+                {
+                    b.HasOne("Shared.Entities.Proveedor", "Distribuidor")
+                        .WithMany()
+                        .HasForeignKey("DistribuidorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shared.Entities.Empleado", "Empleado")
+                        .WithMany()
+                        .HasForeignKey("EmpleadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Distribuidor");
+
+                    b.Navigation("Empleado");
+                });
+
+            modelBuilder.Entity("Shared.Entities.Usuario", b =>
+                {
+                    b.HasOne("Shared.Entities.Persona", "Persona")
+                        .WithMany()
+                        .HasForeignKey("PersonaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Persona");
+                });
+
+            modelBuilder.Entity("Shared.Entities.Persona", b =>
+                {
+                    b.Navigation("Clientes");
                 });
 #pragma warning restore 612, 618
         }

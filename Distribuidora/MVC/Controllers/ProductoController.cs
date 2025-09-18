@@ -38,11 +38,14 @@ namespace MVC.Controllers
             var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json);
 
             // Obtener proveedores y categorías para mostrar nombres
-            var proveedoresJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ProveedorGet}");
-            var categoriasJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CategoriasGet}");
+            var ulrProveedores = $"{_settings.BaseUrl}/{_settings.ProveedorGet}";
+            var urlCategorias = $"{_settings.BaseUrl}/{_settings.CategoriasGet}";
+            var proveedoresJson = await _httpClient.GetStringAsync(ulrProveedores);
+            var categoriasJson = await _httpClient.GetStringAsync(urlCategorias);
 
-            var proveedores = JsonConvert.DeserializeObject<List<dynamic>>(proveedoresJson);
-            var categorias = JsonConvert.DeserializeObject<List<dynamic>>(categoriasJson);
+            var proveedores = JsonConvert.DeserializeObject<List<ProveedorDTO>>(proveedoresJson);
+            var categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(categoriasJson);
+
 
             foreach (var p in productos)
             {

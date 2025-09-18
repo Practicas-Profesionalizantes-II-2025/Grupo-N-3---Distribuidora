@@ -26,7 +26,8 @@ namespace CNegocio.Logica
                 Nombre = p.Nombre,
                 PrecioProducto = p.PrecioProducto,
                 Stock = p.Stock,
-                ProveedorId = p.ProveedorId
+                ProveedorId = p.ProveedorId,
+                CategoriaId = p.CategoriaId,
             }).ToList();
         }
         public async Task<ProductoDTO> ObtenerProductoPorId(int id)
@@ -38,7 +39,8 @@ namespace CNegocio.Logica
                 Nombre = producto.Nombre,
                 PrecioProducto = producto.PrecioProducto,
                 Stock = producto.Stock,
-                ProveedorId = producto.ProveedorId
+                ProveedorId = producto.ProveedorId,
+                CategoriaId = producto.CategoriaId
             };
         }
         public async Task CrearProducto(ProductoDTO productoDTO)
@@ -49,7 +51,8 @@ namespace CNegocio.Logica
                 Nombre = productoDTO.Nombre,
                 PrecioProducto = productoDTO.PrecioProducto,
                 Stock = productoDTO.Stock,
-                ProveedorId = productoDTO.ProveedorId
+                ProveedorId = productoDTO.ProveedorId,
+                CategoriaId = productoDTO.CategoriaId
             };
             await _IProductoRepositorio.CrearProducto(producto);
         }
@@ -61,7 +64,8 @@ namespace CNegocio.Logica
                 Nombre = productoDTO.Nombre,
                 PrecioProducto = productoDTO.PrecioProducto,
                 Stock = productoDTO.Stock,
-                ProveedorId = productoDTO.ProveedorId
+                ProveedorId = productoDTO.ProveedorId,
+                CategoriaId = productoDTO.CategoriaId
             };
             await _IProductoRepositorio.ActualizarProducto(producto);
         }
@@ -78,7 +82,9 @@ namespace CNegocio.Logica
                 Nombre = p.Nombre,
                 PrecioProducto = p.PrecioProducto,
                 Stock = p.Stock,
-                ProveedorId = p.ProveedorId
+                ProveedorId = p.ProveedorId,
+                CategoriaId = p.CategoriaId
+
             }).ToList();
         }
         public async Task<List<ProductoDTO>> ObtenerProductosPorNombre(string nombre)
@@ -90,7 +96,8 @@ namespace CNegocio.Logica
                 Nombre = p.Nombre,
                 PrecioProducto = p.PrecioProducto,
                 Stock = p.Stock,
-                ProveedorId = p.ProveedorId
+                ProveedorId = p.ProveedorId,
+                CategoriaId = p.CategoriaId
             }).ToList();
         }
         public async Task<List<ProductoDTO>> ObtenerProductosPorCategoriaId(int categoriaId)
@@ -102,7 +109,8 @@ namespace CNegocio.Logica
                 Nombre = p.Nombre,
                 PrecioProducto = p.PrecioProducto,
                 Stock = p.Stock,
-                ProveedorId = p.ProveedorId
+                ProveedorId = p.ProveedorId,
+                CategoriaId = p.CategoriaId
             }).ToList();
         }
     }
