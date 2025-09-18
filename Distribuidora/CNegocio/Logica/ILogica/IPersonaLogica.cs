@@ -11,7 +11,7 @@ namespace CNegocio.Logica.ILogica
     {
         Task<List<PersonaDTO>> ObtenerPersonas();
         Task<PersonaDTO> ObtenerPersonaPorId(int id);
-        Task CrearPersona(PersonaDTO personaDTO);
+        Task<PersonaDTO> CrearPersona(PersonaDTO personaDTO);
         Task ActualizarPersona(PersonaDTO personaDTO);
         Task EliminarPersona(int id);
         Task<List<PersonaDTO>> ObtenerPersonasPorDni(string dni);

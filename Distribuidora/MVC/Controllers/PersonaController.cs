@@ -61,7 +61,11 @@ namespace MVC.Controllers
             var response = await _httpClient.PostAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, $"Error creando persona: {error}");
+                return View(persona);
+            }
 
             return RedirectToAction("listaPersonas");
         }

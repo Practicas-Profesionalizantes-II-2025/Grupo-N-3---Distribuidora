@@ -17,24 +17,26 @@ namespace API.Controllers
     [ApiController]
     public class ClientesController : ControllerBase
     {
-        private readonly IClienteLogica _IClienteLogica;
-        public ClientesController(IClienteLogica IClienteLogica)
+        private readonly IClienteLogica _clienteLogica;
+        private readonly IPersonaLogica _personaLogica;
+        public ClientesController(IClienteLogica clienteLogica, IPersonaLogica personaLogica)
         {
-            _IClienteLogica = IClienteLogica;
+            _clienteLogica = clienteLogica;
+            _personaLogica = personaLogica;
         }
 
         // GET: api/Clientes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClienteDTO>>> ClientesGet()
+        public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetCliente()
         {
-            return await _IClienteLogica.ObtenerClientes();
+            return await _clienteLogica.ObtenerClientes();
         }
 
         // GET: api/Clientes/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ClienteDTO>> ClientesGet(int id)
+        public async Task<ActionResult<ClienteDTO>> GetCliente(int id)
         {
-            var cliente = await _IClienteLogica.ObtenerClientePorId(id);
+            var cliente = await _clienteLogica.ObtenerClientePorId(id);
 
             if (cliente == null)
             {
@@ -44,11 +46,11 @@ namespace API.Controllers
             return cliente;
         }
 
-        // GET: api/Cliente/dni/12345678
+        // GET: api/Cliente/dni/
         [HttpGet("dni/{dni}")]
         public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetClientesPorDni(string dni)
         {
-            var clientes = await _IClienteLogica.ObtenerClientesPorDni(dni);
+            var clientes = await _clienteLogica.ObtenerClientesPorDni(dni);
             if (clientes == null || !clientes.Any())
                 return NotFound($"No hay clientes con DNI {dni}.");
 
@@ -59,13 +61,13 @@ namespace API.Controllers
         // PUT: api/Clientes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> ClientesPut(int id, ClienteDTO cliente)
+        public async Task<IActionResult> PutCliente(int id, ClienteDTO cliente)
         {
             if (id != cliente.Id)
             {
                 return BadRequest();
             }
-            _IClienteLogica.ActualizarCliente(cliente);
+            await _clienteLogica.ActualizarCliente(cliente);
 
             return NoContent();
         }
@@ -73,24 +75,26 @@ namespace API.Controllers
         // POST: api/Clientes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<ClienteDTO>> ClientesPost(ClienteDTO cliente)
+        public async Task<ActionResult<ClienteDTO>> PostCliente(ClienteDTO cliente)
         {
+            var personaCreada = await _personaLogica.CrearPersona(cliente.Persona);
+
             var clienteDto = new ClienteDTO
             {
-                PersonaId = cliente.PersonaId,
+                PersonaId = personaCreada.Id,
                 EstadoId = cliente.EstadoId
             };
 
-            var nuevoCliente = await _IClienteLogica.CrearCliente(clienteDto);
+            var nuevoCliente = await _clienteLogica.CrearCliente(clienteDto);
 
-            return CreatedAtAction("ClientesGet", new { id = cliente.Id }, cliente);
+            return CreatedAtAction(nameof(GetCliente), new { id = nuevoCliente.Id }, nuevoCliente);
         }
 
         // DELETE: api/Clientes/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> ClienteDelete(int id)
+        public async Task<IActionResult> DeleteCliente(int id)
         {
-            _IClienteLogica.EliminarCliente(id);
+            _clienteLogica.EliminarCliente(id);
 
             return NoContent();
         }

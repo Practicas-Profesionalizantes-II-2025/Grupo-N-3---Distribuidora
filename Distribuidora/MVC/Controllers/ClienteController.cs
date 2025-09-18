@@ -48,55 +48,34 @@ namespace MVC.Controllers
         // GET: Crear Cliente
         public IActionResult crearCliente()
         {
-            return View();
+            var cliente = new ClienteDTO
+            {
+                Persona = new PersonaDTO()
+            };
+            return View(cliente);
         }
 
         // POST: Crear Cliente
         [HttpPost]
         public async Task<IActionResult> crearCliente(ClienteDTO cliente)
         {
-            if (!ModelState.IsValid)
-                return View(cliente);
-
             try
             {
-                var personaDto = new PersonaDTO
+                // Aseguramos que Persona no sea null
+                if (cliente.Persona == null)
                 {
-                    Nombre = cliente.Persona?.Nombre,
-                    Apellido = cliente.Persona?.Apellido,
-                    Tipo_DocId = cliente.Persona?.Tipo_DocId ?? 0,
-                    Nro_Doc = cliente.Persona?.Nro_Doc,
-                    CiudadId = cliente.Persona?.CiudadId ?? 0,
-                    Email = cliente.Persona?.Email,
-                    Direccion = cliente.Persona?.Direccion,
-                    Telefono = cliente.Persona?.Telefono,
-                    EstadoId = 1
-                };
-
-                var personaJson = JsonConvert.SerializeObject(personaDto);
-                var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
-
-                var personaResponse = await _httpClient.PostAsync($"{_settings.BaseUrl}/{_settings.PersonaPost}", personaContent);
-
-                if (!personaResponse.IsSuccessStatusCode)
-                {
-                    var error = await personaResponse.Content.ReadAsStringAsync();
-                    ModelState.AddModelError(string.Empty, $"Error creando persona: {error}");
+                    ModelState.AddModelError(string.Empty, "Debe ingresar los datos de la Persona.");
                     return View(cliente);
                 }
 
-                var personaCreadaJson = await personaResponse.Content.ReadAsStringAsync();
-                var personaCreada = JsonConvert.DeserializeObject<PersonaDTO>(personaCreadaJson);
+                // Forzamos estado de Persona en Alta
+                cliente.Persona.EstadoId = 1;
 
-                var clienteApi = new ClienteDTO
-                {
-                    PersonaId = personaCreada.Id,
-                    EstadoId = cliente.EstadoId
-                };
-
-                var clienteJson = JsonConvert.SerializeObject(clienteApi);
+                // Serializamos TODO el objeto ClienteDTO con Persona incluida
+                var clienteJson = JsonConvert.SerializeObject(cliente);
                 var clienteContent = new StringContent(clienteJson, Encoding.UTF8, "application/json");
 
+                // Llamada al endpoint de la API
                 var clienteResponse = await _httpClient.PostAsync($"{_settings.BaseUrl}/{_settings.ClientesPost}", clienteContent);
 
                 if (!clienteResponse.IsSuccessStatusCode)
@@ -106,6 +85,7 @@ namespace MVC.Controllers
                     return View(cliente);
                 }
 
+                // Si llegó hasta acá → se creó bien
                 return RedirectToAction(nameof(listaClientes));
             }
             catch (Exception ex)
@@ -151,18 +131,25 @@ namespace MVC.Controllers
         [HttpGet]
         public async Task<IActionResult> modificarCliente(int id)
         {
-            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}/{id}";
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}"; // obtengo todos
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
             {
-                var errorMsg = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError(string.Empty, $"Error al buscar cliente: {errorMsg}");
-                return View(listaClientes);
+                ModelState.AddModelError(string.Empty, "No se pudo cargar el cliente");
+                return RedirectToAction(nameof(listaClientes));
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            var cliente = JsonConvert.DeserializeObject<ClienteDTO>(json);
+            var clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
+
+            var cliente = clientes.FirstOrDefault(c => c.Id == id);
+
+            if (cliente == null)
+            {
+                ModelState.AddModelError(string.Empty, "Cliente no encontrado");
+                return RedirectToAction(nameof(listaClientes));
+            }
 
             return View(cliente);
         }
@@ -177,20 +164,46 @@ namespace MVC.Controllers
             if (!ModelState.IsValid)
                 return View(cliente);
 
-            var url = $"{_settings.BaseUrl}/{_settings.ClientesPut}/{id}";
-            var jsonData = JsonConvert.SerializeObject(cliente);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
-            var response = await _httpClient.PutAsync(url, content);
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                var errorMsg = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError(string.Empty, $"Error al modificar cliente: {errorMsg}");
+                // Enviar cambios de persona
+                var personaJson = JsonConvert.SerializeObject(cliente.Persona);
+                var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
+                var personaResponse = await _httpClient.PutAsync(
+                    $"{_settings.BaseUrl}/{_settings.PersonaPut}/{cliente.Persona.Id}",
+                    personaContent
+                );
+
+                if (!personaResponse.IsSuccessStatusCode)
+                {
+                    var error = await personaResponse.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, $"Error actualizando persona: {error}");
+                    return View(cliente);
+                }
+
+                // Enviar cambios de cliente
+                var clienteJson = JsonConvert.SerializeObject(cliente);
+                var clienteContent = new StringContent(clienteJson, Encoding.UTF8, "application/json");
+                var clienteResponse = await _httpClient.PutAsync(
+                    $"{_settings.BaseUrl}/{_settings.ClientesPut}/{cliente.Id}",
+                    clienteContent
+                );
+
+                if (!clienteResponse.IsSuccessStatusCode)
+                {
+                    var error = await clienteResponse.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, $"Error actualizando cliente: {error}");
+                    return View(cliente);
+                }
+
+                // Redirigir a lista para limpiar pantalla
+                return RedirectToAction(nameof(listaClientes));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
                 return View(cliente);
             }
-
-            return RedirectToAction("listaClientes");
         }
     }
 }

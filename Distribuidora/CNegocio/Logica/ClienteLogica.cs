@@ -54,7 +54,19 @@ namespace CNegocio.Logica
             {
                 Id = cliente.Id,
                 EstadoId = cliente.EstadoId,
-                PersonaId = cliente.PersonaId
+                PersonaId = cliente.PersonaId,
+                Persona = new PersonaDTO
+                {
+                    Id = cliente.Persona.Id,
+                    Nombre = cliente.Persona.Nombre,
+                    Apellido = cliente.Persona.Apellido,
+                    Nro_Doc = cliente.Persona.Nro_Doc,
+                    Telefono = cliente.Persona.Telefono,
+                    Email = cliente.Persona.Email,
+                    Direccion = cliente.Persona.Direccion,
+                    CiudadId = cliente.Persona.CiudadId,
+                    EstadoId = cliente.Persona.EstadoId
+                }
             };
         }
 
@@ -78,14 +90,27 @@ namespace CNegocio.Logica
 
         public async Task ActualizarCliente(ClienteDTO clienteDTO)
         {
-            var cliente = new Cliente
-            {
-                Id = clienteDTO.Id,
-                PersonaId = clienteDTO.PersonaId,
-                EstadoId = clienteDTO.EstadoId
-            };
+            var persona = await _personaRepositorio.ObtenerPersonaPorId(clienteDTO.Persona.Id);
+            if (persona == null)
+                throw new Exception("Persona no encontrada.");
 
-            _clienteRepositorio.ActualizarCliente(cliente);
+            persona.Nombre = clienteDTO.Persona.Nombre;
+            persona.Apellido = clienteDTO.Persona.Apellido;
+            persona.Nro_Doc = clienteDTO.Persona.Nro_Doc;
+            persona.Telefono = clienteDTO.Persona.Telefono;
+            persona.Email = clienteDTO.Persona.Email;
+            persona.Direccion = clienteDTO.Persona.Direccion;
+            persona.CiudadId = clienteDTO.Persona.CiudadId;
+
+            await _personaRepositorio.ActualizarPersona(persona);
+
+            var clienteExistente = await _clienteRepositorio.ObtenerClientePorId(clienteDTO.Id);
+            if (clienteExistente == null)   
+                throw new Exception("Cliente no encontrado.");
+
+            clienteExistente.EstadoId = clienteDTO.EstadoId;
+
+            await _clienteRepositorio.ActualizarCliente(clienteExistente);
         }
 
         public async Task EliminarCliente(int id)

@@ -41,16 +41,16 @@ namespace CDatos.Repositorios
             return cliente;
         }
 
-        public void ActualizarCliente(Cliente cliente)
+        public async Task ActualizarCliente(Cliente cliente)
         {
-            var clienteExistente = _context.Cliente.Find(cliente.Id);
+            var clienteExistente = await _context.Cliente.FindAsync(cliente.Id);
             if (clienteExistente == null)
                 throw new Exception("Cliente no encontrado.");
 
-            clienteExistente.PersonaId = cliente.PersonaId;
             clienteExistente.EstadoId = cliente.EstadoId;
+            clienteExistente.PersonaId = cliente.PersonaId;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public void EliminarCliente(int id)
