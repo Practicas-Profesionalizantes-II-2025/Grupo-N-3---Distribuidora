@@ -33,38 +33,24 @@
                 <input type="text" asp-for="Persona.Nombre" placeholder="Nombre" class="input-text" />
                 <input type="text" asp-for="Persona.Apellido" placeholder="Apellido" class="input-text" />
 
-<<<<<<< HEAD
                 <!-- Tipo y Número de Documento -->
-                <select asp-for="Persona.Tipo_DocId" class="input-text">
-                    <option value="">Tipo de documento</option>
-                    <option value="1">DNI</option>
-                    <option value="2">Pasaporte</option>
-                    <option value="3">Libreta de Enrolamiento</option>
-=======
                 <select asp-for="Persona.Tipo_DocId" class="input-text" asp-items="tiposDoc">
                     <option value="">Seleccionar tipo documento</option>
->>>>>>> vista+controllers-J
                 </select>
                 <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de documento" class="input-text" />
 
                 <!-- Teléfono -->
                 <input id="telefono" type="tel" asp-for="Persona.Telefono" placeholder="Número de teléfono" class="input-text" />
 
-<<<<<<< HEAD
                 <!-- Dirección -->
                 <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" />
 
-                <!-- Código Postal y Ciudad -->
+                <!-- Código Postal (no está en el modelo, campo libre) -->
                 <input type="text" id="cp" placeholder="Código Postal" class="input-text" />
-                <select asp-for="Persona.CiudadId" id="ciudad" class="input-text">
-                    <option value="">Seleccione ciudad</option>
-                    <option value="1">Ciudad A</option>
-                    <option value="2">Ciudad B</option>
-                    <!-- Más ciudades si las agregas en tu DataContext -->
-=======
-                <select asp-for="Persona.CiudadId" class="input-text" asp-items="ciudades" size="5">
+
+                <!-- Ciudad -->
+                <select asp-for="Persona.CiudadId" class="input-text" asp-items="ciudades">
                     <option value="">Seleccionar ciudad</option>
->>>>>>> vista+controllers-J
                 </select>
 
                 <!-- Email -->
@@ -78,7 +64,7 @@
             <div class="form-buttons-wrapper">
                 <div class="form-buttons">
                     <button type="submit" class="btn yellow">Guardar</button>
-                    <a href="listaClientes.html" class="btn back">Volver</a>
+                    <a asp-action="listaClientes" asp-controller="Clientes" class="btn back">Volver</a>
                 </div>
             </div>
         </form>
