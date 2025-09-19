@@ -48,6 +48,10 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PersonaPut(int id, PersonaDTO persona)
         {
+
+            if (id != persona.Id)
+                return BadRequest("El ID de la URL no coincide con el de la persona.");
+
             await _IPersonaLogica.ActualizarPersona(persona);
 
             return NoContent();

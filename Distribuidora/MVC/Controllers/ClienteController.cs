@@ -128,10 +128,9 @@ namespace MVC.Controllers
         }
 
         // GET: Modificar cliente
-        [HttpGet]
         public async Task<IActionResult> modificarCliente(int id)
         {
-            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}"; // obtengo todos
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}";
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
@@ -142,7 +141,6 @@ namespace MVC.Controllers
 
             var json = await response.Content.ReadAsStringAsync();
             var clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
-
             var cliente = clientes.FirstOrDefault(c => c.Id == id);
 
             if (cliente == null)
@@ -151,12 +149,15 @@ namespace MVC.Controllers
                 return RedirectToAction(nameof(listaClientes));
             }
 
+            // Esto evita que falle ModelState por Estado
+            cliente.EstadoId = 1;
+
             return View(cliente);
         }
 
         // POST: Modificar cliente
         [HttpPost]
-        public async Task<IActionResult> modificarCliente(int id, ClienteDTO cliente)
+        public async Task<IActionResult> modificarCliente(int id, [Bind("Id,Persona")] ClienteDTO cliente)
         {
             if (id != cliente.Id)
                 return NotFound();
@@ -166,7 +167,10 @@ namespace MVC.Controllers
 
             try
             {
-                // Enviar cambios de persona
+                cliente.EstadoId = 1;
+                cliente.Persona.EstadoId = 1;
+                cliente.Persona.Tipo_DocId = cliente.Persona.Tipo_DocId == 0 ? 1 : cliente.Persona.Tipo_DocId;
+
                 var personaJson = JsonConvert.SerializeObject(cliente.Persona);
                 var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
                 var personaResponse = await _httpClient.PutAsync(
@@ -181,7 +185,6 @@ namespace MVC.Controllers
                     return View(cliente);
                 }
 
-                // Enviar cambios de cliente
                 var clienteJson = JsonConvert.SerializeObject(cliente);
                 var clienteContent = new StringContent(clienteJson, Encoding.UTF8, "application/json");
                 var clienteResponse = await _httpClient.PutAsync(
@@ -196,7 +199,6 @@ namespace MVC.Controllers
                     return View(cliente);
                 }
 
-                // Redirigir a lista para limpiar pantalla
                 return RedirectToAction(nameof(listaClientes));
             }
             catch (Exception ex)

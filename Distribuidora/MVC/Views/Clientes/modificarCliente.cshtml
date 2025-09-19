@@ -7,19 +7,37 @@
         </div>
 
         <form asp-action="modificarCliente" method="post">
+            <!-- Campos ocultos necesarios -->
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="Persona.Id" />
+            <input type="hidden" asp-for="EstadoId" />
+            <input type="hidden" asp-for="Persona.CiudadId" />
+            <input type="hidden" asp-for="Persona.Tipo_DocId" />
+            <input type="hidden" asp-for="Persona.Nro_Doc" />
 
             <div class="form">
+                <!-- Campos editables -->
                 <input asp-for="Persona.Nombre" placeholder="Nombre" />
                 <input asp-for="Persona.Apellido" placeholder="Apellido" />
-                <input asp-for="Persona.Nro_Doc" placeholder="DNI" disabled />
+                <input asp-for="Persona.Nro_Doc" placeholder="DNI" readonly />
                 <input asp-for="Persona.Telefono" placeholder="Teléfono" />
                 <input asp-for="Persona.Direccion" placeholder="Dirección" />
                 <input asp-for="Persona.CiudadId" placeholder="Ciudad" />
                 <input asp-for="Persona.Email" placeholder="Email" />
-                <input asp-for="EstadoId" placeholder="Estado" />
+
                 <button type="submit" class="btn yellow">Guardar</button>
+            </div>
+
+            <!-- Mostrar errores de validación -->
+            <div class="validation-summary">
+                @foreach (var key in ViewData.ModelState.Keys)
+                {
+                    var errors = ViewData.ModelState[key].Errors;
+                    foreach (var error in errors)
+                    {
+                        <div class="text-danger">@error.ErrorMessage</div>
+                    }
+                }
             </div>
         </form>
     </div>
