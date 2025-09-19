@@ -1,4 +1,4 @@
-﻿@model MVC.Models.DTOs.ProductoDTO
+﻿@model MVC.Models.DTOs.ProductoEditarModel
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,23 +22,40 @@
             </div>
 
             <!-- Formulario para crear o modificar productos -->
-            <div class="form">
-                <input type="text" placeholder="@Model.Nombre" id="nombreApellido">
-@*              <input type="text" placeholder="@Model." id="ProveedorNombre">
-                <input type="text" placeholder="@Model." id="direccion"> *@
-                <input type="text" placeholder="@Model.PrecioProducto" id="PrecioProducto">
-                <input type="text" placeholder="@Model.Stock" id="ciudad">
-            </div>
+            <form asp-action="AccionModificarProducto" method="post" class="form">
+                <input type="hidden" asp-for="Id" /> @* para hacer el put necesitamos el id asi que lo oculatmos *@
+                <input type="text" name="Nombre" placeholder="@Model.Nombre" id="nombreApellido"> @* se podria poner value="@Model.Nombre" pero se borraria al escribir *@
+                <input type="text" name="PrecioProducto" placeholder="@Model.PrecioProducto" id="nombreApellido">
+                <input type="text" name="Stock" placeholder="@Model.Stock" id="ciudad">
+                <input type="text" name="PrecioProducto" placeholder="@Model.PrecioProducto" id="PrecioProducto">
+                <select asp-for="CategoriaId" class="form-control">
+                    @foreach (var categoria in Model.Categorias)
+                    {
+                        <option name="CategoriaId" value="@categoria.Id" selected="@(categoria.Id == Model.CategoriaId)">
+                            @categoria.Nombre
+                        </option>
+                    }
+                </select>
+
+                <select asp-for="ProveedorId" class="form-control">
+                    @foreach (var proveedor in Model.Proveedores)
+                    {
+                        <option name="ProveedorId" value="@proveedor.Id" selected="@(proveedor.Id == Model.ProveedorId ? "selected" : "")">
+                            @proveedor.Nombre
+                        </option>
+                    }
+                </select>
+
+                <!-- contenedor exclusivo para centrar -->
+                <div class="form-buttons-wrapper">
+                    <div class="form-buttons">
+                        <button type="submit" class="btn yellow">Guardar</button>
+                        <a href="listaProductos.html" class="btn back">Volver</a>
+                    </div>
+                </div>
+            </form>
         </div>
 
-        <!-- contenedor exclusivo para centrar -->
-        <div class="form-buttons-wrapper">
-            <div class="form-buttons">
-                <button class="btn yellow">Guardar</button>
-                <a href="listaProductos.html" class="btn back">Volver</a>
-            </div>
-        </div>
-        </div>
 
     </main>
 

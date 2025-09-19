@@ -83,12 +83,18 @@ namespace MVC.Controllers
         }
 
 
-        // GET: Modificar producto
+        // PUT: Modificar producto
         public async Task<IActionResult> modificarProducto(int id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}/{id}";
             var response = await _httpClient.GetAsync(url);
-            
+
+            var urlCategorias = $"{_settings.BaseUrl}/{_settings.CategoriasGet}";
+            var responseUrlCategorias = await _httpClient.GetAsync(urlCategorias);
+
+            var urlProveedores = $"{_settings.BaseUrl}/{_settings.ProveedorGet}";
+            var responseUrlProveedores = await _httpClient.GetAsync(urlProveedores);
+
             if (!response.IsSuccessStatusCode)
             {
                 var errorMsg = await response.Content.ReadAsStringAsync();
@@ -99,7 +105,88 @@ namespace MVC.Controllers
             var json = await response.Content.ReadAsStringAsync();
             var producto = JsonConvert.DeserializeObject<ProductoDTO>(json);
 
-            return View(producto);
+            var jsonCategorias = await responseUrlCategorias.Content.ReadAsStringAsync();
+            var jsonProveedores = await responseUrlProveedores.Content.ReadAsStringAsync();
+
+            var categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(jsonCategorias);
+            var proveedores = JsonConvert.DeserializeObject<List<ProveedorDTO>>(jsonProveedores);
+
+
+            ProductoEditarModel modelo = new ProductoEditarModel
+            {
+                Id = producto.Id,
+                Nombre = producto.Nombre,
+                PrecioProducto = producto.PrecioProducto,
+                Stock = producto.Stock,
+                ProveedorId = producto.ProveedorId,
+                CategoriaId = producto.CategoriaId,
+                Proveedores = proveedores,
+                Categorias = categorias
+            };
+            return View(modelo);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AccionModificarProducto([Bind("Id, Nombre, PrecioProducto, Stock, PrecioProducto, CategoriaId, ProveedorId")] ProductoDTO producto)
+        {
+            // Si ModelState no es válido, volver a la vista de edición con el modelo que espera la vista
+            if (!ModelState.IsValid)
+            {
+                var categoriasJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CategoriasGet}");
+                var proveedoresJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ProveedorGet}");
+
+                var categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(categoriasJson);
+                var proveedores = JsonConvert.DeserializeObject<List<ProveedorDTO>>(proveedoresJson);
+
+                var modelo = new ProductoEditarModel
+                {
+                    Id = producto.Id,
+                    Nombre = producto.Nombre,
+                    PrecioProducto = producto.PrecioProducto,
+                    Stock = producto.Stock,
+                    CategoriaId = producto.CategoriaId,
+                    ProveedorId = producto.ProveedorId,
+                    Categorias = categorias,
+                    Proveedores = proveedores
+                };
+
+                return View("modificarProducto", modelo);
+            }
+
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoPut}/{producto.Id}";
+            var jsonData = JsonConvert.SerializeObject(producto);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(url, content);
+
+
+            // si algo falla
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaProductos));
+
+            // Si falla el PUT, agrego el error y vuelvo a cargar la vista de edición con las listas
+            var errorMsg = await response.Content.ReadAsStringAsync();
+            ModelState.AddModelError(string.Empty, $"Error al modificar: {errorMsg}");
+
+            var categoriasJson2 = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CategoriasGet}");
+            var proveedoresJson2 = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ProveedorGet}");
+
+            var categorias2 = JsonConvert.DeserializeObject<List<CategoriaDTO>>(categoriasJson2);
+            var proveedores2 = JsonConvert.DeserializeObject<List<ProveedorDTO>>(proveedoresJson2);
+
+            var modelo2 = new ProductoEditarModel
+            {
+                Id = producto.Id,
+                Nombre = producto.Nombre,
+                PrecioProducto = producto.PrecioProducto,
+                Stock = producto.Stock,
+                CategoriaId = producto.CategoriaId,
+                ProveedorId = producto.ProveedorId,
+                Categorias = categorias2,
+                Proveedores = proveedores2
+            };
+
+            return View("modificarProducto", modelo2);
         }
 
         // POST: Modificar producto
