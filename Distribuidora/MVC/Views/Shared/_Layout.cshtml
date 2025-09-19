@@ -1,5 +1,4 @@
-﻿
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -9,7 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="~/css/site.css">
+    <link rel="stylesheet" href="~/css/style.css">
 
     <title>@ViewData["Title"]</title>
 </head>
@@ -17,91 +16,65 @@
     <!--=============== HEADER ===============-->
     <header class="header">
         <nav class="nav container">
-            <ul class="nav__list">
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
 
-                <!--=============== Empleados ===============-->
-                <li class="dropdown__item">
-                    <a href="#" class="nav__link">Empleados <i class="ri-arrow-down-s-line dropdown__arrow"></i></a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/Empleado/listaEmpleados" class="dropdown__link"><i class="ri-list-check"></i> Lista Empleados</a></li>
-                        <li><a href="/Empleado/crearEmpleado" class="dropdown__link"><i class="ri-add-box-line"></i> Crear Empleado</a></li>
-                        <li><a href="/Empleado/modificarEmpleado" class="dropdown__link"><i class="ri-edit-2-line"></i> Modificar Empleado</a></li>
-                        <li><a href="/Empleado/eliminarEmpleado" class="dropdown__link"><i class="ri-delete-bin-5-line"></i> Eliminar Empleado</a></li>
-                    </ul>
-                </li>
+                    <!--=============== Empleados ===============-->
+                    <li class="dropdown__item">
+                        <a href="/Empleado/listaEmpleados" class="nav__link">Empleados</a>
+                    </li>
 
-                <!--=============== Clientes ===============-->
-                <li class="dropdown__item">
-                    <a href="#" class="nav__link">Clientes <i class="ri-arrow-down-s-line dropdown__arrow"></i></a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/Clientes/listaClientes" class="dropdown__link"><i class="ri-list-check"></i> Lista Clientes</a></li>
-                        <li><a href="/Clientes/crearCliente" class="dropdown__link"><i class="ri-add-box-line"></i> Crear Cliente</a></li>
-                        <li><a href="/Clientes/modificarCliente" class="dropdown__link"><i class="ri-edit-2-line"></i> Modificar Cliente</a></li>
-                        <li><a href="/Clientes/eliminarCliente" class="dropdown__link"><i class="ri-delete-bin-5-line"></i> Eliminar Cliente</a></li>
-                    </ul>
-                </li>
+                    <!--=============== Clientes ===============-->
+                    <li class="dropdown__item">
+                        <a href="/Clientes/listaClientes" class="nav__link">Clientes</a>
+                    </li>
 
-                <!--=============== Productos ===============-->
-                <li class="dropdown__item">
-                    <a href="#" class="nav__link">Productos <i class="ri-arrow-down-s-line dropdown__arrow"></i></a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/Producto/listaProductos" class="dropdown__link"><i class="ri-list-check"></i> Lista Productos</a></li>
-                        <li><a href="/Producto/crearProducto" class="dropdown__link"><i class="ri-add-box-line"></i> Crear Producto</a></li>
-                        <li><a href="/Producto/modificarProducto" class="dropdown__link"><i class="ri-edit-2-line"></i> Modificar Producto</a></li>
-                        <li><a href="/Producto/eliminarProducto" class="dropdown__link"><i class="ri-delete-bin-5-line"></i> Eliminar Producto</a></li>
-                    </ul>
-                </li>
+                    <!--=============== Productos ===============-->
+                    <li class="dropdown__item">
+                        <a href="/Producto/listaProductos" class="nav__link">Productos</a>
+                    </li>
 
-                <!--=============== Categorias ===============-->
-                <li class="dropdown__item">
-                    <a href="#" class="nav__link">Categorias <i class="ri-arrow-down-s-line dropdown__arrow"></i></a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/Categorias/listaCategorias" class="dropdown__link"><i class="ri-list-check"></i> Lista Categorias</a></li>
-                        <li><a href="/Categorias/crearCategoria" class="dropdown__link"><i class="ri-add-box-line"></i> Crear Categoria</a></li>
-                        <li><a href="/Categorias/modificarCategoria" class="dropdown__link"><i class="ri-edit-2-line"></i> Modificar Categoria</a></li>
-                        <li><a href="/Categorias/eliminarCategoria" class="dropdown__link"><i class="ri-delete-bin-5-line"></i> Eliminar Categoria</a></li>
-                    </ul>
-                </li>
+                    <!--=============== Stock ===============-->
+                    <li class="dropdown__item">
+                        <a href="/Stock" class="nav__link">Stock</a>
+                    </li>
 
-                <!--=============== Pedidos ===============-->
-                <li class="dropdown__item">
-                    <a href="#" class="nav__link">Pedidos <i class="ri-arrow-down-s-line dropdown__arrow"></i></a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/Pedidos/listaPedidos" class="dropdown__link"><i class="ri-list-check"></i> Lista Pedidos</a></li>
-                        <li><a href="/Pedidos/crearPedido" class="dropdown__link"><i class="ri-add-box-line"></i> Crear Pedido</a></li>
-                        <li><a href="/Pedidos/modificarPedido" class="dropdown__link"><i class="ri-edit-2-line"></i> Modificar Pedido</a></li>
-                        <li><a href="/Pedidos/eliminarPedido" class="dropdown__link"><i class="ri-delete-bin-5-line"></i> Eliminar Pedido</a></li>
-                    </ul>
-                </li>
+                    <!--=============== Proveedores ===============-->
+                    <li class="dropdown__item">
+                        <a href="/Proveedor/listaProveedores" class="nav__link">Proveedores</a>
+                    </li>
 
-                <!--=============== Links simples ===============-->
-                <li><a href="/Stock" class="nav__link">Stock</a></li>
-                <li><a href="/Compras" class="nav__link">Compras</a></li>
-                <li><a href="/Ventas" class="nav__link">Ventas</a></li>     
+                    <!--=============== Distribuidores ===============-->
+                    <li class="dropdown__item">
+                        <a href="/Distribuidores/listaDistribuidores" class="nav__link">Distribuidores</a>
+                    </li>
 
-                <!--=============== Proveedores ===============-->
-                <li class="dropdown__item">
-                    <a href="#" class="nav__link">Proveedores <i class="ri-arrow-down-s-line dropdown__arrow"></i></a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/Proveedor/listaProveedores" class="dropdown__link"><i class="ri-list-check"></i> Lista Proveedores</a></li>
-                        <li><a href="/Proveedor/crearProveedor" class="dropdown__link"><i class="ri-edit-2-line"></i>Crear proveedor</a></li>
-                        <li><a href="/Proveedor/modificarProveedor" class="dropdown__link"><i class="ri-edit-2-line"></i> Modificar Proveedor</a></li>
-                        <li><a href="/Proveedor/eliminarProveedor" class="dropdown__link"><i class="ri-delete-bin-5-line"></i> Eliminar Proveedor</a></li>
-                    </ul>
-                </li>
+                    <!--=============== Compras ===============-->
+                    <li class="dropdown__item">
+                        <a href="/Compras" class="nav__link">Compras</a>
+                    </li>
 
-                <!--=============== Distribuidores ===============-->
-                <li class="dropdown__item">
-                    <a href="#" class="nav__link">Distribuidores <i class="ri-arrow-down-s-line dropdown__arrow"></i></a>
-                    <ul class="dropdown__menu">
-                        <li><a href="/Distribuidores/listaDistribuidores" class="dropdown__link"><i class="ri-list-check"></i> Lista Distribuidores</a></li>
-                        <li><a href="/Distribuidores/crearDistribuidor" class="dropdown__link"><i class="ri-add-box-line"></i> Crear Distribuidor</a></li>
-                        <li><a href="/Distribuidores/modificarDistribuidor" class="dropdown__link"><i class="ri-edit-2-line"></i> Modificar Distribuidor</a></li>
-                        <li><a href="/Distribuidores/eliminarDistribuidor" class="dropdown__link"><i class="ri-delete-bin-5-line"></i> Eliminar Distribuidor</a></li>
-                    </ul>
-                </li>
+                    <!--=============== Ventas ===============-->
+                    <li class="dropdown__item">
+                        <a href="/Ventas" class="nav__link">Ventas</a>
+                    </li>
 
-            </ul>
+                    <!--=============== Usuario / Cerrar Sesión ===============-->
+                    <li class="dropdown__item user-dropdown">
+                        <div class="nav__link">
+                            <i class="ri-user-line"></i>
+                        </div>
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="/Loggin" class="dropdown__link">
+                                    <i class="ri-logout-box-line"></i> Salir
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
         </nav>
     </header>
 
@@ -110,5 +83,18 @@
             @RenderBody()
         </main>
     </div>
+
+    <!--=============== JS ===============-->
+    <script>
+        const navMenu = document.getElementById("nav-menu"),
+              navToggle = document.getElementById("nav-toggle");
+
+        if(navToggle){
+            navToggle.addEventListener("click", () => {
+                navMenu.classList.toggle("show-menu");
+                navToggle.classList.toggle("show-icon");
+            });
+        }
+    </script>
 </body>
 </html>
