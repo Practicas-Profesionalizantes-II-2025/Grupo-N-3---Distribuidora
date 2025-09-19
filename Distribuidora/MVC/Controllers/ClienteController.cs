@@ -149,9 +149,6 @@ namespace MVC.Controllers
                 return RedirectToAction(nameof(listaClientes));
             }
 
-            // Esto evita que falle ModelState por Estado
-            cliente.EstadoId = 1;
-
             return View(cliente);
         }
 
