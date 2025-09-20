@@ -39,6 +39,14 @@ namespace API.Controllers
             return producto;
         }
 
+        // GET: api/Producto/nombre/nombreProdcuto
+        [HttpGet("nombre/{nombre}")]
+        public async Task<ActionResult<IEnumerable<ProductoDTO>>> ProductoGetPorNombre(string nombre)
+        {
+            var producto = await _IProductoLogicaa.ObtenerProductosPorNombre(nombre);
+            return producto;
+        }
+
         // PUT: api/Producto/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]

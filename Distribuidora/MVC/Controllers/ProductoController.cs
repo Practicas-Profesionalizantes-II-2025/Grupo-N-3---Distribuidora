@@ -66,6 +66,51 @@ namespace MVC.Controllers
             return View(productosParaVista);
         }
 
+        public async Task<IActionResult> bucarProductos(string nombre)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoGetNombre}/{nombre}";
+            var response = await _httpClient.GetAsync(url);
+
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new List<ProductoDTO>());
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json);
+
+            // Obtener proveedores y categorías para mostrar nombres
+            var ulrProveedores = $"{_settings.BaseUrl}/{_settings.ProveedorGet}";
+            var urlCategorias = $"{_settings.BaseUrl}/{_settings.CategoriasGet}";
+            var proveedoresJson = await _httpClient.GetStringAsync(ulrProveedores);
+            var categoriasJson = await _httpClient.GetStringAsync(urlCategorias);
+
+            var proveedores = JsonConvert.DeserializeObject<List<ProveedorDTO>>(proveedoresJson);
+            var categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(categoriasJson);
+
+            List<ProductoDTOvista> productosParaVista = new List<ProductoDTOvista>();
+
+            foreach (var p in productos)
+            {
+                ProductoDTOvista productoDTOvista = new ProductoDTOvista
+                {
+                    Id = p.Id,
+                    Nombre = p.Nombre,
+                    ProveedorNombre = proveedores.FirstOrDefault(x => x.Id == p.ProveedorId)?.Nombre ?? "N/A",
+                    CategoriaNombre = categorias.FirstOrDefault(x => x.Id == p.CategoriaId)?.Nombre ?? "N/A",
+                    PrecioProducto = p.PrecioProducto,
+                    Stock = p.Stock
+                };
+                productosParaVista.Add(productoDTOvista);
+
+            }
+
+            return View(productosParaVista);
+        }
+
+
         // GET: Crear producto
         public IActionResult crearProducto()
         {

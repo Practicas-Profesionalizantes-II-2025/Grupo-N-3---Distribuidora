@@ -22,9 +22,8 @@
         
         <!-- Filtro de búsqueda + Crear Producto -->
         <div class="search-filter">
-            <input type="text" placeholder="Buscar por ID, Nombre o Categoría" id="searchInput">
-            <button class="btn yellow">Buscar</button>
-            <a asp-action="crearProducto" class="btn yellow">Crear producto</a>
+            <input type="text" placeholder="Buscar por Nombre" id="searchInput" name="nombre">
+            <button asp-action="filtroProductos" asp-route-nombre="" id="botonFiltrar" class="btn yellow">Buscar</button>
         </div>
 
         <div class="tabla-container">
@@ -37,8 +36,8 @@
                         <th>Categoría</th>
                         <th>Unidades</th>
                         <th>Precio costo</th>
-                        <th>Precio venta</th>
-                        <th>Acción</th>
+@*                         <th>Precio venta</th>
+ *@                     <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -113,5 +112,6 @@
         }
     </script>
 
+    <script src="../js/site.js"></script>
 </body>
 </html>
