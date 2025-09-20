@@ -46,14 +46,24 @@ namespace MVC.Controllers
             var proveedores = JsonConvert.DeserializeObject<List<ProveedorDTO>>(proveedoresJson);
             var categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(categoriasJson);
 
+            List< ProductoDTOvista> productosParaVista = new List< ProductoDTOvista>();
 
             foreach (var p in productos)
             {
-                p.ProveedorNombre = proveedores.FirstOrDefault(x => x.Id == p.ProveedorId)?.Nombre ?? "N/A";
-                p.CategoriaNombre = categorias.FirstOrDefault(x => x.Id == p.CategoriaId)?.Nombre ?? "N/A";
+                ProductoDTOvista productoDTOvista = new ProductoDTOvista
+                {
+                    Id = p.Id,
+                    Nombre = p.Nombre,
+                    ProveedorNombre = proveedores.FirstOrDefault(x => x.Id == p.ProveedorId)?.Nombre ?? "N/A",
+                    CategoriaNombre = categorias.FirstOrDefault(x => x.Id == p.CategoriaId)?.Nombre ?? "N/A",
+                    PrecioProducto = p.PrecioProducto,
+                    Stock = p.Stock
+                };
+                productosParaVista.Add(productoDTOvista);
+
             }
 
-            return View(productos);
+            return View(productosParaVista);
         }
 
         // GET: Crear producto
@@ -127,7 +137,7 @@ namespace MVC.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AccionModificarProducto([Bind("Id, Nombre, PrecioProducto, Stock, PrecioProducto, CategoriaId, ProveedorId")] ProductoDTO producto)
+        public async Task<IActionResult> AccionModificarProducto([Bind("Id, Nombre, PrecioProducto, Stock, CategoriaId, ProveedorId")] ProductoDTO producto)
         {
             // Si ModelState no es válido, volver a la vista de edición con el modelo que espera la vista
             if (!ModelState.IsValid)

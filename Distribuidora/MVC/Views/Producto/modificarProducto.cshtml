@@ -24,27 +24,22 @@
             <!-- Formulario para crear o modificar productos -->
             <form asp-action="AccionModificarProducto" method="post" class="form">
                 <input type="hidden" asp-for="Id" /> @* para hacer el put necesitamos el id asi que lo oculatmos *@
-                <input type="text" name="Nombre" placeholder="@Model.Nombre" id="nombreApellido"> @* se podria poner value="@Model.Nombre" pero se borraria al escribir *@
-                <input type="text" name="PrecioProducto" placeholder="@Model.PrecioProducto" id="nombreApellido">
-                <input type="text" name="Stock" placeholder="@Model.Stock" id="ciudad">
-                <input type="text" name="PrecioProducto" placeholder="@Model.PrecioProducto" id="PrecioProducto">
-                <select asp-for="CategoriaId" class="form-control">
-                    @foreach (var categoria in Model.Categorias)
-                    {
-                        <option name="CategoriaId" value="@categoria.Id" selected="@(categoria.Id == Model.CategoriaId)">
-                            @categoria.Nombre
-                        </option>
-                    }
+                <input type="text" name="Nombre" placeholder="@Model.Nombre" value="@Model.Nombre" id="nombreApellido"> @* se podria poner value="@Model.Nombre" pero se borraria al escribir *@
+                <input type="text" name="PrecioProducto" placeholder="@Model.PrecioProducto" value="@Model.PrecioProducto" id="nombreApellido">
+                <input type="text" name="Stock" placeholder="@Model.Stock" value="@Model.Stock" id="ciudad">
+                <input type="text" name="PrecioProducto" placeholder="@Model.PrecioProducto" value="@Model.PrecioProducto" id="PrecioProducto">
+
+                <select asp-for="CategoriaId"
+                        asp-items="@(new SelectList(Model.Categorias, "Id", "Nombre", Model.CategoriaId))"
+                        class="form-control">
                 </select>
 
-                <select asp-for="ProveedorId" class="form-control">
-                    @foreach (var proveedor in Model.Proveedores)
-                    {
-                        <option name="ProveedorId" value="@proveedor.Id" selected="@(proveedor.Id == Model.ProveedorId ? "selected" : "")">
-                            @proveedor.Nombre
-                        </option>
-                    }
+                <select asp-for="ProveedorId"
+                        asp-items="@(new SelectList(Model.Proveedores, "Id", "Nombre", Model.ProveedorId))"
+                        class="form-control">
                 </select>
+
+
 
                 <!-- contenedor exclusivo para centrar -->
                 <div class="form-buttons-wrapper">
