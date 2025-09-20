@@ -47,6 +47,14 @@ a {
     text-decoration: none;
 }
 
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: hidden; /* evita scroll innecesario */
+}
+
+
 #login_img {
     display: block;
     max-width: 100%;
@@ -152,6 +160,22 @@ a {
         .login__register a:hover {
             text-decoration: underline;
         }
+
+.login::before,
+.register::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45); /* <- ajustá la opacidad a tu gusto */
+    z-index: 1;
+}
+
+.login__form,
+.register__form {
+    position: relative;
+    z-index: 2; /* para que quede arriba del overlay */
+}
+
 
 
 /* NAVBAR */
@@ -710,6 +734,41 @@ a {
         margin-top: 0.5rem;
     }
 
+    /* Estilo unificado para inputs y selects */
+    .form input,
+    .form select,
+    .form .iti {
+        padding: 0.7rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        width: 100%;
+        box-sizing: border-box;
+        font-size: 1rem;
+        font-family: 'Montserrat', sans-serif;
+        color: #333;
+    }
+
+/* Ajuste específico para intl-tel-input */
+.iti {
+    display: block;
+}
+
+.iti__flag-container {
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.iti__selected-dial-code {
+    margin-right: 5px;
+}
+
+/* Campos que ocupan 2 columnas */
+.form input.full-width,
+.form select.full-width {
+    grid-column: span 2;
+}
+
+
 
 
 .table-container {
@@ -795,26 +854,82 @@ tr:nth-child(even) {
         background-color: #eee;
     }
 
-/* =============== ELIMINAR EMPLEADO =============== */
-.btn.red {
-    background-color: #ff4d4d; /* rojo */
-    color: #fff;
+.form-buttons-wrapper {
+    grid-column: span 2; /* ocupa las dos columnas del grid */
+    text-align: center; /* centra el contenido dentro */
+    margin-top: 20px;
 }
 
-    .btn.red:hover {
-        background-color: #e60000;
+
+.form-buttons {
+    display: inline-flex; /* evita que ocupe todo el ancho */
+    gap: 15px;
+}
+
+    .form-buttons .btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 150px;
+        height: 40px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 14px;
     }
+
+.btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+    .btn.yellow {
+        background-color: #fbbc04;
+        color: #000;
+    }
+
+        .btn.yellow:hover {
+            background-color: #e6a800;
+        }
+
+    .btn.back {
+        background-color: #ccc; /* gris para diferenciar */
+        color: #000;
+    }
+
+        .btn.back:hover {
+            background-color: #999;
+        }
+
+
+
+    /* =============== ELIMINAR EMPLEADO =============== */
+    .btn.red {
+        background-color: #ff4d4d; /* rojo */
+        color: #fff;
+    }
+
+        .btn.red:hover {
+            background-color: #e60000;
+        }
 
 
 /*=============== BIENVENIDA ===============*/
 .welcome-container {
     background: url('../img/login-bg.jpg') no-repeat center center/cover;
-    height: 100vh; /* toda la ventana */
+    height: 100vh;
     width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 /* Overlay oscuro */
@@ -824,31 +939,44 @@ tr:nth-child(even) {
     left: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(0,0,0,0.6);
+    background-color: rgba(0,0,0,0.55);
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-    color: #fff;
     padding: 20px;
     box-sizing: border-box;
 }
 
-/* Texto de bienvenida */
+/* Texto */
 .welcome-text {
     position: relative;
-    z-index: 1; /* encima del overlay */
+    z-index: 1;
+    color: #fff;
+    animation: fadeScale 1.5s ease forwards;
 }
 
     .welcome-text h1 {
-        font-size: 3rem;
-        margin-bottom: 20px;
+        font-size: 4rem;
+        font-weight: 700;
+        letter-spacing: 2px;
+        margin: 0;
+        text-shadow: 0 4px 10px rgba(0,0,0,0.6);
+        /* Typing effect */
+        white-space: nowrap;
+        overflow: hidden;
+        width: 0;
+        animation: typing 2s steps(12) forwards; /* sin blink */
     }
 
-    .welcome-text p {
-        font-size: 1.2rem;
-        margin-bottom: 30px;
+@keyframes typing {
+    to {
+        width: 12ch;
     }
+    /* "Bienvenido" = 10 caracteres */
+}
+
+
 
 /* Botón */
 .btn.yellow {
@@ -1039,7 +1167,13 @@ body {
     cursor: pointer;
     transition: background 0.3s ease;
     margin: 5px;
+    /* Centrar texto */
+    display: inline-flex; /* o flex si el botón es block */
+    justify-content: center; /* centrar horizontal */
+    align-items: center; /* centrar vertical */
+    text-align: center; /* asegurarse de centrar texto multilinea */
 }
+
 
     .btn:hover {
         background: #e0b414;
@@ -1191,3 +1325,127 @@ a {
         .register__login a:hover {
             text-decoration: underline;
         }
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: #fff;
+    padding: 30px 20px;
+    border-radius: 15px;
+    text-align: center;
+    width: 350px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+    transform: scale(0.9);
+    animation: scaleUp 0.2s forwards;
+}
+
+@keyframes scaleUp {
+    to {
+        transform: scale(1);
+    }
+}
+
+.modal-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+    .modal-header h3 {
+        margin: 10px 0 0 0;
+        font-size: 1.3rem;
+        color: #333;
+    }
+
+.modal-content p {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 25px;
+}
+
+.modal-buttons {
+    display: flex;
+    justify-content: space-around;
+}
+
+    .modal-buttons .btn {
+        width: 130px;
+        padding: 10px 0;
+        border: none;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+        .modal-buttons .btn.confirm {
+            background-color: #ff4d4d;
+            color: #fff;
+        }
+
+            .modal-buttons .btn.confirm:hover {
+                background-color: #e04343;
+            }
+
+        .modal-buttons .btn.cancel {
+            background-color: #ccc;
+            color: #333;
+        }
+
+            .modal-buttons .btn.cancel:hover {
+                background-color: #aaa;
+            }
+
+/*================= CSS para el estado =================*/
+.form-group {
+    margin: 20px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+    .form-group label {
+        font-weight: 600;
+        margin-bottom: 5px;
+        color: #333;
+    }
+
+.input-select {
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+    background-color: #fff;
+    color: #000;
+    width: 200px; /* Ajustable */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .input-select:focus {
+        outline: none;
+        border-color: #f5c518;
+        box-shadow: 0 0 5px rgba(245, 197, 24, 0.5);
+    }

@@ -21,19 +21,26 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Empleado>> ObtenerEmpleados()
         {
-            return await _context.Empleado.ToListAsync();
+            return await _context.Empleado
+                .Include(c => c.Persona)
+                .ToListAsync();
         }
         public async Task<Empleado> ObtenerEmpleadoPorId(int id)
         {
-            return await _context.Empleado.FindAsync(id);
+            return await _context.Empleado
+               .Include(c => c.Persona)
+               .FirstOrDefaultAsync(c => c.Id == id);
         }
         public async Task<Empleado> CrearEmpleado(Empleado empleado)
         {
+            if (string.IsNullOrEmpty(empleado.Foto))
+                empleado.Foto = "default.jpg"; // valor por defecto
+
             _context.Empleado.Add(empleado);
             await _context.SaveChangesAsync();
             return empleado;
         }
-        public void ActualizarEmpleado(Empleado empleado)
+        public async Task ActualizarEmpleado(Empleado empleado)
         {
             var empleadoExistente = _context.Empleado.Find(empleado.Id);
             if (empleadoExistente == null)
@@ -61,6 +68,14 @@ namespace CDatos.Repositorios
             return await _context.Empleado
                 .Where(c => c.PersonaId == personaId)
                 .ToListAsync();
+        }
+        public async Task<Persona> ObtenerPersonaPorEmpleadoId(int empleadoId)
+        {
+            var empleado = await _context.Empleado
+                .Include(c => c.Persona)
+                .FirstOrDefaultAsync(c => c.Id == empleadoId);
+
+            return empleado?.Persona;
         }
     }
 }

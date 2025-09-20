@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de clientes</title>
+    <title>Lista de Clientes</title>
 
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
@@ -13,60 +13,177 @@
 
     <!--=============== CSS ===============-->
     <link rel="stylesheet" href="/css/site.css">
+
+    <style>
+        /* Contenedor scrollable */
+        .tabla-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        /* Encabezado fijo */
+        .tabla-empleados thead {
+            position: sticky;
+            top: 0;
+            background-color: #f5f5f5;
+            z-index: 1;
+        }
+
+        /* Scroll personalizable */
+        .tabla-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tabla-container::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+            .tabla-container::-webkit-scrollbar-thumb:hover {
+                background-color: #555;
+            }
+    </style>
 </head>
 <body>
-    <main class="container full-width">
-        <h2 class="titulo">Lista clientes</h2>
+    <!--=============== HEADER ===============-->
+    <header class="header">
+        <nav class="nav container">
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="dropdown__item">
+                        <a asp-controller="Empleados" asp-action="listaEmpleados" class="nav__link">Empleados</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Clientes" asp-action="listaClientes" class="nav__link">Clientes</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Productos" asp-action="listaProductos" class="nav__link">Productos</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Stock" asp-action="Index" class="nav__link">Stock</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Proveedores" asp-action="listaProveedores" class="nav__link">Proveedores</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Distribuidores" asp-action="listaDistribuidores" class="nav__link">Distribuidores</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Compras" asp-action="listaPedidos" class="nav__link">Compras</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Ventas" asp-action="listaVentas" class="nav__link">Ventas</a>
+                    </li>
+                    <li class="dropdown__item user-dropdown">
+                        <div class="nav__link">
+                            <i class="ri-user-line"></i> <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="../loggin.html" class="dropdown__link">
+                                    <i class="ri-logout-box-line"></i> Salir
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
 
-        <!-- Filtro de búsqueda con crear -->
+    <!--=============== CONTENIDO PRINCIPAL ===============-->
+    <main class="container full-width">
+        <h2 class="titulo">Lista de Clientes</h2>
+
+        <!-- Filtro de búsqueda + Crear Cliente -->
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
             <button class="btn yellow">Buscar</button>
-            <a asp-controller="Clientes" asp-action="crearCliente" class="btn yellow">Crear cliente</a>
+            <a asp-controller="Clientes" asp-action="crearCliente" class="btn green">Crear Cliente</a>
         </div>
 
-        <!-- Tabla -->
-        <table class="tabla-empleados">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre y Apellido</th>
-                    <th>DNI</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>CiudadId</th>
-                    <th>Email</th>
-                    <th>Estado</th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var cliente in Model)
-                {
+        <!-- Contenedor scrollable -->
+        <div class="tabla-container">
+            <table class="tabla-empleados">
+                <thead>
                     <tr>
-                        <td>@cliente.Id</td>
-                        <td>@cliente.Persona?.Nombre @cliente.Persona?.Apellido</td>
-                        <td>@cliente.Persona?.Nro_Doc</td>
-                        <td>@cliente.Persona?.Telefono</td>
-                        <td>@cliente.Persona?.Direccion</td>
-                        <td>@cliente.Persona?.CiudadId</td>
-                        <td>@cliente.Persona?.Email</td>
-                        <td>@cliente.EstadoId</td>
-                        <td class="acciones">
-                            <a asp-controller="Clientes" asp-action="modificarCliente" asp-route-id="@cliente.Id"
-                               class="btn-icon yellow-outline" title="Editar">
-                                <i class="ri-pencil-line"></i>
-                            </a>
-                            <a asp-controller="Clientes" asp-action="eliminarCliente" asp-route-id="@cliente.Id"
-                               class="btn-icon red-outline" title="Eliminar">
-                                <i class="ri-delete-bin-line"></i>
-                            </a>
-                        </td>
+                        <th>ID</th>
+                        <th>Nombre y Apellido</th>
+                        <th>DNI</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Ciudad</th>
+                        <th>Email</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
                     </tr>
-                }
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach (var cliente in Model)
+                    {
+                        <tr>
+                            <td>@cliente.Id</td>
+                            <td>@cliente.Persona?.Nombre @cliente.Persona?.Apellido</td>
+                            <td>@cliente.Persona?.Nro_Doc</td>
+                            <td>@cliente.Persona?.Telefono</td>
+                            <td>@cliente.Persona?.Direccion</td>
+                            <td>@cliente.Persona?.CiudadId</td>
+                            <td>@cliente.Persona?.Email</td>
+                            <td>@(cliente.EstadoId == 1 ? "Activo" : "Inactivo")</td>
+                            <td class="acciones">
+                                <a asp-controller="Clientes" asp-action="modificarCliente" asp-route-id="@cliente.Id"
+                                   class="btn-icon yellow-outline" title="Editar">
+                                    <i class="ri-pencil-line"></i>
+                                </a>
+                                <a href="#" class="btn-icon red-outline" title="Eliminar" onclick="confirmDelete(this)">
+                                    <i class="ri-delete-bin-line"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </main>
+
+    <!-- Modal de Confirmación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="ri-alert-line" style="font-size: 2rem; color: #ff4d4d;"></i>
+                <h3>Confirmar eliminación</h3>
+            </div>
+            <p>¿Estás seguro que deseas eliminar este cliente?</p>
+            <div class="modal-buttons">
+                <button class="btn confirm" id="confirmBtn">Sí, eliminar</button>
+                <button class="btn cancel" id="cancelBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let rowToDelete = null;
+
+        function confirmDelete(button) {
+            rowToDelete = button.closest('tr');
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        document.getElementById('confirmBtn').onclick = function() {
+            if (rowToDelete) {
+                rowToDelete.remove();
+                rowToDelete = null;
+            }
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        document.getElementById('cancelBtn').onclick = function() {
+            rowToDelete = null;
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+    </script>
 
     <!--=============== JS ===============-->
     <script src="/js/site.js"></script>
