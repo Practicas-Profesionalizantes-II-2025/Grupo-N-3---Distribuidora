@@ -225,7 +225,7 @@ namespace MVC.Controllers
             return RedirectToAction("listaProductos");
         }
 
-        // GET: Eliminar producto
+        // DELETE: Eliminar producto
         public async Task<IActionResult> eliminarProducto(int id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.ProductoDelete}/{id}";

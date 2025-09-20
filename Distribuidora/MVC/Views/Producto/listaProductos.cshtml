@@ -12,14 +12,14 @@
     <title>@ViewData["Title"]</title>
 
     <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https:cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css">
 </head>
 <body>
 
     <main class="container full-width">
         <h2 class="titulo">Lista de productos</h2>
-
+        
         <!-- Filtro de búsqueda + Crear Producto -->
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, Nombre o Categoría" id="searchInput">
@@ -56,9 +56,11 @@
                                 <a asp-action="modificarProducto" asp-route-id="@producto.Id" class="btn-icon edit">
                                     <i class="ri-pencil-line"></i>
                                 </a>
-                                <a href="#" class="btn-icon delete" onclick="confirmDelete(this)">
-                                    <i class="ri-delete-bin-line"></i>
-                                </a>
+                                <form asp-action="eliminarProducto" asp-route-id="@producto.Id" method="post" style="display:inline">
+                                    <button type="submit" class="btn-icon delete">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     }

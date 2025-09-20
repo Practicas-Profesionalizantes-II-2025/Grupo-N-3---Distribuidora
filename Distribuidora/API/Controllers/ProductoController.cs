@@ -68,7 +68,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> ProductoDelete(int id)
         {
-            _IProductoLogicaa.EliminarProducto(id);
+            await _IProductoLogicaa.EliminarProducto(id);
 
             return NoContent();
         }
