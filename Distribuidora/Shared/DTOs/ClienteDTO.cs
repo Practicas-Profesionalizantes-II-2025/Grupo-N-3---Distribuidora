@@ -12,5 +12,6 @@ namespace Shared.DTOs
         public int EstadoId { get; set; }
         public PersonaDTO Persona { get; set; } = new PersonaDTO();
         public int PersonaId { get; set; }
+        public string NombreCiudad { get; set; }
     }
 }

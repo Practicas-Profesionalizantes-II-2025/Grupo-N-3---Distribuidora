@@ -13,6 +13,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ciudad = MVC.Models.Entities.Ciudad;
+using Estado = MVC.Models.Entities.Estado;
 
 namespace MVC.Controllers
 {
@@ -148,22 +150,52 @@ namespace MVC.Controllers
                 ModelState.AddModelError(string.Empty, "Cliente no encontrado");
                 return RedirectToAction(nameof(listaClientes));
             }
+            var estados = new List<Estado>
+            {
+                new Estado { Id = 1, Descripcion = "Activo" },
+                new Estado { Id = 2, Descripcion = "Inactivo" }
+            };
+
+            var ciudades = new List<Ciudad>
+            {
+                new Ciudad { Id = 1, Nombre = "Ciudad A" },
+                new Ciudad { Id = 2, Nombre = "Ciudad B" }
+            };
+
+            // Pasamos las listas a la vista
+            ViewBag.Estados = new SelectList(estados, "Id", "Descripcion", cliente.EstadoId);
+            ViewBag.Ciudades = new SelectList(ciudades, "Id", "Nombre", cliente.Persona.CiudadId);
 
             return View(cliente);
         }
 
         // POST: Modificar cliente
         [HttpPost]
-        public async Task<IActionResult> modificarCliente(int id, [Bind("Id,Persona")] ClienteDTO cliente)
+        public async Task<IActionResult> modificarCliente(int id, ClienteDTO cliente)
         {
             if (id != cliente.Id)
                 return NotFound();
 
             if (!ModelState.IsValid)
+            {
+                // Repopular combos si hay error de validación
+                ViewBag.Estados = new SelectList(new[]
+                {
+                new Estado { Id = 1, Descripcion = "Activo" },
+                new Estado { Id = 2, Descripcion = "Inactivo" }
+                }, "Id", "Descripcion", cliente.EstadoId);
+
+                ViewBag.Ciudades = new SelectList(new[]
+                {
+                new Ciudad { Id = 1, Nombre = "Ciudad A" },
+                new Ciudad { Id = 2, Nombre = "Ciudad B" }
+                }, "Id", "Nombre", cliente.Persona.CiudadId);
+
                 return View(cliente);
+            }
 
             try
-            {
+            { 
                 cliente.EstadoId = 1;
                 cliente.Persona.EstadoId = 1;
                 cliente.Persona.Tipo_DocId = cliente.Persona.Tipo_DocId == 0 ? 1 : cliente.Persona.Tipo_DocId;
