@@ -9,15 +9,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicio - Proveedores</title>
 
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="~/css/style.css">
 
-    <title>@ViewData["Title"]</title>
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="~/css/style.css" />
 </head>
 <body>
+    <!--=============== HEADER ===============-->
+    <header class="header">
+        <nav class="nav container">
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <li class="dropdown__item">
+                        <a asp-controller="Empleados" asp-action="listaEmpleados" class="nav__link">Empleados</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Clientes" asp-action="listaClientes" class="nav__link">Clientes</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Productos" asp-action="listaProductos" class="nav__link">Productos</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Stock" asp-action="index" class="nav__link">Stock</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Proveedores" asp-action="listaProveedores" class="nav__link">Proveedores</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Distribuidores" asp-action="listaDistribuidores" class="nav__link">Distribuidores</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Compras" asp-action="listaPedidos" class="nav__link">Compras</a>
+                    </li>
+                    <li class="dropdown__item">
+                        <a asp-controller="Ventas" asp-action="listaVentas" class="nav__link">Ventas</a>
+                    </li>
+                    <li class="dropdown__item user-dropdown">
+                        <div class="nav__link">
+                            <i class="ri-user-line"></i> <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a asp-controller="Auth" asp-action="Logout" class="dropdown__link">
+                                    <i class="ri-logout-box-line"></i> Salir
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!--=============== CONTENIDO PRINCIPAL ===============-->
     <main>
         <div class="content">
             <!-- Header de la sección -->
@@ -25,16 +73,25 @@
                 <h2>Crear proveedor</h2>
             </div>
 
-            <!-- Formulario para crear proveedores -->
-            <form asp-action="CrearProveedor" method="post" class="form">
-                <input asp-for="Nombre" type="text" placeholder="Nombre" required>
-                <input asp-for="Telefono" type="text" placeholder="Teléfono" required>
-                <input asp-for="Direccion" type="text" placeholder="Dirección" required>
-                <button type="submit" class="btn yellow">Guardar</button>
+            <!-- Formulario para crear proveedor -->
+            <form asp-controller="Proveedor" asp-action="crearProveedor" method="post" class="form">
+                <input type="text" asp-for="Nombre" placeholder="Nombre" required />
+                <input type="text" asp-for="Telefono" placeholder="Teléfono" required />
+                <input type="text" asp-for="Direccion" placeholder="Dirección" required />
+                <input type="text" asp-for="Email" placeholder="Email" required />
+
+                <!-- contenedor exclusivo para centrar -->
+                <div class="form-buttons-wrapper">
+                    <div class="form-buttons">
+                        <button type="submit" class="btn yellow">Guardar</button>
+                        <a asp-controller="Proveedor" asp-action="listaProveedores" class="btn back">Volver</a>
+                    </div>
+                </div>
             </form>
         </div>
     </main>
 
+    <!--=============== JS ===============-->
     <script src="~/js/main.js"></script>
 </body>
 </html>

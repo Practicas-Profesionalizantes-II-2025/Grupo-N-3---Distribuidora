@@ -1,38 +1,62 @@
 ﻿@model MVC.Models.DTOs.ProveedorDTO
 
-@{
-    ViewData["Title"] = "Editar Proveedor";
-}
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Proveedor</title>
-    <link rel="stylesheet" href="~/css/style.css" />
+
+    <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+    <link rel="stylesheet" href="~/css/style.css">
+
+    <title>Modificar proveedor</title>
 </head>
 <body>
     <main>
         <div class="content">
+            <!-- Header de la sección -->
             <div class="section-header">
-                <h2>Editar proveedor</h2>
+                <h2>Modificar proveedor</h2>
             </div>
 
-            <div class="form">
-                <form asp-action="EditarProveedor" method="post">
+            <!-- Formulario -->
+            <form asp-action="modificarProveedor" asp-controller="Proveedor" method="post">
+                <div class="form">
+                    <!-- ID oculto -->
                     <input type="hidden" asp-for="Id" />
-                    <input asp-for="Nombre" placeholder="Nombre" required />
-                    <input asp-for="Telefono" placeholder="Teléfono" required />
-                    <input asp-for="Direccion" placeholder="Dirección" required />
-                    <input asp-for="Email" placeholder="Email" required />
-                    <button type="submit" class="btn yellow">Guardar</button>
-                </form>
-            </div>
+
+                    <!-- Nombre -->
+                    <input type="text" asp-for="Nombre" placeholder="Nombre" class="input-text" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+
+                    <!-- Teléfono -->
+                    <input type="text" asp-for="Telefono" placeholder="Teléfono" class="input-text" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+
+                    <!-- Dirección -->
+                    <input type="text" asp-for="Direccion" placeholder="Dirección" class="input-text" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+                    
+                    <!-- Email -->
+                    <input type="text" asp-for="Email" placeholder="Email" class="input-text" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+
+
+
+                    <!-- Botones -->
+                    <div class="form-buttons-wrapper">
+                        <div class="form-buttons">
+                            <button type="submit" class="btn yellow">Guardar</button>
+                            <a asp-controller="Proveedor" asp-action="listaProveedores" class="btn back">Volver</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </main>
 
-    <script src="~/js/main.js"></script>
+    <script src="~/js/site.js"></script>
 </body>
 </html>

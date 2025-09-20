@@ -56,8 +56,8 @@ namespace CDatos.Data
 
             // Proveedores
             modelBuilder.Entity<Proveedor>().HasData(
-                new Proveedor { Id = 1, Nombre = "Proveedor Uno", Direccion = "Direccion 1", Telefono = "Telefono 1", Email = "email1@dominio.com.ar", EstadoId = 1 },
-                new Proveedor { Id = 2, Nombre = "Proveedor Dos", Direccion = "Direccion 2", Telefono = "Telefono 2", Email = "email2@dominio.com.ar", EstadoId = 1 }
+                new Proveedor { Id = 1, Nombre = "Proveedor Uno", Direccion = "Direccion 1", Telefono = "Telefono 1", Email = "email1@dominio.com.ar",},
+                new Proveedor { Id = 2, Nombre = "Proveedor Dos", Direccion = "Direccion 2", Telefono = "Telefono 2", Email = "email2@dominio.com.ar" }
             );
 
             // Categorias

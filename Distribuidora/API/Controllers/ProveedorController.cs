@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Shared.DTOs;
+﻿using CNegocio.Logica;
 using CNegocio.Logica.ILogica;
+using Microsoft.AspNetCore.Mvc;
+using Shared.DTOs;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -19,69 +20,52 @@ namespace API.Controllers
 
         // GET: api/Proveedor
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProveedorDTO>>> ObtenerProveedores()
+        public async Task<ActionResult<IEnumerable<ProveedorDTO>>> GetProveedor()
         {
-            var proveedores = await _proveedorLogica.ObtenerProveedores();
-            return Ok(proveedores);
+            return await _proveedorLogica.ObtenerProveedores();
         }
 
         // GET: api/Proveedor/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProveedorDTO>> ObtenerProveedor(int id)
+        public async Task<ActionResult<ProveedorDTO>> GetProveedor(int id)
         {
             var proveedor = await _proveedorLogica.ObtenerProveedorPorId(id);
             if (proveedor == null)
                 return NotFound($"No se encontró un proveedor con Id {id}");
 
-            return Ok(proveedor);
+            return proveedor;
         }
 
-        // POST: api/Proveedor
-        [HttpPost]
-        public async Task<ActionResult<ProveedorDTO>> CrearProveedor(ProveedorDTO proveedor)
-        {
-            try
-            {
-                await _proveedorLogica.CrearProveedor(proveedor);
-                return CreatedAtAction(nameof(ObtenerProveedor), new { id = proveedor.Id }, proveedor);
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-
-        // PUT: api/Proveedor/5
+        // PUT: api/Proveedor
         [HttpPut("{id}")]
-        public async Task<IActionResult> ActualizarProveedor(int id, ProveedorDTO proveedor)
+        public async Task<IActionResult> PutProveedor(int id,ProveedorDTO proveedor)
         {
             if (id != proveedor.Id)
-                return BadRequest("El Id del proveedor no coincide.");
+            {
+                return BadRequest();
+            }
 
-            try
-            {
-                await _proveedorLogica.ActualizarProveedor(proveedor);
-                return NoContent();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _proveedorLogica.ActualizarProveedor(proveedor);
+
+            return NoContent();
+        }
+
+        // POST: api/Proveedor/5
+        [HttpPost]
+        public async Task<ActionResult<ProveedorDTO>> PostProveedor(ProveedorDTO proveedor)
+        {
+            var proveedorCreado = await _proveedorLogica.CrearProveedor(proveedor);
+
+            return CreatedAtAction(nameof(GetProveedor), new { id = proveedorCreado.Id }, proveedorCreado);
         }
 
         // DELETE: api/Proveedor/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> EliminarProveedor(int id)
+        public async Task<IActionResult> DeleteProveedor(int id)
         {
-            try
-            {
-                await _proveedorLogica.EliminarProveedor(id);
-                return NoContent();
-            }
-            catch (System.Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            await _proveedorLogica.EliminarProveedor(id);
+
+            return NoContent();
         }
     }
 }
