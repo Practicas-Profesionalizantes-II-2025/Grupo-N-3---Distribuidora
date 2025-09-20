@@ -7,12 +7,15 @@ using MVC.Data;
 using MVC.Models.DTOs;
 using MVC.Models.Entities;
 using Newtonsoft.Json;
+using Shared.DTOs;
 using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using EmpleadoDTO = MVC.Models.DTOs.EmpleadoDTO;
+using PersonaDTO = MVC.Models.DTOs.PersonaDTO;
 
 namespace MVC.Controllers
 {
@@ -135,9 +138,10 @@ namespace MVC.Controllers
 
             return View(empleado);
         }
-        
+
         // POST: Modificar empleado
-        public async Task<IActionResult> modificarEmpleado(int id, [Bind("Id,Persona")] EmpleadoDTO empleado)
+        [HttpPost]
+        public async Task<IActionResult> modificarEmpleado(int id,EmpleadoDTO empleado)
         {
             if (id != empleado.Id)
                 return NotFound();
@@ -145,6 +149,10 @@ namespace MVC.Controllers
             if (!ModelState.IsValid)
                 return View(empleado);
 
+            if (empleado.Foto == null)
+            {
+                empleado.Foto = empleado.Foto; // conservar foto existente
+            }
             try
             {
                 empleado.EstadoId = 1;
