@@ -7,6 +7,6 @@
         public int ProveedorId { get; set; }
         public int CategoriaId { get; set; }
         public float PrecioProducto { get; set; }
-        public int Stock = 0;
+        public int Stock { get; set; }
     }
 }

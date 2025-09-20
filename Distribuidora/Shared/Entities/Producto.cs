@@ -13,6 +13,6 @@ namespace Shared.Entities
         public int ProveedorId { get; set; }
         public int CategoriaId { get; set; }
         public float PrecioProducto { get; set; }
-        public int Stock { get; set; } = 0; // ahora sí propiedad
+        public int Stock { get; set; }
     }
 }
