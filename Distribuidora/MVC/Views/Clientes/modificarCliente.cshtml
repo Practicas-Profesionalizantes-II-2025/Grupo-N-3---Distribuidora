@@ -22,8 +22,10 @@
                 <input asp-for="Persona.Nro_Doc" placeholder="DNI" readonly />
                 <input asp-for="Persona.Telefono" placeholder="Teléfono" />
                 <input asp-for="Persona.Direccion" placeholder="Dirección" />
-                <input asp-for="Persona.CiudadId" placeholder="Ciudad" />
+                <select asp-for="Persona.CiudadId" asp-items="ViewBag.Ciudades"></select>
                 <input asp-for="Persona.Email" placeholder="Email" />
+                <select asp-for="EstadoId" asp-items="ViewBag.Estados"></select>
+
 
                 <button type="submit" class="btn yellow">Guardar</button>
             </div>

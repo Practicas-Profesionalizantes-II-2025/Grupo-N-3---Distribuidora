@@ -81,8 +81,7 @@
                                     <i class="ri-pencil-line"></i>
                                 </a>
 
-                                <a href="javascript:void(0);" class="btn-icon red-outline" title="Eliminar"
-                                   onclick="eliminarProveedor(@item.Id)">
+                                <a href="#" class="btn-icon red-outline" title="Eliminar" onclick="confirmDelete(this, @item.Id)">
                                     <i class="ri-delete-bin-line"></i>
                                 </a>
                             </td>
@@ -93,24 +92,53 @@
         </div>
     </main>
 
-    <script src="/js/site.js"></script>
-    <script>
-        function eliminarProveedor(id) {
-            if (!confirm("¿Estás seguro de eliminar este proveedor?")) return;
+    <!-- Modal de Confirmación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="ri-alert-line" style="font-size: 2rem; color: #ff4d4d;"></i>
+                <h3>Confirmar eliminación</h3>
+            </div>
+            <p>¿Estás seguro que deseas eliminar este proveedor?</p>
+            <div class="modal-buttons">
+                <button class="btn confirm" id="confirmBtn">Sí, eliminar</button>
+                <button class="btn cancel" id="cancelBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
 
-            fetch(`/Proveedor/eliminarProveedor?id=${id}`, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
-            })
-            .then(response => {
-                if (response.ok) {
-                    location.reload();
-                } else {
-                    alert("Error al eliminar el proveedor");
-                }
-            })
-            .catch(err => alert("Error al eliminar el proveedor"));
+    <script>
+        let proveedorId = null;
+
+        function confirmDelete(button, id) {
+            proveedorId = id;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        document.getElementById('confirmBtn').onclick = function () {
+            if (proveedorId) {
+                fetch(`/Proveedor/eliminarProveedor?id=${proveedorId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert("Error al eliminar el proveedor");
+                    }
+                })
+                .catch(() => alert("Error al eliminar el proveedor"));
+            }
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        document.getElementById('cancelBtn').onclick = function () {
+            proveedorId = null;
+            document.getElementById('deleteModal').style.display = 'none';
         }
     </script>
+
+    <script src="/js/site.js"></script>
 </body>
 </html>
