@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CDatos.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250918164559_add1")]
+    [Migration("20250920172719_add1")]
     partial class add1
     {
         /// <inheritdoc />

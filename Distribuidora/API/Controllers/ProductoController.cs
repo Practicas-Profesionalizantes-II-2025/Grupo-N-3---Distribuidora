@@ -39,6 +39,14 @@ namespace API.Controllers
             return producto;
         }
 
+        // GET: api/Producto/nombre/nombreProdcuto
+        [HttpGet("nombre/{nombre}")]
+        public async Task<ActionResult<IEnumerable<ProductoDTO>>> ProductoGetPorNombre(string nombre)
+        {
+            var producto = await _IProductoLogicaa.ObtenerProductosPorNombre(nombre);
+            return producto;
+        }
+
         // PUT: api/Producto/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -61,14 +69,14 @@ namespace API.Controllers
         {
             _IProductoLogicaa.CrearProducto(producto);
 
-            return CreatedAtAction("GetProducto", new { id = producto.Id }, producto);
+            return CreatedAtAction("ProductoGet", new { id = producto.Id }, producto);
         }
 
         // DELETE: api/Producto/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> ProductoDelete(int id)
         {
-            _IProductoLogicaa.EliminarProducto(id);
+            await _IProductoLogicaa.EliminarProducto(id);
 
             return NoContent();
         }

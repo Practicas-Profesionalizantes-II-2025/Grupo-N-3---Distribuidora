@@ -72,6 +72,7 @@
 
         // Endpoints Proveedor
         public string ProveedorGet { get; set; } = string.Empty;
+        public string ProductoGetNombre { get; set; } = string.Empty;
         public string ProveedorPost { get; set; } = string.Empty;
         public string ProveedorPut { get; set; } = string.Empty;
         public string ProveedorDelete { get; set; } = string.Empty;

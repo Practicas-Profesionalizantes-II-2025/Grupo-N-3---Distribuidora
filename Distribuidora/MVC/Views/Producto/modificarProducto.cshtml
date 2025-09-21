@@ -1,4 +1,4 @@
-﻿@model MVC.Models.DTOs.ProductoDTO
+﻿@model MVC.Models.DTOs.ProductoEditarModel
 
 <!DOCTYPE html>
 <html lang="en">
@@ -21,25 +21,38 @@
                 <h2>Modificar producto</h2>
             </div>
 
-            <!-- Formulario para crear o modificar empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre producto" id="nombreApellido">
-                <input type="text" placeholder="Proveedor" id="telefono">
-                <input type="text" placeholder="Categoría" id="direccion">
-                <input type="text" placeholder="Cantidad" id="codigoPostal">
-                <input type="text" placeholder="Precio costo" id="ciudad">
-                <input type="text" placeholder="Precio venta" id="ciudad">
-            </div>
+            <!-- Formulario para crear o modificar productos -->
+            <form asp-action="AccionModificarProducto" method="post" class="form">
+                <input type="hidden" asp-for="Id" /> @* para hacer el put necesitamos el id asi que lo oculatmos *@
+                <label>Nombre</label>
+                <input type="text" name="Nombre" placeholder="@Model.Nombre" value="@Model.Nombre" id="nombreApellido">
+                <label>Precio</label>
+                <input type="text" name="PrecioProducto" placeholder="@Model.PrecioProducto" value="@Model.PrecioProducto" id="nombreApellido">
+                <label>Stock</label>
+                <input type="number" name="Stock" placeholder="@Model.Stock" value="@Model.Stock" id="Stock">
+                <label>Categoria</label>
+                <select asp-for="CategoriaId"
+                        asp-items="@(new SelectList(Model.Categorias, "Id", "Nombre", Model.CategoriaId))"
+                        class="form-control">
+                </select>
+                <label>Proveedor</label>
+                <select asp-for="ProveedorId"
+                        asp-items="@(new SelectList(Model.Proveedores, "Id", "Nombre", Model.ProveedorId))"
+                        class="form-control">
+                </select>
+
+
+
+                <!-- contenedor exclusivo para centrar -->
+                <div class="form-buttons-wrapper">
+                    <div class="form-buttons">
+                        <button type="submit" class="btn yellow">Guardar</button>
+                        <a asp-action="listaProductos" class="btn back">Volver</a>
+                    </div>
+                </div>  
+            </form>
         </div>
 
-        <!-- contenedor exclusivo para centrar -->
-        <div class="form-buttons-wrapper">
-            <div class="form-buttons">
-                <button class="btn yellow">Guardar</button>
-                <a href="listaProductos.html" class="btn back">Volver</a>
-            </div>
-        </div>
-        </div>
 
     </main>
 

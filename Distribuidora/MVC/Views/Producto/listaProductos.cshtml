@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MVC.Models.DTOs.ProductoDTO>
+﻿@model IEnumerable<MVC.Models.DTOs.ProductoDTOvista>
 
 @{
     ViewData["Title"] = "Lista de productos";
@@ -12,20 +12,22 @@
     <title>@ViewData["Title"]</title>
 
     <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https:cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css">
 </head>
 <body>
 
     <main class="container full-width">
         <h2 class="titulo">Lista de productos</h2>
-
+        
         <!-- Filtro de búsqueda + Crear Producto -->
-        <div class="search-filter">
-            <input type="text" placeholder="Buscar por ID, Nombre o Categoría" id="searchInput">
-            <button class="btn yellow">Buscar</button>
-            <a asp-action="crearProducto" class="btn yellow">Crear producto</a>
-        </div>
+        <form asp-action="bucarProductos" method="get">
+            <input type="text" placeholder="Buscar por Nombre" id="searchInput" name="nombre">
+            <button type="submit" class="btn yellow">Buscar</button>
+        </form>
+        <a asp-action="crearProducto" class="">
+            <button class="btn yellow">Crear</button>
+        </a>
 
         <div class="tabla-container">
             <table class="tabla-empleados">
@@ -37,8 +39,8 @@
                         <th>Categoría</th>
                         <th>Unidades</th>
                         <th>Precio costo</th>
-                        <th>Precio venta</th>
-                        <th>Acción</th>
+@*                         <th>Precio venta</th>
+ *@                     <th>Acción</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -49,16 +51,18 @@
                             <td>@producto.Nombre</td>
                             <td>@producto.ProveedorNombre</td>
                             <td>@producto.CategoriaNombre</td>
-                            <td>@producto.UnidadesProducto</td>
+                            <td>@producto.Stock</td>
                             <td>@producto.PrecioProducto</td>
-                            <td>@producto.PrecioProducto</td> <!--deberia ser precio de venta-->
-                            <td class="acciones">
+
+\                            <td class="acciones">
                                 <a asp-action="modificarProducto" asp-route-id="@producto.Id" class="btn-icon edit">
                                     <i class="ri-pencil-line"></i>
                                 </a>
-                                <a href="#" class="btn-icon delete" onclick="confirmDelete(this)">
-                                    <i class="ri-delete-bin-line"></i>
-                                </a>
+                                <form asp-action="eliminarProducto" asp-route-id="@producto.Id" method="post" style="display:inline">
+                                    <button type="submit" class="btn-icon delete">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </button>
+                                </form>
                             </td>
                         </tr>
                     }
