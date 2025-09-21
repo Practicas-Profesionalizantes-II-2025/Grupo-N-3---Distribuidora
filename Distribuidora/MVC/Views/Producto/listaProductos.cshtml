@@ -21,10 +21,13 @@
         <h2 class="titulo">Lista de productos</h2>
         
         <!-- Filtro de búsqueda + Crear Producto -->
-        <div class="search-filter">
+        <form asp-action="bucarProductos" method="get">
             <input type="text" placeholder="Buscar por Nombre" id="searchInput" name="nombre">
-            <button asp-action="filtroProductos" asp-route-nombre="" id="botonFiltrar" class="btn yellow">Buscar</button>
-        </div>
+            <button type="submit" class="btn yellow">Buscar</button>
+        </form>
+        <a asp-action="modificarProducto" class="">
+            <button>Crear</button>
+        </a>
 
         <div class="tabla-container">
             <table class="tabla-empleados">
@@ -112,6 +115,5 @@
         }
     </script>
 
-    <script src="../js/site.js"></script>
 </body>
 </html>

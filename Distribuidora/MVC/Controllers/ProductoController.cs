@@ -68,6 +68,11 @@ namespace MVC.Controllers
 
         public async Task<IActionResult> bucarProductos(string nombre)
         {
+
+            if (nombre == null)
+            {
+                return RedirectToAction(nameof(listaProductos));
+            }
             var url = $"{_settings.BaseUrl}/{_settings.ProductoGetNombre}/{nombre}";
             var response = await _httpClient.GetAsync(url);
 
@@ -106,8 +111,7 @@ namespace MVC.Controllers
                 productosParaVista.Add(productoDTOvista);
 
             }
-
-            return View(productosParaVista);
+            return View("listaProductos", productosParaVista);
         }
 
 
