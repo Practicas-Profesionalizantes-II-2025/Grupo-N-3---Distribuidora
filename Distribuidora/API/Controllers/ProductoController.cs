@@ -69,7 +69,7 @@ namespace API.Controllers
         {
             _IProductoLogicaa.CrearProducto(producto);
 
-            return CreatedAtAction("GetProducto", new { id = producto.Id }, producto);
+            return CreatedAtAction("ProductoGet", new { id = producto.Id }, producto);
         }
 
         // DELETE: api/Producto/5

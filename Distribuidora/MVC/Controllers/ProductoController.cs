@@ -22,7 +22,7 @@ namespace MVC.Controllers
             _settings = settings.Value;
         }
 
-        // GET: Lista de productos
+        // Ir a vista Lista con todos los productos
         public async Task<IActionResult> listaProductos()
         {
             var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
@@ -66,6 +66,7 @@ namespace MVC.Controllers
             return View(productosParaVista);
         }
 
+        // Ir a vista Lista con los productos filstrados
         public async Task<IActionResult> bucarProductos(string nombre)
         {
 
@@ -114,15 +115,30 @@ namespace MVC.Controllers
             return View("listaProductos", productosParaVista);
         }
 
-
-        // GET: Crear producto
-        public IActionResult crearProducto()
+        // Ir a Vista crear producto
+        public async Task<IActionResult> crearProducto()
         {
-            return View();
+            // Obtener proveedores y categorías para mostrar nombres
+            var ulrProveedores = $"{_settings.BaseUrl}/{_settings.ProveedorGet}";
+            var urlCategorias = $"{_settings.BaseUrl}/{_settings.CategoriasGet}";
+            var proveedoresJson = await _httpClient.GetStringAsync(ulrProveedores);
+            var categoriasJson = await _httpClient.GetStringAsync(urlCategorias);
+
+            var proveedores = JsonConvert.DeserializeObject<List<ProveedorDTO>>(proveedoresJson);
+            var categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(categoriasJson);
+
+            ProductoCrearModel model = new ProductoCrearModel
+            {
+                Proveedores = proveedores,
+                Categorias = categorias
+            };
+            return View(model);
         }
 
+        // Accion crear producto
+
         [HttpPost]
-        public async Task<IActionResult> crearProducto(ProductoDTO producto)
+        public async Task<IActionResult> AccioncrearProducto([Bind("Nombre, PrecioProducto, Stock, CategoriaId, ProveedorId")] ProductoDTO producto)
         {
             if (!ModelState.IsValid)
                 return View(producto);

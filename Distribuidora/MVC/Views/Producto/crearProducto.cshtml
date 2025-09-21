@@ -1,5 +1,5 @@
-﻿@{
-}
+﻿@model MVC.Models.DTOs.ProductoCrearModel
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -24,22 +24,25 @@
             </div>
 
             <!-- Formulario para crear empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre producto">
-                <input type="text" placeholder="Proveedor">
-                <input type="text" placeholder="Categoría">
-                <input type="text" placeholder="Unidades">
-                <input type="text" placeholder="Precio costo">
-                <input type="text" placeholder="Precio venta">
-            </div>
-
-            <!-- contenedor exclusivo para centrar -->
-            <div class="form-buttons-wrapper">
-                <div class="form-buttons">
-                    <button class="btn yellow">Guardar</button>
-                    <a href="listaProductos.html" class="btn back">Volver</a>
+            <form asp-action="AccioncrearProducto" method="post" class="form">
+                <input type="text" name="Nombre" value="" id="" placeholder="Nombre producto">
+                <input type="text" name="Stock" value="" id="" placeholder="Stock">
+                <input type="text" name="PrecioProducto" value="" id="" placeholder="Precio costo">
+@*                 <input type="text" name="" value="" id="" placeholder="Precio venta"> *@
+                <label>Categorias</label>
+                <select name="CategoriaId" asp-items="@(new SelectList(Model.Categorias, "Id", "Nombre"))" class="form-control"></select>
+                <label>Proveedor</label>
+                <select name="ProveedorId" asp-items="@(new SelectList(Model.Proveedores, "Id", "Nombre"))" class="form-control"></select>
+                <!-- contenedor exclusivo para centrar -->
+                <div class="form-buttons-wrapper">
+                    <div class="form-buttons">
+                        <button type="submit" class="btn yellow">Guardar</button>
+                        <a asp-action="listaProductos" class="btn back">Volver</a>
+                    </div>
                 </div>
-            </div>
+            </form>
+
+
 
         </div>
     </main>
