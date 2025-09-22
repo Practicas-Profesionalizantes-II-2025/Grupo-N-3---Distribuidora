@@ -20,7 +20,7 @@
         public string ClientesGet { get; set; } = string.Empty;
         public string ClientesPost { get; set; } = string.Empty;
         public string ClientesPut { get; set; } = string.Empty;
-        public string ClientesDelete { get; set; } = string.Empty
+        public string ClientesDelete { get; set; } = string.Empty;
 
         // Endopoints Distribuidores
         public string DistribuidorGet { get; set; } = string.Empty;
