@@ -26,7 +26,7 @@ namespace MVC.Controllers
         }
 
         // GET: Usuario
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Login()
         {
             var url = $"{_settings.BaseUrl}/{_settings.UsuarioGet}";
             var response = await _httpClient.GetAsync(url);
