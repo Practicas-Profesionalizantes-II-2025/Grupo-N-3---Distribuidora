@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace MVC.Migrations
+namespace CDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class _3era : Migration
+    public partial class base2 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

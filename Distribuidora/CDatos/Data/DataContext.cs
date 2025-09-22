@@ -10,6 +10,12 @@ namespace CDatos.Data
         : base(options)
         {
         }
+        public DataContext()
+            : base(new DbContextOptionsBuilder<DataContext>()
+                .UseSqlServer("Server=DESKTOP-T1RN1VP\\SQLEXPRESS;Database=Distribuidora;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True")
+                .Options)
+        {
+        }
 
         public DbSet<Categoria> Categoria { get; set; } = null!;
         public DbSet<Ciudad> Ciudad { get; set; } = null!;
