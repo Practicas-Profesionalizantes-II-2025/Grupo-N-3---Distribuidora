@@ -12,7 +12,7 @@ namespace CDatos.Data
         }
         public DataContext()
             : base(new DbContextOptionsBuilder<DataContext>()
-                .UseSqlServer("Server=DESKTOP-T1RN1VP\\SQLEXPRESS;Database=Distribuidora;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True")
+                .UseSqlServer("Server=DESKTOP-SMHBKIH\\SQLEXPRESS;Database=Distribuidora;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True")
                 .Options)
         {
         }
