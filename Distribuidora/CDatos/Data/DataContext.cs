@@ -12,8 +12,10 @@ namespace CDatos.Data
         }
         public DataContext()
             : base(new DbContextOptionsBuilder<DataContext>()
-                .UseSqlServer("Server=DESKTOP-SMHBKIH\\SQLEXPRESS;Database=Distribuidora;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True")
+                .UseSqlServer("Server=DESKTOP-T1RN1VP\\SQLEXPRESS;Database=Distribuidora;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True")
                 .Options)
+        // Add-Migration base -Context DataContext -Project CDatos -StartupProject MVC
+        //Update-Database -Context DataContext -Project CDatos -StartupProject MVC
         {
         }
 
@@ -69,8 +71,8 @@ namespace CDatos.Data
 
             // Distribuidores
             modelBuilder.Entity<Distribuidor>().HasData(
-                new Distribuidor { Id = 1, Nombre = "Proveedor Uno", Direccion = "Direccion 1", Telefono = "Telefono 1", CiudadId = 1, },
-                new Distribuidor { Id = 2, Nombre = "Proveedor Dos", Direccion = "Direccion 2", Telefono = "Telefono 2", CiudadId = 2, }
+                new Distribuidor { Id = 1, Nombre = "Distribuidor Uno",CuilCuit = "46124922", Direccion = "Direccion 1", Telefono = "Telefono 1", CiudadId = 1, },
+                new Distribuidor { Id = 2, Nombre = "Distribuidor Dos",CuilCuit = "46136388", Direccion = "Direccion 2", Telefono = "Telefono 2", CiudadId = 2, }
             );
             // Categorias
             modelBuilder.Entity<Categoria>().HasData(
