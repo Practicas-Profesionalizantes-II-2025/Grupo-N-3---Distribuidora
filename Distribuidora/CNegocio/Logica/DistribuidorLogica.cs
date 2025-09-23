@@ -44,6 +44,7 @@ namespace CNegocio.Logica
             return new DistribuidorDTO
             {
                 Id = distribuidor.Id,
+                CuilCuit = distribuidor.CuilCuit,
                 Nombre = distribuidor.Nombre,
                 Direccion = distribuidor.Direccion,
                 Telefono = distribuidor.Telefono,
@@ -89,6 +90,7 @@ namespace CNegocio.Logica
             var distribuidor = new Distribuidor
             {
                 Id = DistrbuidorDTO.Id,
+                CuilCuit = DistrbuidorDTO.CuilCuit,
                 Nombre = DistrbuidorDTO.Nombre,
                 Direccion = DistrbuidorDTO.Direccion,
                 Telefono = DistrbuidorDTO.Telefono,

@@ -46,7 +46,7 @@ namespace MVC.Controllers
 
         // POST: Distribuidor/Crear
         [HttpPost]
-        public async Task<IActionResult> crearDistribuidor([Bind("Id,Nombre,CuilCuit,Telefono,Direccion,Ciudad,Provincia,CodigoPostal")] DistribuidorDTO distribuidor)
+        public async Task<IActionResult> crearDistribuidor([Bind("Id,Nombre,CuilCuit,Telefono,Direccion,CiudadId")] DistribuidorDTO distribuidor)
         {
             if (!ModelState.IsValid)
                 return View(distribuidor);

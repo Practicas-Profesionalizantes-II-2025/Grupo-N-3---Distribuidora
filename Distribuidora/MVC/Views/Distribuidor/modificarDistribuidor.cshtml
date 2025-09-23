@@ -32,7 +32,7 @@
                     <span asp-validation-for="Nombre" class="text-danger"></span>
 
                     <!-- CUIL/CUIT (bloqueado) -->
-                    <input type="text" asp-for="CuilCuit" placeholder="CUIL/CUIT" class="input-text" disabled />
+                    <input type="text" asp-for="CuilCuit" placeholder="CUIL/CUIT" class="input-text" readonly />
                     <span asp-validation-for="CuilCuit" class="text-danger"></span>
 
                     <!-- Teléfono -->
@@ -44,8 +44,7 @@
                     <span asp-validation-for="Direccion" class="text-danger"></span>
 
                     <!-- Ciudad -->
-                    <input type="text" asp-for="CiudadId" placeholder="CiudadId" class="input-text" />
-                    <span asp-validation-for="CiudadId" class="text-danger"></span>
+                    <input asp-for="CiudadId" placeholder="Ciudad" />
 
                     <!-- Botones -->
                     <div class="form-buttons-wrapper">
