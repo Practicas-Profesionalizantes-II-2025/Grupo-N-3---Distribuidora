@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
 
     <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="~/css/site.css">
 </head>
 <body>
     <main class="container full-width">
@@ -23,7 +23,7 @@
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, CUIL/CUIT o Nombre" id="searchInput">
             <button class="btn yellow">Buscar</button>
-            <a href="crearDistribuidor.html" class="btn yellow">Crear distribuidor</a>
+            <a asp-controller="Distribuidor" asp-action="crearDistribuidor" class="btn yellow">Crear Distribuidor</a>
         </div>
 
         <div class="tabla-container">
@@ -54,7 +54,9 @@
                         <td>2000</td>
                         <td class="acciones">
                             <a href="modificarDistribuidor.html" class="btn-icon edit"><i class="ri-pencil-line"></i></a>
-                            <a href="#" class="btn-icon delete" onclick="confirmDelete(this)"><i class="ri-delete-bin-line"></i></a>
+                            <a href="#" class="btn-icon delete" title="Eliminar" onclick="confirmDelete(this)">
+                                <i class="ri-delete-bin-line"></i>
+                            </a>
                         </td>
                     </tr>
                     <tr>
@@ -68,7 +70,9 @@
                         <td>3000</td>
                         <td class="acciones">
                             <a href="modificarDistribuidor.html" class="btn-icon edit"><i class="ri-pencil-line"></i></a>
-                            <a href="#" class="btn-icon delete" onclick="confirmDelete(this)"><i class="ri-delete-bin-line"></i></a>
+                            <a href="#" class="btn-icon delete" title="Eliminar" onclick="confirmDelete(this)">
+                                <i class="ri-delete-bin-line"></i>
+                            </a>
                         </td>
                     </tr>
                     <!-- Agregar más filas según necesidad -->
@@ -76,6 +80,43 @@
             </table>
         </div>
     </main>
+
+    <!-- Modal de Confirmación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="ri-alert-line" style="font-size: 2rem; color: #ff4d4d;"></i>
+                <h3>Confirmar eliminación</h3>
+            </div>
+            <p>¿Estás seguro que deseas eliminar este distribuidor?</p>
+            <div class="modal-buttons">
+                <button class="btn confirm" id="confirmBtn">Sí, eliminar</button>
+                <button class="btn cancel" id="cancelBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let rowToDelete = null;
+
+        function confirmDelete(button) {
+            rowToDelete = button.closest('tr');
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        document.getElementById('confirmBtn').onclick = function () {
+            if (rowToDelete) {
+                rowToDelete.remove();
+                rowToDelete = null;
+            }
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        document.getElementById('cancelBtn').onclick = function () {
+            rowToDelete = null;
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+    </script>
 
     <!--=============== JS ===============-->
     <script src="../js/main.js"></script>
