@@ -1,8 +1,7 @@
-﻿@{
-}
+﻿@model MVC.Models.DTOs.DistribuidorDTO
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,9 +9,9 @@
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="~/css/style.css">
 
-    <title>Pagina Inicio - Empleados</title>
+    <title>Modificar distribuidor</title>
 </head>
 <body>
     <main>
@@ -22,26 +21,44 @@
                 <h2>Modificar distribuidor</h2>
             </div>
 
-            <!-- Formulario para modificar distribuidor -->
-            <div class="form">
-                <input type="text" placeholder="Nombre" id="nombre">
-                <input type="text" placeholder="CUIL/CUIT" id="cuil" disabled> <!-- campo bloqueado -->
-                <input type="text" placeholder="Teléfono" id="telefono">
-                <input type="text" placeholder="Dirección" id="direccion">
-                <input type="text" placeholder="Ciudad" id="ciudad">
-                <input type="text" placeholder="Provincia" id="provincia">
-                <input type="text" placeholder="Código Postal" id="codigoPostal">
-            </div>
+            <!-- Formulario -->
+            <form asp-action="modificarDistribuidor" asp-controller="Distribuidor" method="post">
+                <div class="form">
+                    <!-- ID oculto -->
+                    <input type="hidden" asp-for="Id" />
 
-            <!-- contenedor exclusivo para centrar -->
-            <div class="form-buttons-wrapper">
-                <div class="form-buttons">
-                    <button class="btn yellow">Guardar</button>
-                    <a href="listaDistribuidores.html" class="btn back">Volver</a>
+                    <!-- Nombre -->
+                    <input type="text" asp-for="Nombre" placeholder="Nombre" class="input-text" />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+
+                    <!-- CUIL/CUIT (bloqueado) -->
+                    <input type="text" asp-for="CuilCuit" placeholder="CUIL/CUIT" class="input-text" disabled />
+                    <span asp-validation-for="CuilCuit" class="text-danger"></span>
+
+                    <!-- Teléfono -->
+                    <input type="text" asp-for="Telefono" placeholder="Teléfono" class="input-text" />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+
+                    <!-- Dirección -->
+                    <input type="text" asp-for="Direccion" placeholder="Dirección" class="input-text" />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+
+                    <!-- Ciudad -->
+                    <input type="text" asp-for="CiudadId" placeholder="CiudadId" class="input-text" />
+                    <span asp-validation-for="CiudadId" class="text-danger"></span>
+
+                    <!-- Botones -->
+                    <div class="form-buttons-wrapper">
+                        <div class="form-buttons">
+                            <button type="submit" class="btn yellow">Guardar</button>
+                            <a asp-controller="Distribuidor" asp-action="listaDistribuidores" class="btn back">Volver</a>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </form>
         </div>
     </main>
-    <script href="../js/main.js"></script>
+
+    <script src="~/js/site.js"></script>
 </body>
 </html>
