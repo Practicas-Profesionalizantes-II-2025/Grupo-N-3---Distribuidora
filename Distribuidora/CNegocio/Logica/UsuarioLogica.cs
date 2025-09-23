@@ -28,13 +28,13 @@ namespace CNegocio.Logica
             {
                 Id = u.Id,
                 PersonaId = u.PersonaId,
-                Activo = u.EstadoId == 1
+                EstadoId = u.EstadoId
             }).ToList();
         }
 
         public async Task<bool> VerificarUsuario(UsuarioDTO usuarioDTO)
         {
-            var usuarioEnDb = await _usuarioRepositorio.ObtenerUsuarioPorNombreUsuario(usuarioDTO.NombreUsuario);
+            var usuarioEnDb = await _usuarioRepositorio.ObtenerUsuarioPorNombreUsuario(usuarioDTO.Nombre);
             if (usuarioEnDb == null)
                 return false;
 
@@ -61,7 +61,7 @@ namespace CNegocio.Logica
             {
                 Id = usuario.Id,
                 PersonaId = usuario.PersonaId,
-                Activo = usuario.EstadoId == 1
+                EstadoId = usuario.EstadoId
                 // Nunca mandarr la contrasenia al front
             };
         }

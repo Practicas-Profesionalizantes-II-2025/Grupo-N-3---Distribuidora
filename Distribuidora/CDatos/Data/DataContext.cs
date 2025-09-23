@@ -146,8 +146,8 @@ namespace CDatos.Data
 
             // Usuarios
             modelBuilder.Entity<Usuario>().HasData(
-                new Usuario { Id = 1, NombreUsuario = "admin",      Contrasenia = "admin123",   PersonaId = 1, EstadoId = 1 },
-                new Usuario { Id = 2, NombreUsuario = "cliente1",   Contrasenia = "cliente123", PersonaId = 7, EstadoId = 1 }
+                new Usuario { Id = 1, Nombre = "admin",      Contrasenia = "admin123",   PersonaId = 1, EstadoId = 1 },
+                new Usuario { Id = 2, Nombre = "cliente1",   Contrasenia = "cliente123", PersonaId = 7, EstadoId = 1 }
             );
         }
     }
