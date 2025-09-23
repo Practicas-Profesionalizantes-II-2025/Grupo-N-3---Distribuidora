@@ -1,9 +1,8 @@
-﻿namespace MVC.Models.DTOs
+﻿namespace MVC.Models.Entities
 {
-    public class DistribuidorDTO
+    public class Distribuidor
     {
         public int Id { get; set; }
-
         public string Nombre { get; set; }
         public string CuilCuit { get; set; }
         public string Telefono { get; set; }

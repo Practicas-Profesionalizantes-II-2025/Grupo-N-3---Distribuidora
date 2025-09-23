@@ -21,6 +21,7 @@ namespace CDatos.Data
         public DbSet<Ciudad> Ciudad { get; set; } = null!;
         public DbSet<Cliente> Cliente { get; set; } = null!;
         public DbSet<Empleado> Empleado { get; set; } = null!;
+        public DbSet<Distribuidor> Distribuidor { get; set; } = null!;
         public DbSet<Estado> Estados { get; set; } = null!;
         public DbSet<OrdenDeCompra> OrdenDeCompra { get; set; } = null!;
         public DbSet<OrdenDeCompraProducto> OrdenDeCompraProducto { get; set; } = null!;
@@ -66,6 +67,11 @@ namespace CDatos.Data
                 new Proveedor { Id = 2, Nombre = "Proveedor Dos", Direccion = "Direccion 2", Telefono = "Telefono 2", Email = "email2@dominio.com.ar" }
             );
 
+            // Distribuidores
+            modelBuilder.Entity<Distribuidor>().HasData(
+                new Distribuidor { Id = 1, Nombre = "Proveedor Uno", Direccion = "Direccion 1", Telefono = "Telefono 1", CiudadId = 1, },
+                new Distribuidor { Id = 2, Nombre = "Proveedor Dos", Direccion = "Direccion 2", Telefono = "Telefono 2", CiudadId = 2, }
+            );
             // Categorias
             modelBuilder.Entity<Categoria>().HasData(
                 new Categoria { Id = 1, Nombre = "Bebidas", EstadoId = 1 },

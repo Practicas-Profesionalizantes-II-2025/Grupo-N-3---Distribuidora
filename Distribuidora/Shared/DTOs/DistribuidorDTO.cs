@@ -1,9 +1,14 @@
-﻿namespace MVC.Models.DTOs
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace Shared.DTOs
 {
     public class DistribuidorDTO
     {
         public int Id { get; set; }
-
         public string Nombre { get; set; }
         public string CuilCuit { get; set; }
         public string Telefono { get; set; }
