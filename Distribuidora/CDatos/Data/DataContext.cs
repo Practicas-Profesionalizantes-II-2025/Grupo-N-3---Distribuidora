@@ -12,10 +12,14 @@ namespace CDatos.Data
         }
         public DataContext()
             : base(new DbContextOptionsBuilder<DataContext>()
-                .UseSqlServer("Server=DESKTOP-T1RN1VP\\SQLEXPRESS;Database=Distribuidora;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True")
+                .UseSqlServer("Server=??;Database=Distribuidora;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True")
                 .Options)
         // Add-Migration base -Context DataContext -Project CDatos -StartupProject MVC
         //Update-Database -Context DataContext -Project CDatos -StartupProject MVC
+        //  Chuni note --> DESKTOP-SMHBKIH\\SQLEXPRESS
+        //  Chuni desktop --> DESKTOP-83HBC25
+        //  Juan --> DESKTOP-T1RN1VP\\SQLEXPRESS
+        //  Facu --> FACUNDO\SQLEXPRESS
         {
         }
 
