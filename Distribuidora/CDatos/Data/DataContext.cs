@@ -10,19 +10,7 @@ namespace CDatos.Data
         : base(options)
         {
         }
-        public DataContext()
-            : base(new DbContextOptionsBuilder<DataContext>()
-                .UseSqlServer("Server=??;Database=Distribuidora;Trusted_Connection=True;MultipleActiveResultSets=true;TrustServerCertificate=True")
-                .Options)
-        // Add-Migration base -Context DataContext -Project CDatos -StartupProject MVC
-        //Update-Database -Context DataContext -Project CDatos -StartupProject MVC
-        //  Chuni note --> DESKTOP-SMHBKIH\\SQLEXPRESS
-        //  Chuni desktop --> DESKTOP-83HBC25
-        //  Juan --> DESKTOP-T1RN1VP\\SQLEXPRESS
-        //  Facu --> FACUNDO\SQLEXPRESS
-        {
-        }
-
+        public DataContext() {}
         public DbSet<Categoria> Categoria { get; set; } = null!;
         public DbSet<Ciudad> Ciudad { get; set; } = null!;
         public DbSet<Cliente> Cliente { get; set; } = null!;
@@ -39,7 +27,10 @@ namespace CDatos.Data
         public DbSet<Sector> Sector { get; set; } = null!;
         public DbSet<TipoDocumento> TipoDocumento { get; set; } = null!;
         public DbSet<Usuario> Usuario { get; set; } = null!;
-
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            optionsBuilder.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=SistemaGestionUniversitario;Integrated Security=True;TrustServerCertificate=true;");
+        }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             // Estados

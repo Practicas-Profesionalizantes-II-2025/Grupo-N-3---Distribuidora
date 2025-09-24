@@ -1,15 +1,10 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using MVC.Data;
 using MVC.ConfigAPI;
 using NuGet.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DbContext
-builder.Services.AddDbContext<MVCContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DataContext")
-        ?? throw new InvalidOperationException("Connection string 'MVCContext' not found.")));
 
 // Configuración de ApiSettings
 builder.Services.Configure<ApiSettings>(

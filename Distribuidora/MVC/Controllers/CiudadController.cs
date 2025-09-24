@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MVC.ConfigAPI;
-using MVC.Data;
 using MVC.Models.DTOs;
 using MVC.Models.Entities;
 using Newtonsoft.Json;
