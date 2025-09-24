@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDb : Migration
+    public partial class add1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
