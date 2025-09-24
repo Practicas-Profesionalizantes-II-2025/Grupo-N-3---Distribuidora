@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CDatos.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250922202841_base2")]
-    partial class base2
+    [Migration("20250924010901_InitialDb")]
+    partial class InitialDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -167,6 +167,58 @@ namespace CDatos.Migrations
                             Id = 6,
                             EstadoId = 2,
                             PersonaId = 12
+                        });
+                });
+
+            modelBuilder.Entity("Shared.Entities.Distribuidor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CiudadId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CuilCuit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Distribuidor");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CiudadId = 1,
+                            CuilCuit = "46124922",
+                            Direccion = "Direccion 1",
+                            Nombre = "Distribuidor Uno",
+                            Telefono = "Telefono 1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CiudadId = 2,
+                            CuilCuit = "46136388",
+                            Direccion = "Direccion 2",
+                            Nombre = "Distribuidor Dos",
+                            Telefono = "Telefono 2"
                         });
                 });
 
@@ -854,7 +906,7 @@ namespace CDatos.Migrations
                     b.Property<int>("EstadoId")
                         .HasColumnType("int");
 
-                    b.Property<string>("NombreUsuario")
+                    b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -862,8 +914,6 @@ namespace CDatos.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("PersonaId");
 
                     b.ToTable("Usuario");
 
@@ -873,7 +923,7 @@ namespace CDatos.Migrations
                             Id = 1,
                             Contrasenia = "admin123",
                             EstadoId = 1,
-                            NombreUsuario = "admin",
+                            Nombre = "admin",
                             PersonaId = 1
                         },
                         new
@@ -881,7 +931,7 @@ namespace CDatos.Migrations
                             Id = 2,
                             Contrasenia = "cliente123",
                             EstadoId = 1,
-                            NombreUsuario = "cliente1",
+                            Nombre = "cliente1",
                             PersonaId = 7
                         });
                 });
@@ -925,17 +975,6 @@ namespace CDatos.Migrations
                     b.Navigation("Distribuidor");
 
                     b.Navigation("Empleado");
-                });
-
-            modelBuilder.Entity("Shared.Entities.Usuario", b =>
-                {
-                    b.HasOne("Shared.Entities.Persona", "Persona")
-                        .WithMany()
-                        .HasForeignKey("PersonaId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Persona");
                 });
 
             modelBuilder.Entity("Shared.Entities.Persona", b =>

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class add1 : Migration
+    public partial class InitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -41,6 +41,23 @@ namespace CDatos.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Ciudad", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Distribuidor",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CuilCuit = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CiudadId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Distribuidor", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -151,8 +168,7 @@ namespace CDatos.Migrations
                     Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EstadoId = table.Column<int>(type: "int", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -184,6 +200,22 @@ namespace CDatos.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_TipoDocumento", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Usuario",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Contrasenia = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PersonaId = table.Column<int>(type: "int", nullable: false),
+                    EstadoId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Usuario", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -222,28 +254,6 @@ namespace CDatos.Migrations
                     table.PrimaryKey("PK_Empleado", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Empleado_Persona_PersonaId",
-                        column: x => x.PersonaId,
-                        principalTable: "Persona",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Usuario",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    NombreUsuario = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Contrasenia = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PersonaId = table.Column<int>(type: "int", nullable: false),
-                    EstadoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Usuario", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Usuario_Persona_PersonaId",
                         column: x => x.PersonaId,
                         principalTable: "Persona",
                         principalColumn: "Id",
@@ -294,6 +304,15 @@ namespace CDatos.Migrations
                 {
                     { 1, "A1000", "1000", 1, "Ciudad A" },
                     { 2, "B2000", "2000", 1, "Ciudad B" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Distribuidor",
+                columns: new[] { "Id", "CiudadId", "CuilCuit", "Direccion", "Nombre", "Telefono" },
+                values: new object[,]
+                {
+                    { 1, 1, "46124922", "Direccion 1", "Distribuidor Uno", "Telefono 1" },
+                    { 2, 2, "46136388", "Direccion 2", "Distribuidor Dos", "Telefono 2" }
                 });
 
             migrationBuilder.InsertData(
@@ -365,11 +384,11 @@ namespace CDatos.Migrations
 
             migrationBuilder.InsertData(
                 table: "Proveedor",
-                columns: new[] { "Id", "Direccion", "Email", "EstadoId", "Nombre", "Telefono" },
+                columns: new[] { "Id", "Direccion", "Email", "Nombre", "Telefono" },
                 values: new object[,]
                 {
-                    { 1, "Direccion 1", "email1@dominio.com.ar", 1, "Proveedor Uno", "Telefono 1" },
-                    { 2, "Direccion 2", "email2@dominio.com.ar", 1, "Proveedor Dos", "Telefono 2" }
+                    { 1, "Direccion 1", "email1@dominio.com.ar", "Proveedor Uno", "Telefono 1" },
+                    { 2, "Direccion 2", "email2@dominio.com.ar", "Proveedor Dos", "Telefono 2" }
                 });
 
             migrationBuilder.InsertData(
@@ -389,6 +408,15 @@ namespace CDatos.Migrations
                     { 1, "DNI" },
                     { 2, "Pasaporte" },
                     { 3, "Libreta De Enrolamiento" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "Usuario",
+                columns: new[] { "Id", "Contrasenia", "EstadoId", "Nombre", "PersonaId" },
+                values: new object[,]
+                {
+                    { 1, "admin123", 1, "admin", 1 },
+                    { 2, "cliente123", 1, "cliente1", 7 }
                 });
 
             migrationBuilder.InsertData(
@@ -415,15 +443,6 @@ namespace CDatos.Migrations
                     { 4, 2, "", 4, 2 },
                     { 5, 1, "", 5, 1 },
                     { 6, 2, "", 6, 2 }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Usuario",
-                columns: new[] { "Id", "Contrasenia", "EstadoId", "NombreUsuario", "PersonaId" },
-                values: new object[,]
-                {
-                    { 1, "admin123", 1, "admin", 1 },
-                    { 2, "cliente123", 1, "cliente1", 7 }
                 });
 
             migrationBuilder.InsertData(
@@ -454,11 +473,6 @@ namespace CDatos.Migrations
                 name: "IX_OrdenDeCompra_EmpleadoId",
                 table: "OrdenDeCompra",
                 column: "EmpleadoId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Usuario_PersonaId",
-                table: "Usuario",
-                column: "PersonaId");
         }
 
         /// <inheritdoc />
@@ -472,6 +486,9 @@ namespace CDatos.Migrations
 
             migrationBuilder.DropTable(
                 name: "Cliente");
+
+            migrationBuilder.DropTable(
+                name: "Distribuidor");
 
             migrationBuilder.DropTable(
                 name: "Estados");
