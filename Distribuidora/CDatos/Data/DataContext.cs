@@ -29,7 +29,7 @@ namespace CDatos.Data
         public DbSet<Usuario> Usuario { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=SistemaGestionUniversitario;Integrated Security=True;TrustServerCertificate=true;");
+            optionsBuilder.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=Distribuidora;Integrated Security=True;TrustServerCertificate=true;");
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
