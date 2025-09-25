@@ -35,6 +35,15 @@ namespace MVC.Controllers
 
             var json = await response.Content.ReadAsStringAsync();
             var lista_clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
+            
+            // Obtener proveedores y categorías para mostrar nombres
+            var ulrCiudad = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
+            var urlDoc = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
+            var CiudadJson = await _httpClient.GetStringAsync(ulrCiudad);
+            var DocJson = await _httpClient.GetStringAsync(urlDoc);
+
+            var Ciudad = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+            var Doc = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
 
             return View(lista_clientes);
         }

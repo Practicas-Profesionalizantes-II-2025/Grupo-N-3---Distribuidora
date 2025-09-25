@@ -25,12 +25,13 @@ namespace CDatos.Repositorios
         {
             return await _context.TipoDocumento.FindAsync(id);
         }
-        public async Task CrearTipoDocumento(TipoDocumento tipoDocumento)
+        public async Task<TipoDocumento> CrearTipoDocumento(TipoDocumento tipoDocumento)
         {
             _context.TipoDocumento.Add(tipoDocumento);
             await _context.SaveChangesAsync();
+            return tipoDocumento;
         }
-        public async Task ActualizarTipoDocumento(TipoDocumento tipoDocumento)
+        public void ActualizarTipoDocumento(TipoDocumento tipoDocumento)
         {
             var tipoDocumentoExistente = _context.TipoDocumento.Find(tipoDocumento.Id);
             if (tipoDocumentoExistente == null)
@@ -39,15 +40,15 @@ namespace CDatos.Repositorios
             }
             tipoDocumentoExistente.NombreTipoDocumento = tipoDocumento.NombreTipoDocumento;
 
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
         }
-        public async Task EliminarTipoDocumentoAsync(int id)
+        public void EliminarTipoDocumento(int id)
         {
-            var tipoDocumento = await ObtenerTipoDocumentoPorId(id);
-            if (tipoDocumento != null)
+            var TipoDocumento = _context.TipoDocumento.FirstOrDefault(x => x.Id == id);
+            if (TipoDocumento != null)
             {
-                _context.TipoDocumento.Remove(tipoDocumento);
-                await _context.SaveChangesAsync();
+                _context.TipoDocumento.Remove(TipoDocumento);
+                _context.SaveChanges();
             }
         }
     }
