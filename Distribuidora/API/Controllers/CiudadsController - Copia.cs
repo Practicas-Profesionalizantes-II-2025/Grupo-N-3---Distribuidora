@@ -27,14 +27,14 @@ namespace API.Controllers
 
         // GET: api/Ciudads
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<CiudadDTO>>> GetCiudades()
+        public async Task<ActionResult<IEnumerable<CiudadDTO>>> CiudadesGet()
         {
             return await _IciudadLogica.ObtenerCiudades();
         }
 
         // GET: api/Ciudads/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<CiudadDTO>> GetCiudad(int id)
+        public async Task<ActionResult<CiudadDTO>> CiudadGet(int id)
         {
             var ciudad = await _IciudadLogica.ObtenerCiudadPorId(id);
 
@@ -49,7 +49,7 @@ namespace API.Controllers
         // PUT: api/Ciudads/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutCiudad(int id, CiudadDTO ciudad)
+        public async Task<IActionResult> CiudadPut(int id, CiudadDTO ciudad)
         {
             if (id != ciudad.Id)
             {
@@ -64,7 +64,7 @@ namespace API.Controllers
         // POST: api/Ciudads
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Ciudad>> PostCiudad(CiudadDTO ciudad)
+        public async Task<ActionResult<Ciudad>> CiudadPost(CiudadDTO ciudad)
         {
             _IciudadLogica.CrearCiudad(ciudad);
 
@@ -73,7 +73,7 @@ namespace API.Controllers
 
         // DELETE: api/Ciudads/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCiudad(int id)
+        public async Task<IActionResult> CiudadDelete(int id)
         {
             _IciudadLogica.EliminarCiudad(id);
 

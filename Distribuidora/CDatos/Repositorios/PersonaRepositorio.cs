@@ -32,18 +32,7 @@ namespace CDatos.Repositorios
         }
         public async Task ActualizarPersona(Persona persona)
         {
-            var personaExistente = await _context.Persona.FindAsync(persona.Id);
-            if (personaExistente == null)
-                throw new Exception("Persona no encontrada.");
-
-            personaExistente.Nombre = persona.Nombre;
-            personaExistente.Apellido = persona.Apellido;
-            personaExistente.Nro_Doc = persona.Nro_Doc;
-            personaExistente.Telefono = persona.Telefono;
-            personaExistente.Email = persona.Email;
-            personaExistente.Direccion = persona.Direccion;
-            personaExistente.CiudadId = persona.CiudadId;
-
+            _context.Persona.Update(persona);
             await _context.SaveChangesAsync();
         }
         public async Task EliminarPersona(int id)

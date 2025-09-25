@@ -27,8 +27,8 @@ namespace CNegocio.Logica
             {
                 Id = c.Id,
                 Nombre = c.Nombre,
-                Cp = c.Cp,
-                Acp = c.Acp,
+                //Cp = c.Cp,
+                //Acp = c.Acp,
             }).ToList();
         }
 
@@ -40,8 +40,8 @@ namespace CNegocio.Logica
             {
                 Id = ciudad.Id,
                 Nombre = ciudad.Nombre,
-                Cp = ciudad.Cp,
-                Acp = ciudad.Acp,
+                //Cp = ciudad.Cp,
+                //Acp = ciudad.Acp,
             };
         }
         public async Task CrearCiudad(CiudadDTO CiudadDTO)
@@ -49,8 +49,8 @@ namespace CNegocio.Logica
             var ciudad = new Ciudad
             {
                 Nombre = CiudadDTO.Nombre,
-                Cp = CiudadDTO.Cp,
-                Acp = CiudadDTO.Acp,
+                //Cp = CiudadDTO.Cp,
+                //Acp = CiudadDTO.Acp,
             };
             var nuevaCiudad = await _ciudadRepositorio.CrearCiudad(ciudad);
         }
@@ -60,8 +60,8 @@ namespace CNegocio.Logica
             {
                 Id = CiudadDTO.Id,
                 Nombre = CiudadDTO.Nombre,
-                Cp = CiudadDTO.Cp,
-                Acp = CiudadDTO.Acp,
+               // Cp = CiudadDTO.Cp,
+                //Acp = CiudadDTO.Acp,
             };
             _ciudadRepositorio.ActualizarCiudad(ciudad);
         }

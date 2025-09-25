@@ -40,11 +40,23 @@ namespace MVC.Controllers
         }
 
         // GET: Crear Cliente
-        public IActionResult crearCliente()
+        public async Task<IActionResult> crearCliente()
         {
+            var ciudadesJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+            var ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(ciudadesJson);
+
+            // Obtener tipos de documentos desde la API
+            var tiposDocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+            var tiposDoc = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(tiposDocJson);
+
             var cliente = new ClienteDTO
             {
-                Persona = new PersonaDTO()
+                Persona = new PersonaDTO
+                {
+                    Ciudades = ciudades,
+                    TiposDocumentos = tiposDoc
+
+                }
             };
             return View(cliente);
         }

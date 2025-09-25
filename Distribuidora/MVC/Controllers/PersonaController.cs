@@ -30,13 +30,47 @@ namespace MVC.Controllers
             var json = await response.Content.ReadAsStringAsync();
             var lista_personas = JsonConvert.DeserializeObject<List<PersonaDTO>>(json);
 
-            return View(lista_personas);
+            // Obtener para mostrar nombres
+            var ulrCiudades = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
+            var urlDoc = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
+            var CiudadJson = await _httpClient.GetStringAsync(ulrCiudades);
+            var DocJson = await _httpClient.GetStringAsync(urlDoc);
+
+            var ciudad = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+            var doc = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+
+            var personasConDatos = lista_personas.Select(p => new PersonaDTO
+            {
+                Id = p.Id,
+                Nombre = p.Nombre,
+                Apellido = p.Apellido,
+                NombreCiudad = ciudad.FirstOrDefault(x => x.Id == p.CiudadId)?.Nombre ?? "N/A",
+                Tipo_DocNombre = doc.FirstOrDefault(x => x.Id == p.Tipo_DocId)?.NombreTipoDocumento ?? "N/A",
+                Email = p.Email,
+                Direccion = p.Direccion,
+                Telefono = p.Telefono,
+                Estado = p.EstadoId == 1 ? "Activo" : "Inactivo"
+            }).ToList();
+
+            return View(personasConDatos);
         }
 
         // GET: Persona/Create
-        public IActionResult crearPersona()
+        public async Task<IActionResult> crearPersona()
         {
-            return View();
+            var ulrCiudades = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
+            var urlDoc = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
+            var CiudadJson = await _httpClient.GetStringAsync(ulrCiudades);
+            var DocJson = await _httpClient.GetStringAsync(urlDoc);
+
+            var ciudad = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+            var doc = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+            PersonaDTO model = new PersonaDTO
+            {
+                Ciudades = ciudad,
+                TiposDocumentos = doc
+            };
+            return View(model);
         }
 
         // POST: Persona/Create

@@ -48,8 +48,8 @@ namespace CDatos.Data
 
             // Ciudades
             modelBuilder.Entity<Ciudad>().HasData(
-                new Ciudad { Id = 1, Nombre = "Ciudad A", Cp = "1000", Acp = "A1000", EstadoId = 1 },
-                new Ciudad { Id = 2, Nombre = "Ciudad B", Cp = "2000", Acp = "B2000", EstadoId = 1 }
+                new Ciudad { Id = 1, Nombre = "Ciudad A" },
+                new Ciudad { Id = 2, Nombre = "Ciudad B" }
             );
 
             // Sectores
