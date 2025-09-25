@@ -44,6 +44,19 @@ namespace MVC.Controllers
 
             var Ciudad = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
             var Doc = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+            
+            List<ClienteDTO> cliente = new List<ClienteDTO>();
+
+            foreach (var p in lista_clientes)
+            {
+                p.Persona.NombreCiudad = Ciudad.FirstOrDefault(x => x.Id == p.Persona.CiudadId)?.Nombre ?? "N/A";
+                p.Persona.Tipo_DocNombre = Doc.FirstOrDefault(x => x.Id == p.Persona.Tipo_DocId)?.NombreTipoDocumento ?? "N/A";
+
+                // si querés que nunca sean null
+                p.Persona.Ciudades = Ciudad;
+                p.Persona.TiposDocumentos = Doc;
+
+            }
 
             return View(lista_clientes);
         }
