@@ -29,6 +29,8 @@ builder.Services.AddScoped<IProductoLogica, ProductoLogica>();
 builder.Services.AddScoped<IProveedorLogica, ProveedorLogica>();
 builder.Services.AddScoped<IDistribuidorLogica, DistribuidorLogica>();
 builder.Services.AddScoped<ISectorLogica, SectorLogica>();
+builder.Services.AddScoped<ITipoDocLogica, TipoDocLogica>();
+
 
 // Registro de repositorios
 builder.Services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
