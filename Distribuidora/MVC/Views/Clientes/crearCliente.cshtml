@@ -1,9 +1,5 @@
 ﻿@model MVC.Models.DTOs.ClienteDTO
 
-@{
-    ViewData["Title"] = "Crear Cliente";
-}
-
 <main>
     <div class="content">
         <!-- Header de la sección -->
@@ -23,14 +19,17 @@
                     <option value="">Seleccione tipo de documento</option>
                 </select>
 
+                <!-- Número de Documento -->
+                <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de documento" class="input-text" />
+
                 <!-- Teléfono -->
                 <input id="telefono" type="tel" asp-for="Persona.Telefono" placeholder="Número de teléfono" class="input-text" />
 
                 <!-- Dirección -->
                 <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" />
 
-                <!-- Código Postal (no está en el modelo, campo libre) -->
-                <input type="text" id="cp" placeholder="Código Postal" class="input-text" />
+                <!-- Código Postal (no está en el modelo, campo libre) 
+                <input type="text" id="cp" placeholder="Código Postal" class="input-text" />-->
 
                 <!-- Ciudad -->
                 <select asp-for="Persona.CiudadId" asp-items="@(new SelectList(Model.Persona.Ciudades, "Id", "Nombre"))" class="form-control">

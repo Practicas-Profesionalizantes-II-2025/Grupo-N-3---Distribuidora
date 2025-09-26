@@ -1,4 +1,5 @@
-﻿using CDatos.Repositorios.IRepositorios;
+﻿using CDatos.Repositorios;
+using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
 using Shared.Entities;
@@ -13,11 +14,13 @@ namespace CNegocio.Logica
     {
         private readonly IClienteRepositorio _clienteRepositorio;
         private readonly IPersonaRepositorio _personaRepositorio;
+        private readonly ICiudadRepositorio _ciudadRepositorio;
 
-        public ClienteLogica(IClienteRepositorio clienteRepositorio, IPersonaRepositorio personaRepositorio)
+        public ClienteLogica(IClienteRepositorio clienteRepositorio, IPersonaRepositorio personaRepositorio, ICiudadRepositorio ciudadRepositorio)
         {
             _clienteRepositorio = clienteRepositorio;
             _personaRepositorio = personaRepositorio;
+            _ciudadRepositorio = ciudadRepositorio;
         }
 
         public async Task<List<ClienteDTO>> ObtenerClientes()
@@ -80,11 +83,29 @@ namespace CNegocio.Logica
 
             var nuevoCliente = await _clienteRepositorio.CrearCliente(cliente);
 
+            // Traigo la persona completa
+            var persona = await _personaRepositorio.ObtenerPersonaPorId(clienteDTO.PersonaId);
+            var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(persona.CiudadId); 
+
             return new ClienteDTO
             {
                 Id = nuevoCliente.Id,
                 PersonaId = nuevoCliente.PersonaId,
-                EstadoId = nuevoCliente.EstadoId
+                EstadoId = nuevoCliente.EstadoId,
+                Persona = new PersonaDTO
+                {
+                    Id = persona.Id,
+                    Nombre = persona.Nombre,
+                    Apellido = persona.Apellido,
+                    Tipo_DocId = persona.Tipo_DocId,
+                    Nro_Doc = persona.Nro_Doc,
+                    CiudadId = persona.CiudadId,
+                    NombreCiudad = ciudad.Nombre,
+                    Email = persona.Email,
+                    Direccion = persona.Direccion,
+                    Telefono = persona.Telefono,
+                    EstadoId = persona.EstadoId,
+                }
             };
         }
 

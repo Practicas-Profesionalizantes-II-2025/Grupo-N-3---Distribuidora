@@ -4,6 +4,7 @@ using Microsoft.Extensions.Options;
 using MVC.ConfigAPI;
 using MVC.Models.DTOs;
 using Newtonsoft.Json;
+using System.Collections.Immutable;
 using System.Text;
 using Ciudad = MVC.Models.Entities.Ciudad;
 using Estado = MVC.Models.Entities.Estado;
@@ -89,21 +90,42 @@ namespace MVC.Controllers
         {
             try
             {
-                // Aseguramos que Persona no sea null
                 if (cliente.Persona == null)
-                {
-                    ModelState.AddModelError(string.Empty, "Debe ingresar los datos de la Persona.");
-                    return View(cliente);
-                }
+                    cliente.Persona = new PersonaDTO();
+
+                // Cargar dropdowns siempre antes de validar ModelState
+                var CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+                var DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+
+                cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+                cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
 
                 // Forzamos estado de Persona en Alta
                 cliente.Persona.EstadoId = 1;
 
-                // Serializamos TODO el objeto ClienteDTO con Persona incluida
+                // Validación del ModelState
+                if (!ModelState.IsValid)
+                {
+                    var errores = ModelState
+                        .Where(ms => ms.Value.Errors.Count > 0)
+                        .Select(ms => new {
+                            Campo = ms.Key,
+                            Errores = ms.Value.Errors.Select(e => e.ErrorMessage).ToList()
+                        });
+
+                    // Log o breakpoint para ver los errores
+                    foreach (var error in errores)
+                    {
+                        Console.WriteLine($"Campo: {error.Campo}, Errores: {string.Join(", ", error.Errores)}");
+                    }
+
+                    return View(cliente);
+                }
+
+                // Serializamos y enviamos a la API
                 var clienteJson = JsonConvert.SerializeObject(cliente);
                 var clienteContent = new StringContent(clienteJson, Encoding.UTF8, "application/json");
 
-                // Llamada al endpoint de la API
                 var clienteResponse = await _httpClient.PostAsync($"{_settings.BaseUrl}/{_settings.ClientesPost}", clienteContent);
 
                 if (!clienteResponse.IsSuccessStatusCode)
@@ -113,7 +135,6 @@ namespace MVC.Controllers
                     return View(cliente);
                 }
 
-                // Si llegó hasta acá → se creó bien
                 return RedirectToAction(nameof(listaClientes));
             }
             catch (Exception ex)
@@ -158,9 +179,14 @@ namespace MVC.Controllers
         // GET: Modificar cliente
         public async Task<IActionResult> modificarCliente(int id)
         {
-            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}";
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}/{id}";
             var response = await _httpClient.GetAsync(url);
 
+            var urlCiudad = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
+            var responseUrlCiudad = await _httpClient.GetAsync(urlCiudad);
+
+            var urlDocumentos = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
+            var responseUrlDocumentos = await _httpClient.GetAsync(urlDocumentos);
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError(string.Empty, "No se pudo cargar el cliente");
@@ -168,55 +194,44 @@ namespace MVC.Controllers
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            var clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
-            var cliente = clientes.FirstOrDefault(c => c.Id == id);
+            var clientes = JsonConvert.DeserializeObject<ClienteDTO>(json);
 
-            if (cliente == null)
+            var jsonCiudad = await responseUrlCiudad.Content.ReadAsStringAsync();
+            var jsonDocumentos = await responseUrlDocumentos.Content.ReadAsStringAsync();
+
+            var ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(jsonCiudad);
+            var Documentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(jsonDocumentos);
+
+            ClienteDTO modelo = new ClienteDTO
             {
-                ModelState.AddModelError(string.Empty, "Cliente no encontrado");
-                return RedirectToAction(nameof(listaClientes));
-            }
-            var estados = new List<Estado>
-            {
-                new Estado { Id = 1, Descripcion = "Activo" },
-                new Estado { Id = 2, Descripcion = "Inactivo" }
+                Id = clientes.Id,
+                PersonaId = clientes.PersonaId,
+                Persona = new PersonaDTO
+                {
+                    Id = clientes.Persona.Id,
+                    Nombre = clientes.Persona.Nombre,
+                    Apellido = clientes.Persona.Apellido,
+                    Tipo_DocId = clientes.Persona.Tipo_DocId,
+                    Nro_Doc = clientes.Persona.Nro_Doc,
+                    CiudadId = clientes.Persona.CiudadId,
+                    Email = clientes.Persona.Email,
+                    Direccion = clientes.Persona.Direccion,
+                    Telefono = clientes.Persona.Telefono,
+                    EstadoId = clientes.Persona.EstadoId,
+                    Ciudades = ciudades,
+                    TiposDocumentos = Documentos
+                },
             };
-
-            var ciudades = new List<Ciudad>
-            {
-                new Ciudad { Id = 1, Nombre = "Ciudad A" },
-                new Ciudad { Id = 2, Nombre = "Ciudad B" }
-            };
-
-            // Pasamos las listas a la vista
-            ViewBag.Estados = new SelectList(estados, "Id", "Descripcion", cliente.EstadoId);
-            ViewBag.Ciudades = new SelectList(ciudades, "Id", "Nombre", cliente.Persona.CiudadId);
-
-            return View(cliente);
+            return View(modelo);
         }
 
         // POST: Modificar cliente
         [HttpPost]
-        public async Task<IActionResult> modificarCliente(int id, ClienteDTO cliente)
+        public async Task<IActionResult> modificarCliente(ClienteDTO cliente)
         {
-            if (id != cliente.Id)
-                return NotFound();
 
             if (!ModelState.IsValid)
             {
-                // Repopular combos si hay error de validación
-                ViewBag.Estados = new SelectList(new[]
-                {
-                new Estado { Id = 1, Descripcion = "Activo" },
-                new Estado { Id = 2, Descripcion = "Inactivo" }
-                }, "Id", "Descripcion", cliente.EstadoId);
-
-                ViewBag.Ciudades = new SelectList(new[]
-                {
-                new Ciudad { Id = 1, Nombre = "Ciudad A" },
-                new Ciudad { Id = 2, Nombre = "Ciudad B" }
-                }, "Id", "Nombre", cliente.Persona.CiudadId);
-
                 return View(cliente);
             }
 

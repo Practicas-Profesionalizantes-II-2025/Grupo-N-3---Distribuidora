@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 using MVC.ConfigAPI;
 using MVC.Models.DTOs;
@@ -120,26 +121,87 @@ namespace MVC.Controllers
             return View("listaPersonas", lista_personas);
         }
 
-        //// PUT: Persona/Edit/5 (opcional)
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Apellido,Tipo_DocId,Nro_Doc,CiudadId,Email,Direccion,Telefono,EstadoId")] PersonaDTO persona)
-        //{
-        //    if (id != persona.Id)
-        //        return NotFound();
-        //
-        //    if (!ModelState.IsValid)
-        //        return View(persona);
-        //
-        //    var url = $"{_settings.BaseUrl}/{_settings.PersonaPut}/{id}";
-        //    var jsonData = JsonConvert.SerializeObject(persona);
-        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-        //
-        //    var response = await _httpClient.PutAsync(url, content);
-        //
-        //    if (!response.IsSuccessStatusCode)
-        //        return View("Error");
-        //
-        //    return RedirectToAction("listaPersonas");
-        //}
+        // GET: Modificar Persona
+        public async Task<IActionResult> modificarPersona(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.PersonaGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
+
+            var urlCiudad = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
+            var responseUrlCiudad = await _httpClient.GetAsync(urlCiudad);
+
+            var urlDocumentos = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
+            var responseUrlDocumentos = await _httpClient.GetAsync(urlDocumentos);
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError(string.Empty, "No se pudo cargar la persona");
+                return RedirectToAction(nameof(listaPersonas));
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var persona = JsonConvert.DeserializeObject<PersonaDTO>(json);
+
+            var jsonCiudad = await responseUrlCiudad.Content.ReadAsStringAsync();
+            var jsonDocumentos = await responseUrlDocumentos.Content.ReadAsStringAsync();
+
+            var ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(jsonCiudad);
+            var Documentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(jsonDocumentos);
+
+            PersonaDTO modelo = new PersonaDTO
+            {
+                Id = persona.Id,
+                Nombre = persona.Nombre,
+                Apellido = persona.Apellido,
+                Tipo_DocId = persona.Tipo_DocId,
+                Nro_Doc = persona.Nro_Doc,
+                CiudadId = persona.CiudadId,
+                Email = persona.Email,
+                Direccion = persona.Direccion,
+                Telefono = persona.Telefono,
+                EstadoId = persona.EstadoId,
+                Ciudades = ciudades,
+                TiposDocumentos = Documentos
+            };
+            return View(modelo);
+        }
+        // POST: Modificar Persona
+        [HttpPost]
+        public async Task<IActionResult> modificarPersona(int id, PersonaDTO persona)
+        {
+            if (id != persona.Id)
+                return NotFound();
+
+            if (!ModelState.IsValid)
+            {
+                return View(persona);
+            }
+
+            try
+            {
+                persona.EstadoId = 1;
+                persona.EstadoId = 1;
+                persona.Tipo_DocId = persona.Tipo_DocId == 0 ? 1 : persona.Tipo_DocId;
+
+                var personaJson = JsonConvert.SerializeObject(persona);
+                var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
+                var personaResponse = await _httpClient.PutAsync(
+                    $"{_settings.BaseUrl}/{_settings.PersonaPut}/{persona.Id}",
+                    personaContent
+                );
+
+                if (!personaResponse.IsSuccessStatusCode)
+                {
+                    var error = await personaResponse.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, $"Error actualizando persona: {error}");
+                    return View(persona);
+                }
+                return RedirectToAction(nameof(listaPersonas));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
+                return View(persona);
+            }
+        }
     }
 }

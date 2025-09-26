@@ -82,7 +82,8 @@ namespace API.Controllers
             var clienteDto = new ClienteDTO
             {
                 PersonaId = personaCreada.Id,
-                EstadoId = cliente.EstadoId
+                EstadoId = cliente.EstadoId,
+                Persona = personaCreada
             };
 
             var nuevoCliente = await _clienteLogica.CrearCliente(clienteDto);
