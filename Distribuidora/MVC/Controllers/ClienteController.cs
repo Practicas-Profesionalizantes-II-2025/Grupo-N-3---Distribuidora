@@ -144,37 +144,6 @@ namespace MVC.Controllers
             }
         }
 
-        // GET : Eliminar Cliente
-        [HttpGet]
-        public async Task<IActionResult> eliminarCliente()
-        {
-            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response.Content.ReadAsStringAsync();
-            var lista_clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
-
-            return View(lista_clientes);
-        }
-        // DELETE: Cliente/Delete/5
-        [HttpPost]
-        public async Task<IActionResult> eliminarCliente(int? id)
-        {
-            var url = $"{_settings.BaseUrl}/{_settings.ClientesDelete}/{id}";
-            var response = await _httpClient.DeleteAsync(url);
-
-            if (response.IsSuccessStatusCode)
-                return RedirectToAction(nameof(listaClientes));
-   
-            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
-
-            var listaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ClientesGet}");
-            var cliente = JsonConvert.DeserializeObject<List<ClienteDTO>>(listaJson);
-            return View("listaClientes", cliente);
-        }
 
         // GET: Modificar cliente
         public async Task<IActionResult> modificarCliente(int id)
@@ -276,6 +245,23 @@ namespace MVC.Controllers
                 ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
                 return View(cliente);
             }
+        }
+
+        // DELETE: Cliente/Delete/5
+        [HttpPost]
+        public async Task<IActionResult> eliminarCliente(int? id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaClientes));
+
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
+
+            var listaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ClientesGet}");
+            var cliente = JsonConvert.DeserializeObject<List<ClienteDTO>>(listaJson);
+            return View("listaClientes", cliente);
         }
     }
 }

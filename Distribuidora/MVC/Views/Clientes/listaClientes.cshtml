@@ -7,15 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Clientes</title>
 
-    <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-
-    <!--=============== CSS ===============-->
     <link rel="stylesheet" href="../css/site.css">
 
     <style>
-        /* Contenedor scrollable */
         .tabla-container {
             max-height: 500px;
             overflow-y: auto;
@@ -23,7 +18,6 @@
             border-radius: 8px;
         }
 
-        /* Encabezado fijo */
         .tabla-empleados thead {
             position: sticky;
             top: 0;
@@ -31,7 +25,6 @@
             z-index: 1;
         }
 
-        /* Scroll personalizable */
         .tabla-container::-webkit-scrollbar {
             width: 8px;
         }
@@ -47,67 +40,19 @@
     </style>
 </head>
 <body>
-    <!--=============== HEADER ===============-->
     <header class="header">
-        <nav class="nav container">
-            <div class="nav__menu" id="nav-menu">
-                <ul class="nav__list">
-                    <li class="dropdown__item">
-                        <a asp-controller="Empleados" asp-action="listaEmpleados" class="nav__link">Empleados</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Clientes" asp-action="listaClientes" class="nav__link">Clientes</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Producto" asp-action="listaProductos" class="nav__link">Productos</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Categorias" asp-action="listaCategorias" class="nav__link">Categorias</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Stock" asp-action="Index" class="nav__link">Stock</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Proveedor" asp-action="listaProveedores" class="nav__link">Proveedores</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Distribuidor" asp-action="listaDistribuidores" class="nav__link">Distribuidores</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Compras" asp-action="listaPedidos" class="nav__link">Compras</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Ventas" asp-action="listaVentas" class="nav__link">Ventas</a>
-                    </li>
-                    <li class="dropdown__item user-dropdown">
-                        <div class="nav__link">
-                            <i class="ri-user-line"></i> <i class="ri-arrow-down-s-line dropdown__arrow"></i>
-                        </div>
-                        <ul class="dropdown__menu">
-                            <li>
-                                <a href="../loggin.html" class="dropdown__link">
-                                    <i class="ri-logout-box-line"></i> Salir
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+        <!-- Tu menú aquí -->
     </header>
 
-    <!--=============== CONTENIDO PRINCIPAL ===============-->
     <main class="container full-width">
         <h2 class="titulo">Lista de Clientes</h2>
 
-        <!-- Filtro de búsqueda + Crear Cliente -->
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, DNI o Nombre" id="searchInput">
             <button class="btn yellow">Buscar</button>
             <a asp-controller="Clientes" asp-action="crearCliente" class="btn green">Crear Cliente</a>
         </div>
 
-        <!-- Contenedor scrollable -->
         <div class="tabla-container">
             <table class="tabla-empleados">
                 <thead>
@@ -140,9 +85,14 @@
                                    class="btn-icon yellow-outline" title="Editar">
                                     <i class="ri-pencil-line"></i>
                                 </a>
-                                <a href="#" class="btn-icon red-outline" title="Eliminar" onclick="confirmDelete(this)">
-                                    <i class="ri-delete-bin-line"></i>
-                                </a>
+
+                                <!-- FORMULARIO POST PARA ELIMINAR -->
+                                <form asp-controller="Clientes" asp-action="eliminarCliente" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@cliente.Id" />
+                                    <a href="#" class="btn-icon yellow-outline" title="Eliminar" onclick="confirmDelete(this)">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </a>
+                                </form>
                             </td>
                         </tr>
                     }
@@ -174,21 +124,21 @@
             document.getElementById('deleteModal').style.display = 'flex';
         }
 
-        document.getElementById('confirmBtn').onclick = function() {
+        document.getElementById('confirmBtn').onclick = function () {
             if (rowToDelete) {
-                rowToDelete.remove();
+                // envía el formulario del cliente seleccionado
+                rowToDelete.querySelector('form').submit();
                 rowToDelete = null;
             }
             document.getElementById('deleteModal').style.display = 'none';
         }
 
-        document.getElementById('cancelBtn').onclick = function() {
+        document.getElementById('cancelBtn').onclick = function () {
             rowToDelete = null;
             document.getElementById('deleteModal').style.display = 'none';
         }
     </script>
 
-    <!--=============== JS ===============-->
     <script src="/js/site.js"></script>
 </body>
 </html>

@@ -55,7 +55,7 @@ namespace CDatos.Repositorios
 
         public void EliminarCliente(int id)
         {
-            var cliente = _context.Cliente.FirstOrDefault(x => x.Id == id);
+                var cliente =  _context.Cliente.FirstOrDefault(x => x.Id == id);
             if (cliente != null)
             {
                 _context.Cliente.Remove(cliente);

@@ -46,9 +46,12 @@
                                class="btn-icon yellow-outline" title="Editar">
                                 <i class="ri-pencil-line"></i>
                             </a>
-                            <a href="#" class="btn-icon red-outline" title="Eliminar" onclick="confirmDelete(this)">
-                                <i class="ri-delete-bin-line"></i>
-                            </a>
+                                <form asp-controller="Categorias" asp-action="eliminarCategoria" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <a href="#" class="btn-icon yellow-outline" title="Eliminar" onclick="confirmDelete(this)">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </a>
+                                </form>
                         </td>
                     </tr>
                 }

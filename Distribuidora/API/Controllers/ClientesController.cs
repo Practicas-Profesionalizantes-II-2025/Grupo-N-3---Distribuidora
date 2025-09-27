@@ -95,7 +95,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCliente(int id)
         {
-            _clienteLogica.EliminarCliente(id);
+            await _clienteLogica.EliminarCliente(id);
 
             return NoContent();
         }
