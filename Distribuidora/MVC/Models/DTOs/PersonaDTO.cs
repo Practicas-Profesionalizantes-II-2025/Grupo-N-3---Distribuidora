@@ -22,11 +22,11 @@ namespace MVC.Models.DTOs
         public string Estado { get; set; }
         // Propiedad de solo lectura para la vista
         [ValidateNever]
-        public List<TipoDocumentoDTO> TiposDocumentos { get; set; } // Lista para el dropdown
+        public List<TipoDocumentoDTO> TiposDocumentos { get; set; } = new List<TipoDocumentoDTO>(); // Lista para el dropdown
         [ValidateNever]
-        public List<CiudadDTO> Ciudades { get; set; } // Lista para el dropdown
+        public List<CiudadDTO> Ciudades { get; set; } = new List<CiudadDTO>(); // Lista para el dropdown
         [ValidateNever]
-        public List<EstadoDTO> Estados { get; set; } // Lista para el dropdown
+        public List<EstadoDTO> Estados { get; set; } = new List<EstadoDTO>(); // Lista para el dropdown
 
     }
 }

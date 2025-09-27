@@ -155,6 +155,7 @@ namespace MVC.Controllers
                 Tipo_DocId = persona.Tipo_DocId,
                 Nro_Doc = persona.Nro_Doc,
                 CiudadId = persona.CiudadId,
+                NombreCiudad = ciudades.FirstOrDefault(c => c.Id == persona.CiudadId)?.Nombre ?? "N/A",
                 Email = persona.Email,
                 Direccion = persona.Direccion,
                 Telefono = persona.Telefono,
