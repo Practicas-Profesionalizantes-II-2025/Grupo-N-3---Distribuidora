@@ -1,4 +1,5 @@
-﻿using CDatos.Repositorios.IRepositorios;
+﻿using CDatos.Repositorios;
+using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
 using Shared.Entities;
@@ -14,9 +15,11 @@ namespace CNegocio.Logica
     public class DistribuidorLogica : IDistribuidorLogica
     {
         private readonly IDistribuidorRepositorio _distribuidorRepositorio;
-        public DistribuidorLogica(IDistribuidorRepositorio distribuidorRepositorio)
+        private readonly ICiudadRepositorio _ciudadRepositorio;
+        public DistribuidorLogica(IDistribuidorRepositorio distribuidorRepositorio, ICiudadRepositorio ciudadRepositorio)
         {
             _distribuidorRepositorio = distribuidorRepositorio;
+            _ciudadRepositorio = ciudadRepositorio;
         }
 
         public async Task<List<DistribuidorDTO>> ObtenerDistribuidores()
@@ -29,7 +32,7 @@ namespace CNegocio.Logica
                 CuilCuit = p.CuilCuit,
                 Direccion = p.Direccion,
                 Telefono = p.Telefono,
-                CiudadId = p.CiudadId,
+                CiudadId = p.CiudadId
             }).ToList();
         }
         public async Task<DistribuidorDTO> ObtenerDistribuidorPorId(int id)
@@ -65,16 +68,25 @@ namespace CNegocio.Logica
             var distribuidor = new Distribuidor
             {
                 Nombre = DistrbuidorDTO.Nombre,
+                CuilCuit = DistrbuidorDTO.CuilCuit,
                 Direccion = DistrbuidorDTO.Direccion,
                 Telefono = DistrbuidorDTO.Telefono,
-                CiudadId = DistrbuidorDTO.CiudadId
+                CiudadId = DistrbuidorDTO.CiudadId,
+                
             };
 
             var nuevoDistribuidor = await _distribuidorRepositorio.CrearDistribuidor(distribuidor);
-
-            DistrbuidorDTO.Id = nuevoDistribuidor.Id;
-
-            return DistrbuidorDTO;
+            var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(distribuidor.CiudadId); 
+            return new DistribuidorDTO
+            {
+                Id = nuevoDistribuidor.Id,
+                CuilCuit = nuevoDistribuidor.CuilCuit,
+                Nombre = nuevoDistribuidor.Nombre,
+                Direccion = nuevoDistribuidor.Direccion,
+                Telefono = nuevoDistribuidor.Telefono,
+                CiudadId = nuevoDistribuidor.CiudadId,
+                NombreCiudad = ciudad.Nombre
+            };
         }
         public async Task ActualizarDistribuidor(DistribuidorDTO DistrbuidorDTO)
         {

@@ -53,7 +53,6 @@ namespace MVC.Controllers
                 p.Persona.NombreCiudad = Ciudad.FirstOrDefault(x => x.Id == p.Persona.CiudadId)?.Nombre ?? "N/A";
                 p.Persona.Tipo_DocNombre = Doc.FirstOrDefault(x => x.Id == p.Persona.Tipo_DocId)?.NombreTipoDocumento ?? "N/A";
 
-                // si querés que nunca sean null
                 p.Persona.Ciudades = Ciudad;
                 p.Persona.TiposDocumentos = Doc;
 
@@ -106,19 +105,6 @@ namespace MVC.Controllers
                 // Validación del ModelState
                 if (!ModelState.IsValid)
                 {
-                    var errores = ModelState
-                        .Where(ms => ms.Value.Errors.Count > 0)
-                        .Select(ms => new {
-                            Campo = ms.Key,
-                            Errores = ms.Value.Errors.Select(e => e.ErrorMessage).ToList()
-                        });
-
-                    // Log o breakpoint para ver los errores
-                    foreach (var error in errores)
-                    {
-                        Console.WriteLine($"Campo: {error.Campo}, Errores: {string.Join(", ", error.Errores)}");
-                    }
-
                     return View(cliente);
                 }
 
@@ -212,10 +198,7 @@ namespace MVC.Controllers
 
                 var personaJson = JsonConvert.SerializeObject(cliente.Persona);
                 var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
-                var personaResponse = await _httpClient.PutAsync(
-                    $"{_settings.BaseUrl}/{_settings.PersonaPut}/{cliente.Persona.Id}",
-                    personaContent
-                );
+                var personaResponse = await _httpClient.PutAsync($"{_settings.BaseUrl}/{_settings.PersonaPut}/{cliente.Persona.Id}",personaContent);
 
                 if (!personaResponse.IsSuccessStatusCode)
                 {
@@ -226,10 +209,7 @@ namespace MVC.Controllers
 
                 var clienteJson = JsonConvert.SerializeObject(cliente);
                 var clienteContent = new StringContent(clienteJson, Encoding.UTF8, "application/json");
-                var clienteResponse = await _httpClient.PutAsync(
-                    $"{_settings.BaseUrl}/{_settings.ClientesPut}/{cliente.Id}",
-                    clienteContent
-                );
+                var clienteResponse = await _httpClient.PutAsync($"{_settings.BaseUrl}/{_settings.ClientesPut}/{cliente.Id}",clienteContent);
 
                 if (!clienteResponse.IsSuccessStatusCode)
                 {

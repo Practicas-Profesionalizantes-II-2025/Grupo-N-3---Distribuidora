@@ -82,7 +82,9 @@
                 <input type="text" asp-for="CuilCuit" placeholder="CUIL/CUIT" required />
                 <input type="text" asp-for="Telefono" placeholder="Teléfono" required />
                 <input type="text" asp-for="Direccion" placeholder="Dirección" required />
-                <input type="text" asp-for="CiudadId" placeholder="Ciudad" required />
+                <select asp-for="CiudadId" asp-items="@(new SelectList(Model.Ciudades, "Id", "Nombre"))" class="form-control">
+                    <option value="">Seleccione ciudad</option>
+                </select>
 
                 <!-- contenedor exclusivo para centrar -->
                 <div class="form-buttons-wrapper">

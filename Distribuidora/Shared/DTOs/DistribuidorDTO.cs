@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,5 +15,7 @@ namespace Shared.DTOs
         public string Telefono { get; set; }
         public string Direccion { get; set; }
         public int CiudadId { get; set; }
+        [ValidateNever]
+        public string NombreCiudad { get; set; }
     }
 }

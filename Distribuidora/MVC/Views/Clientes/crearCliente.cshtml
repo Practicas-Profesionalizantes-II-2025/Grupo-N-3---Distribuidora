@@ -28,9 +28,6 @@
                 <!-- Dirección -->
                 <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" />
 
-                <!-- Código Postal (no está en el modelo, campo libre) 
-                <input type="text" id="cp" placeholder="Código Postal" class="input-text" />-->
-
                 <!-- Ciudad -->
                 <select asp-for="Persona.CiudadId" asp-items="@(new SelectList(Model.Persona.Ciudades, "Id", "Nombre"))" class="form-control">
                     <option value="">Seleccione ciudad</option>
