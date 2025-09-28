@@ -71,22 +71,6 @@ namespace MVC.Controllers
             return RedirectToAction("listaCategorias");
         }
 
-        // GET: Categorias/EliminarCategoria
-        [HttpGet]
-        public async Task<IActionResult> eliminarCategoria()
-        {
-            var url = $"{_settings.BaseUrl}/{_settings.CategoriasGet}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response.Content.ReadAsStringAsync();
-            var lista_categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(json);
-
-            return View(lista_categorias); // muestra la vista con el select
-        }
-
         // POST: Categorias/EliminarCategoria
         [HttpPost]
         public async Task<IActionResult> eliminarCategoria(int id)

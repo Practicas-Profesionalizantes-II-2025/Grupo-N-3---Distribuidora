@@ -84,9 +84,6 @@ namespace CNegocio.Logica
         }
         public async Task EliminarCategoria(int id)
         {
-            if (id <= 0)
-                throw new ArgumentException("El ID debe ser mayor a 0.");
-
             _categoriaRepositorio.EliminarCategoria(id);
         }
 

@@ -13,6 +13,35 @@
 
     <!--=============== CSS ===============-->
     <link rel="stylesheet" href="~/css/site.css">
+
+    <style>
+        .tabla-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .tabla-empleados thead {
+            position: sticky;
+            top: 0;
+            background-color: #f5f5f5;
+            z-index: 1;
+        }
+
+        .tabla-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tabla-container::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+            .tabla-container::-webkit-scrollbar-thumb:hover {
+                background-color: #555;
+            }
+    </style>
 </head>
 <body>
     <main class="container full-width">
@@ -85,8 +114,8 @@
 
         document.getElementById('confirmBtn').onclick = function () {
             if (rowToDelete) {
-                rowToDelete.remove();
-                rowToDelete = null;
+                    rowToDelete.querySelector('form').submit();
+                    rowToDelete = null;
             }
             document.getElementById('deleteModal').style.display = 'none';
         }
