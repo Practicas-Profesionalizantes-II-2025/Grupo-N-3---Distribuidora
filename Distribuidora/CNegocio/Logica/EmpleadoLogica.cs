@@ -15,11 +15,13 @@ namespace CNegocio.Logica
     {
         private readonly IEmpleadoRepositorio _empleadoRepositorio;
         private readonly IPersonaRepositorio _personaRepositorio;
+        private readonly ICiudadRepositorio _ciudadRepositorio;
 
-        public EmpleadoLogica(IEmpleadoRepositorio empleadoRepositorio, IPersonaRepositorio personaRepositorio)
+        public EmpleadoLogica(IEmpleadoRepositorio empleadoRepositorio, IPersonaRepositorio personaRepositorio, ICiudadRepositorio ciudadRepositorio)
         {
             _empleadoRepositorio = empleadoRepositorio;
             _personaRepositorio = personaRepositorio;
+            _ciudadRepositorio = ciudadRepositorio;
         }
         public async Task<List<EmpleadoDTO>> ObtenerEmpleados()
         {
@@ -93,12 +95,29 @@ namespace CNegocio.Logica
                 EstadoId = empleadoDTO.EstadoId,
             };
             var nuevoEmpleado = await _empleadoRepositorio.CrearEmpleado(empleado);
-            
+
+            var persona = await _personaRepositorio.ObtenerPersonaPorId(empleadoDTO.PersonaId);
+            var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(persona.CiudadId);
             return new EmpleadoDTO
             {
                 Id = nuevoEmpleado.Id,
                 PersonaId = nuevoEmpleado.PersonaId,
-                EstadoId = nuevoEmpleado.EstadoId
+                EstadoId = nuevoEmpleado.EstadoId,
+                Foto = nuevoEmpleado.Foto,
+                Persona = new PersonaDTO
+                {
+                    Id = persona.Id,
+                    Nombre = persona.Nombre,
+                    Apellido = persona.Apellido,
+                    Tipo_DocId = persona.Tipo_DocId,
+                    Nro_Doc = persona.Nro_Doc,
+                    CiudadId = persona.CiudadId,
+                    NombreCiudad = ciudad.Nombre,
+                    Email = persona.Email,
+                    Direccion = persona.Direccion,
+                    Telefono = persona.Telefono,
+                    EstadoId = persona.EstadoId,
+                }
             };
         }
         public async Task ActualizarEmpleado(EmpleadoDTO empleadoDTO)
@@ -126,10 +145,7 @@ namespace CNegocio.Logica
             await _empleadoRepositorio.ActualizarEmpleado(empleadoExistente);
         }
         public async Task EliminarEmpleado(int id)
-        {
-            if (id <= 0)
-                throw new ArgumentException("El ID debe ser mayor a 0.");
-            
+        {    
             _empleadoRepositorio.EliminarEmpleado(id);
         }
         public async Task<List<EmpleadoDTO>> ObtenerEmpleadosPorDni(string dni)

@@ -82,7 +82,6 @@
                             <td>@empleado.Persona?.Direccion</td>
                             <td>@empleado.Persona?.NombreCiudad</td>
                             <td>@empleado.Persona?.Email</td>
-                            <!-- <td></td> agregar sector -->
                             <td>@(empleado.EstadoId == 1 ? "Activo" : "Inactivo")</td>
                             <td class="acciones">
                                 <a asp-controller="Empleados" asp-action="modificarEmpleado" asp-route-id="@empleado.Id"
@@ -128,7 +127,7 @@
 
         document.getElementById('confirmBtn').onclick = function () {
             if (rowToDelete) {
-                rowToDelete.remove();
+                rowToDelete.querySelector('form').submit();
                 rowToDelete = null;
             }
             document.getElementById('deleteModal').style.display = 'none';

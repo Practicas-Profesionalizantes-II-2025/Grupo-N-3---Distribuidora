@@ -223,6 +223,7 @@ namespace MVC.Controllers
         }
 
         // DELETE: Empleado/Delete/5
+        [HttpPost]
         public async Task<IActionResult> eliminarEmpleado(int? id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.EmpleadosDelete}/{id}";

@@ -83,7 +83,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEmpleado(int id)
         {
-            _empleadoLogic.EliminarEmpleado(id);
+            await _empleadoLogic.EliminarEmpleado(id);
 
             return NoContent();
         }

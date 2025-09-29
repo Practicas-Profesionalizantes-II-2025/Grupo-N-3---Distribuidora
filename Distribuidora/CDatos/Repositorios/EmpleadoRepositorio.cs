@@ -14,10 +14,10 @@ namespace CDatos.Repositorios
     {
         private readonly DataContext _context;
         private readonly IPersonaRepositorio _personaRepositorio;
-        public EmpleadoRepositorio(DataContext context)
+        public EmpleadoRepositorio(DataContext context, IPersonaRepositorio personaRepositorio)
         {
             _context = context;
-            _personaRepositorio = _personaRepositorio;
+            _personaRepositorio = personaRepositorio;
         }
         public async Task<List<Empleado>> ObtenerEmpleados()
         {
@@ -42,7 +42,7 @@ namespace CDatos.Repositorios
         }
         public async Task ActualizarEmpleado(Empleado empleado)
         {
-            var empleadoExistente = _context.Empleado.Find(empleado.Id);
+            var empleadoExistente = await _context.Empleado.FindAsync(empleado.Id);
             if (empleadoExistente == null)
             {
                 throw new Exception("Empleado no encontrado.");
@@ -51,7 +51,7 @@ namespace CDatos.Repositorios
             empleadoExistente.EstadoId = empleado.EstadoId;
             empleadoExistente.Foto = empleadoExistente.Foto;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         public void EliminarEmpleado(int id)
         {
