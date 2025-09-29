@@ -11,7 +11,8 @@ namespace MVC.Models.DTOs
         [ValidateNever]
         public string Tipo_DocNombre { get; set; } // Propiedad de solo lectura para la vista
         public string Nro_Doc { get; set; }
-        public int CiudadId { get; set; }
+        public int? CiudadId { get; set; }
+        public int? EmpleadoId { get; set; }
         [ValidateNever]
         public string NombreCiudad { get; set; } // Propiedad de solo lectura para la vista
         public string Email { get; set; }

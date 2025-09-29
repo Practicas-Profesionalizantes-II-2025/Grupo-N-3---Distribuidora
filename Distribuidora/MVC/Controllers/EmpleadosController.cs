@@ -143,7 +143,7 @@ namespace MVC.Controllers
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            var empleados = JsonConvert.DeserializeObject<List<EmpleadoDTO>>(json);
+            var empleados = JsonConvert.DeserializeObject<EmpleadoDTO>(json);
             
             var jsonCiudad = await responseUrlCiudad.Content.ReadAsStringAsync();
             var jsonDocumentos = await responseUrlDocumentos.Content.ReadAsStringAsync();
@@ -170,7 +170,8 @@ namespace MVC.Controllers
                     Ciudades = ciudades,
                     TiposDocumentos = Documentos
                 },
-            }
+            };
+            return View(model);
         }
 
         // POST: Modificar empleado
