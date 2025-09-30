@@ -11,6 +11,8 @@ namespace Shared.DTOs
         public int Id { get; set; }
         public int OrdenDeCompraId { get; set; }
         public int ProductoId { get; set; }
+        public ProductoDTO Producto { get; set; }
+        public string NombreProducto { get; set; }
         public int CantidadProducto { get; set; }
     }
 }

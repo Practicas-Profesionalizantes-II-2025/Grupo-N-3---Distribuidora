@@ -19,7 +19,7 @@ namespace MVC.Controllers
         }
 
         // GET: OrdenDeCompra
-        public async Task<IActionResult> listaCompras()
+        public async Task<IActionResult> listaOrdenCompras()
         {
             var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraGet}";
             var response = await _httpClient.GetAsync(url);
@@ -31,9 +31,9 @@ namespace MVC.Controllers
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            var lista_ordenes = JsonConvert.DeserializeObject<List<OrdenDeCompraDTO>>(json);
+            var lista_OrdenCompras = JsonConvert.DeserializeObject<List<OrdenDeCompraDTO>>(json);
 
-            return View(lista_ordenes);
+            return View(lista_OrdenCompras);
         }
 
         // GET: Crear OrdenDeCompra
@@ -56,56 +56,45 @@ namespace MVC.Controllers
             var response = await _httpClient.PostAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+                return RedirectToAction(nameof(listaOrdenCompras));
 
             return RedirectToAction("listaOrdenesCompra");
         }
 
-        // DELETE: OrdenDeCompra/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // PUT: OrdenDeCompra/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> modificarOrdenCompra(int id, [Bind("Id,EmpleadoId,DistribuidorId,FechaOrden")] OrdenDeCompraDTO orden)
         {
-            if (id == null)
+            if (id != orden.Id)
                 return NotFound();
-
+        
+            if (!ModelState.IsValid)
+                return View(orden);
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(orden);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        
+            var response = await _httpClient.PutAsync(url, content);
+        
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+        
+            return RedirectToAction("listaOrdenesCompra");
+        }
+        // DELETE: OrdenDeCompra/Delete/5
+        public async Task<IActionResult> eliminarOrdenCompra(int? id)
+        {
             var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraDelete}/{id}";
             var response = await _httpClient.DeleteAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+                return RedirectToAction(nameof(listaOrdenCompras));
 
-            // Volver a traer la lista después de eliminar
-            var url2 = $"{_settings.BaseUrl}/{_settings.OrdenCompraGet}";
-            var response2 = await _httpClient.GetAsync(url2);
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
 
-            if (!response2.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response2.Content.ReadAsStringAsync();
-            var lista_ordenes = JsonConvert.DeserializeObject<List<OrdenDeCompraDTO>>(json);
-
-            return View("listaOrdenesCompra", lista_ordenes);
+            var listaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ClientesGet}");
+            var lista_OrdenCompras = JsonConvert.DeserializeObject<List<OrdenDeCompraDTO>>(listaJson);
+            return View("lista_OrdenCompras", lista_OrdenCompras);
         }
-
-        //// PUT: OrdenDeCompra/Edit/5
-        //[HttpPost]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,EmpleadoId,DistribuidorId,FechaOrden")] OrdenDeCompraDTO orden)
-        //{
-        //    if (id != orden.Id)
-        //        return NotFound();
-        //
-        //    if (!ModelState.IsValid)
-        //        return View(orden);
-        //
-        //    var url = $"{_settings.BaseUrl}/{_settings.OrdenDeCompraPut}/{id}";
-        //    var jsonData = JsonConvert.SerializeObject(orden);
-        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-        //
-        //    var response = await _httpClient.PutAsync(url, content);
-        //
-        //    if (!response.IsSuccessStatusCode)
-        //        return View("Error");
-        //
-        //    return RedirectToAction("listaOrdenesCompra");
-        //}
     }
 }

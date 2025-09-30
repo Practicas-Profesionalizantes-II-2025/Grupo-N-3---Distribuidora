@@ -14,5 +14,6 @@ namespace Shared.DTOs
         public int DistribuidorId { get; set; }
         public ProveedorDTO Distribuidor { get; set; }
         public DateTime FechaOrden { get; set; }
+        public List<OrdenDeCompraProductoDTO> Productos { get; set; } = new();
     }
 }
