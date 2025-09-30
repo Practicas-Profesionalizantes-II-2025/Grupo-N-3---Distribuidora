@@ -51,7 +51,7 @@
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, Fecha o Distribuidor" id="searchInput">
             <button class="btn yellow">Buscar</button>
-            <a asp-controller="Compras" asp-action="crearCompra" class="btn yellow">Crear compra</a>
+            <a asp-controller="OrdenCompra" asp-action="crearOrdenCompra" class="btn yellow">Crear compra</a>
         </div>
 
         <div class="tabla-container">
@@ -75,17 +75,17 @@
                             <td>@item.Distribuidor?.Nombre</td>
                             <td>@item.Empleado?.Persona.Nombre</td>
                             <td class="acciones">
-                                <a asp-controller="Compras" asp-action="modificarCompra" asp-route-id="@item.Id"
+                                <a asp-controller="OrdenCompra" asp-action="modificarCompra" asp-route-id="@item.Id"
                                    class="btn-icon yellow-outline" title="Editar">
                                     <i class="ri-pencil-line"></i>
                                 </a>
-                                <form asp-controller="Compras" asp-action="eliminarCompra" method="post" style="display:inline;">
+                                <form asp-controller="OrdenCompra" asp-action="eliminarCompra" method="post" style="display:inline;">
                                     <input type="hidden" name="id" value="@item.Id" />
                                     <a href="#" class="btn-icon yellow-outline" title="Eliminar" onclick="confirmDelete(this)">
                                         <i class="ri-delete-bin-line"></i>
                                     </a>
                                 </form>
-                                <a asp-controller="Compras" asp-action="detalleCompra" asp-route-id="@item.Id"
+                                <a asp-controller="OrdenCompra" asp-action="detalleCompra" asp-route-id="@item.Id"
                                    class="btn-icon blue-outline" title="Ver detalle">
                                     <i class="ri-eye-line"></i>
                                 </a>

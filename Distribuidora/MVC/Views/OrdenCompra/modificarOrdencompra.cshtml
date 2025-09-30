@@ -1,0 +1,78 @@
+﻿@model MVC.Models.DTOs.OrdenDeCompraDTO
+
+@{
+    ViewData["Title"] = "Modificar Compra";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--=============== REMIXICONS ===============-->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="~/css/site.css">
+
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <!--=============== MODIFICAR COMPRA ===============-->
+    <main class="pedido container full-width">
+        <div class="section-header">
+            <h2>Modificar Compra</h2>
+        </div>
+
+        <form asp-action="ModificarOrdenCompra" method="post" class="form" id="pedidoForm">
+            <table class="pedido__table" id="pedidoTable">
+                <thead>
+                    <tr>
+                        <th>ID Producto</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Total</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @* Ejemplo de fila. En producción, iterar con Model.Detalles o similar *@
+                    <tr>
+                        <td><input type="text" name="id[]" value="101" class="form-control" /></td>
+                        <td><input type="text" name="nombre[]" value="Producto A" class="form-control" /></td>
+                        <td><input type="number" name="cantidad[]" value="2" min="1" class="cantidad form-control" /></td>
+                        <td><input type="number" name="precio[]" value="1200" step="0.01" class="precio form-control" /></td>
+                        <td class="subtotal">$2.400</td>
+                        <td><button type="button" class="btn btn-delete">Eliminar</button></td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="total-label">TOTAL:</td>
+                        <td class="total-value" id="totalGeneral">$2.400</td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="actions">
+                <button type="button" class="btn" id="agregarFila">Agregar Producto</button>
+                <button type="submit" class="btn yellow">Guardar Cambios</button>
+                <a asp-action="ListaCompras" class="btn back">Volver</a>
+            </div>
+        </form>
+    </main>
+
+    <!--=============== JS ===============-->
+    <script src="~/js/modificarcompra.js"></script>
+
+    @* 
+    <td>
+        @Html.DropDownList("ProductoId[]", new SelectList(ViewBag.Productos, "Id", "Nombre"), "Seleccione producto", new { @class = "form-control" })
+    </td>
+    *@
+</body>
+</html>

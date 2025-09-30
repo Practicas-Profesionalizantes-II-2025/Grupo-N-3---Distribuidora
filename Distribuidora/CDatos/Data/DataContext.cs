@@ -17,7 +17,7 @@ namespace CDatos.Data
         public DbSet<Empleado> Empleado { get; set; } = null!;
         public DbSet<Distribuidor> Distribuidor { get; set; } = null!;
         public DbSet<Estado> Estados { get; set; } = null!;
-        public DbSet<OrdenDeCompra> OrdenDeCompra { get; set; } = null!;
+        public DbSet<OrdenDeCompra> OrdenCompra { get; set; } = null!;
         public DbSet<OrdenDeCompraProducto> OrdenDeCompraProducto { get; set; } = null!;
         public DbSet<OrdenDeVenta> OrdenDeVenta { get; set; } = null!;
         public DbSet<OrdenDeVentaProducto> OrdenDeVentaProducto { get; set; } = null!;

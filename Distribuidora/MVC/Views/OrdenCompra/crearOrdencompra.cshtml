@@ -1,0 +1,60 @@
+﻿@model MVC.Models.DTOs.OrdenDeCompraDTO
+
+@{
+    ViewData["Title"] = "Crear Compra";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <!--=============== REMIXICONS ===============-->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <main class="pedido container full-width">
+        <div class="section-header">
+            <h2>Crear Compra</h2>
+        </div>
+
+        <!--=============== TABLA DE PRODUCTOS ===============-->
+        <table class="pedido__table" id="pedidoTable">
+            <thead>
+                <tr>
+                    <th>ID Producto</th>
+                    <th>Nombre</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Total</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Filas se agregarán dinámicamente con JS -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="4" class="total-label">TOTAL:</td>
+                    <td class="total-value" id="totalGeneral" style="text-align:right;">$0.00</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="actions">
+            <button type="button" class="btn" id="agregarFila">Agregar producto</button>
+            <button type="submit" class="btn yellow" id="confirmarCompra">Confirmar Compra</button>
+            <a asp-controller="OrdenCompra" asp-action="ListaCompras" class="btn back">Volver</a>
+        </div>
+    </main>
+
+    <!--=============== JS ===============-->
+    <script src="~/js/crearcompra.js"></script>
+</body>
+</html>

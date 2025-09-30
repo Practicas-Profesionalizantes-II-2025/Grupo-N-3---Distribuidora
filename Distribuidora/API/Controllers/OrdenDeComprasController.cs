@@ -14,11 +14,11 @@ namespace API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class OrdenDeComprasController : ControllerBase
+    public class OrdenCompraController : ControllerBase
     {
         private readonly IOrdenDeCompraLogica _ordenDeCompraLogic;
 
-        public OrdenDeComprasController(IOrdenDeCompraLogica ordenDeCompraLogic)
+        public OrdenCompraController(IOrdenDeCompraLogica ordenDeCompraLogic)
         {
             _ordenDeCompraLogic = ordenDeCompraLogic;
         }
