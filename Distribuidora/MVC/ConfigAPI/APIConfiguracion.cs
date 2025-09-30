@@ -41,10 +41,10 @@
         public string FacturaCabeceraDelete { get; set; } = string.Empty;
 
         // Endpoints OrdenDeCompra
-        public string OrdenDeCompraGet { get; set; } = string.Empty;
-        public string OrdenDeCompraPost { get; set; } = string.Empty;
-        public string OrdenDeCompraPut { get; set; } = string.Empty;
-        public string OrdenDeCompraDelete { get; set; } = string.Empty;
+        public string OrdenCompraGet { get; set; } = string.Empty;
+        public string OrdenCompraPost { get; set; } = string.Empty;
+        public string OrdenCompraPut { get; set; } = string.Empty;
+        public string OrdenCompraDelete { get; set; } = string.Empty;
 
         // Endpoints OrdenDeCompraProducto
         public string OrdenDeCompraProductoGet { get; set; } = string.Empty;

@@ -1,0 +1,74 @@
+﻿@model MVC.Models.DTOs.OrdenDeCompraDTO
+
+@{
+    ViewData["Title"] = "Crear Orden Compra";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="~/css/style.css" />
+</head>
+<body>
+    <main class="container full-width">
+        <div class="content">
+            <!-- Header de la sección -->
+            <div class="section-header">
+                <h2>Crear Orden Compra</h2>
+            </div>
+
+            <!-- Formulario para crear -->
+            <form asp-action="crearOrdenCompra" method="post" class="form">
+
+                <div class="form-group">
+                    <label for="EmpleadoId">Empleado</label>
+                    <input asp-for="EmpleadoId" class="form-control" placeholder="ID del empleado" />
+                </div>
+                @* 
+                <div class="form-group">
+                    <label for="EmpleadoId">Empleado</label>
+                    @Html.DropDownListFor(
+                        m => m.EmpleadoId, 
+                        new SelectList(ViewBag.Empleados, "Id", "Nombre"), 
+                        "Seleccione un empleado",
+                        new { @class = "form-control" }
+                    )
+                </div>
+                *@
+
+                <div class="form-group">
+                    <label for="DistribuidorId">Distribuidor</label>
+                    <input asp-for="DistribuidorId" class="form-control" placeholder="ID del distribuidor" />
+                </div>
+                @* 
+                <div class="form-group">
+                    <label for="DistribuidorId">Distribuidor</label>
+                    @Html.DropDownListFor(
+                        m => m.DistribuidorId, 
+                        new SelectList(ViewBag.Distribuidores, "Id", "Nombre"), 
+                        "Seleccione un distribuidor",
+                        new { @class = "form-control" }
+                    )
+                </div>
+                *@
+
+
+                <div class="form-group">
+                    <label for="FechaOrden">Fecha de Orden</label>
+                    <input asp-for="FechaOrden" type="date" class="form-control" />
+                </div>
+
+                <button type="submit" class="btn yellow">Guardar</button>
+                <a asp-action="listaCompras" class="btn cancel">Cancelar</a>
+            </form>
+        </div>
+    </main>
+
+    <script src="~/js/main.js"></script>
+</body>
+</html>

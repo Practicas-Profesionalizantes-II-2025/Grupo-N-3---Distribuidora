@@ -21,11 +21,14 @@ namespace MVC.Controllers
         // GET: OrdenDeCompra
         public async Task<IActionResult> listaCompras()
         {
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeCompraGet}";
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraGet}";
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+            {
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new List<OrdenDeCompraDTO>());
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             var lista_ordenes = JsonConvert.DeserializeObject<List<OrdenDeCompraDTO>>(json);
@@ -46,7 +49,7 @@ namespace MVC.Controllers
             if (!ModelState.IsValid)
                 return View(orden);
 
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeCompraPost}";
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraPost}";
             var jsonData = JsonConvert.SerializeObject(orden);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
@@ -64,14 +67,14 @@ namespace MVC.Controllers
             if (id == null)
                 return NotFound();
 
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeCompraDelete}/{id}";
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraDelete}/{id}";
             var response = await _httpClient.DeleteAsync(url);
 
             if (!response.IsSuccessStatusCode)
                 return View("Error");
 
             // Volver a traer la lista después de eliminar
-            var url2 = $"{_settings.BaseUrl}/{_settings.OrdenDeCompraGet}";
+            var url2 = $"{_settings.BaseUrl}/{_settings.OrdenCompraGet}";
             var response2 = await _httpClient.GetAsync(url2);
 
             if (!response2.IsSuccessStatusCode)

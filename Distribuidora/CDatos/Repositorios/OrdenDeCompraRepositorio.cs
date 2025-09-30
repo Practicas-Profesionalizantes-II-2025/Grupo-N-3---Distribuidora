@@ -19,21 +19,21 @@ namespace CDatos.Repositorios
         }
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompra()
         {
-            return await _context.OrdenDeCompra.ToListAsync();
+            return await _context.OrdenCompra.ToListAsync();
         }
         public async Task<OrdenDeCompra> ObtenerOrdenDeCompraPorId(int id)
         {
-            return await _context.OrdenDeCompra.FindAsync(id);
+            return await _context.OrdenCompra.FindAsync(id);
         }
         public async Task<OrdenDeCompra> CrearOrdenDeCompra(OrdenDeCompra ordenDeCompra)
         {
-            _context.OrdenDeCompra.Add(ordenDeCompra);
+            _context.OrdenCompra.Add(ordenDeCompra);
             await _context.SaveChangesAsync();
             return ordenDeCompra;
         }
         public void ActualizarOrdenDeCompra(OrdenDeCompra ordenDeCompra)
         {
-            var ordenDeCompraExistente = _context.OrdenDeCompra.Find(ordenDeCompra.Id);
+            var ordenDeCompraExistente = _context.OrdenCompra.Find(ordenDeCompra.Id);
             if (ordenDeCompra == null)
             {
                 throw new Exception("Orden de Compra no encontrada.");
@@ -46,10 +46,10 @@ namespace CDatos.Repositorios
         }
         public void EliminarOrdenDeCompra(int id)
         {
-            var OrdenDeCompra = _context.OrdenDeCompra.FirstOrDefault(x => x.Id == id);
+            var OrdenDeCompra = _context.OrdenCompra.FirstOrDefault(x => x.Id == id);
             if (OrdenDeCompra != null)
             {
-                _context.OrdenDeCompra.Remove(OrdenDeCompra);
+                _context.OrdenCompra.Remove(OrdenDeCompra);
                 _context.SaveChanges();
             }
         }
@@ -58,19 +58,19 @@ namespace CDatos.Repositorios
 
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompraPorDistribuidorId(int distribuidorId)
         {
-            return await _context.OrdenDeCompra
+            return await _context.OrdenCompra
                 .Where(c => c.DistribuidorId == distribuidorId)
                 .ToListAsync();
         }
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompraPorEmpleadoId(int empleadoId)
         {
-            return await _context.OrdenDeCompra
+            return await _context.OrdenCompra
                 .Where(c => c.EmpleadoId == empleadoId)
                 .ToListAsync();
         }
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompraPorFecha(DateTime fecha)
         {
-            return await _context.OrdenDeCompra
+            return await _context.OrdenCompra
                 .Where(c => c.FechaOrden == fecha)
                 .ToListAsync();
         }
