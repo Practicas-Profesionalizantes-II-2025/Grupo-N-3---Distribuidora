@@ -15,5 +15,6 @@ namespace Shared.Entities
         public int DistribuidorId { get; set; }
         public Proveedor Distribuidor { get; set; }
         public DateTime FechaOrden { get; set; }
+        public List<OrdenDeCompraProducto> Productos { get; set; } = new();
     }
 }

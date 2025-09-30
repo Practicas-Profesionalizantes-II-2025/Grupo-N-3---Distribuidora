@@ -25,15 +25,35 @@ namespace CNegocio.Logica
         public async Task<List<DistribuidorDTO>> ObtenerDistribuidores()
         {
             var distribuidores = await _distribuidorRepositorio.ObtenerDistribuidores();
-            return distribuidores.Select(p => new DistribuidorDTO
+
+            var distribuidoresDTO = new List<DistribuidorDTO>();
+
+            foreach (var p in distribuidores)
             {
-                Id = p.Id,
-                Nombre = p.Nombre,
-                CuilCuit = p.CuilCuit,
-                Direccion = p.Direccion,
-                Telefono = p.Telefono,
-                CiudadId = p.CiudadId
-            }).ToList();
+                string nombreCiudad = string.Empty;
+
+                if (p.CiudadId > 0)
+                {
+                    var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(p.CiudadId);
+                    if (ciudad != null)
+                    {
+                        nombreCiudad = ciudad.Nombre;
+                    }
+                }
+
+                distribuidoresDTO.Add(new DistribuidorDTO
+                {
+                    Id = p.Id,
+                    Nombre = p.Nombre,
+                    CuilCuit = p.CuilCuit,
+                    Direccion = p.Direccion,
+                    Telefono = p.Telefono,
+                    CiudadId = p.CiudadId,
+                    NombreCiudad = nombreCiudad
+                });
+            }
+
+            return distribuidoresDTO;
         }
         public async Task<DistribuidorDTO> ObtenerDistribuidorPorId(int id)
         {

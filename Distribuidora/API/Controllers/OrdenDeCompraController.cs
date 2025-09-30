@@ -54,7 +54,7 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            _ordenDeCompraLogic.ActualizarOrdenDeCompra(ordenDeCompra);
+            await _ordenDeCompraLogic.ActualizarOrdenDeCompra(ordenDeCompra);
 
             return NoContent();
         }
@@ -64,16 +64,16 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<OrdenDeCompra>> PostOrdenDeCompra(OrdenDeCompraDTO ordenDeCompra)
         {
-            _ordenDeCompraLogic.CrearOrdenDeCompra(ordenDeCompra);
+            await _ordenDeCompraLogic.CrearOrdenDeCompra(ordenDeCompra);
 
-            return CreatedAtAction("GetOrdenDeCompra", new { id = ordenDeCompra.Id }, ordenDeCompra);
+            return CreatedAtAction("GetOrdenDeCompraPorId", new { id = ordenDeCompra.Id }, ordenDeCompra);
         }
 
         // DELETE: api/OrdenDeCompras/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrdenDeCompra(int id)
         {
-            _ordenDeCompraLogic.EliminarOrdenDeCompra(id);
+            await _ordenDeCompraLogic.EliminarOrdenDeCompra(id);
 
             return NoContent();
         }

@@ -27,24 +27,7 @@ namespace CNegocio.Logica
                 Id = o.Id,
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                Empleado = o.Empleado == null ? null : new EmpleadoDTO
-                {
-                    Id = o.Empleado.Id,
-                    PersonaId = o.Empleado.PersonaId,
-                    Foto = o.Empleado.Foto,
-                    EstadoId = o.Empleado.EstadoId,
-                    Persona = new PersonaDTO
-                    {
-                        Nombre = o.Empleado.Persona.Nombre,
-                        Apellido = o.Empleado.Persona.Apellido,
-                    }
-                },
-                DistribuidorId = o.DistribuidorId,
-                Distribuidor = o.Distribuidor == null ? null : new ProveedorDTO
-                {
-                    Id = o.Distribuidor.Id,
-                    Nombre = o.Distribuidor.Nombre
-                }
+                DistribuidorId = o.DistribuidorId, 
             }).ToList();
         }
 
@@ -62,22 +45,7 @@ namespace CNegocio.Logica
                 Id = ordenDeCompra.Id,
                 FechaOrden = ordenDeCompra.FechaOrden,
                 EmpleadoId = ordenDeCompra.EmpleadoId,
-                Empleado = ordenDeCompra.Empleado?.Persona == null ? null : new EmpleadoDTO
-                {
-                    Id = ordenDeCompra.Empleado.Id,
-                    PersonaId = ordenDeCompra.Empleado.PersonaId,
-                    Persona = new PersonaDTO
-                    {
-                        Nombre = ordenDeCompra.Empleado.Persona?.Nombre,
-                        Apellido = ordenDeCompra.Empleado.Persona?.Apellido
-                    }
-                },
                 DistribuidorId = ordenDeCompra.DistribuidorId,
-                Distribuidor = ordenDeCompra.Distribuidor == null ? null : new ProveedorDTO
-                {
-                    Id = ordenDeCompra.Distribuidor.Id,
-                    Nombre = ordenDeCompra.Distribuidor.Nombre
-                }
             };
         }
 
@@ -92,21 +60,7 @@ namespace CNegocio.Logica
                 Id = o.Id,
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                Empleado = o.Empleado?.Persona == null ? null : new EmpleadoDTO
-                {
-                    Id = o.Empleado.Id,
-                    Persona = new PersonaDTO
-                    {
-                        Nombre = o.Empleado.Persona.Nombre,
-                        Apellido = o.Empleado.Persona.Apellido
-                    }
-                },
                 DistribuidorId = o.DistribuidorId,
-                Distribuidor = o.Distribuidor == null ? null : new ProveedorDTO
-                {
-                    Id = o.Distribuidor.Id,
-                    Nombre = o.Distribuidor.Nombre
-                }
             }).ToList();
         }
 
@@ -121,22 +75,7 @@ namespace CNegocio.Logica
                 Id = o.Id,
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                Empleado = o.Empleado?.Persona == null ? null : new EmpleadoDTO
-                {
-                    Id = o.Empleado.Id,
-                    PersonaId = o.Empleado.PersonaId,
-                    Persona = new PersonaDTO
-                    {
-                        Nombre = o.Empleado.Persona?.Nombre,
-                        Apellido = o.Empleado.Persona?.Apellido
-                    }
-                },
                 DistribuidorId = o.DistribuidorId,
-                Distribuidor = o.Distribuidor == null ? null : new ProveedorDTO
-                {
-                    Id = o.Distribuidor.Id,
-                    Nombre = o.Distribuidor.Nombre
-                }
             }).ToList();
         }
         #endregion obtener ordenes
@@ -167,14 +106,19 @@ namespace CNegocio.Logica
             if (camposErroneos.Count > 0)
                 throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
 
-            var ordenDeCompra = new OrdenDeCompra
+            var orden = new OrdenDeCompra
             {
                 EmpleadoId = ordenDeCompraDTO.EmpleadoId,
                 DistribuidorId = ordenDeCompraDTO.DistribuidorId,
-                FechaOrden = ordenDeCompraDTO.FechaOrden
+                FechaOrden = ordenDeCompraDTO.FechaOrden,
+                Productos = ordenDeCompraDTO.Productos.Select(p => new OrdenDeCompraProducto
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto
+                }).ToList()
             };
 
-            await _ordenDeCompraRepositorio.CrearOrdenDeCompra(ordenDeCompra);
+            await _ordenDeCompraRepositorio.CrearOrdenDeCompra(orden);
         }
 
         public async Task ActualizarOrdenDeCompra(OrdenDeCompraDTO ordenDeCompraDTO)
@@ -220,15 +164,6 @@ namespace CNegocio.Logica
             if (camposErroneos.Count > 0)
                 throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
 
-            var ordenDeCompra = new OrdenDeCompra
-            {
-                Id = ordenDeCompraDTO.Id,
-                EmpleadoId = ordenDeCompraDTO.EmpleadoId,
-                DistribuidorId = ordenDeCompraDTO.DistribuidorId,
-                FechaOrden = ordenDeCompraDTO.FechaOrden
-            };
-            _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(ordenDeCompra);
-
         }
 
         public async Task EliminarOrdenDeCompra(int id)
@@ -239,7 +174,6 @@ namespace CNegocio.Logica
             var existente = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(id);
             if (existente == null)
                 throw new KeyNotFoundException($"No se encontró una orden de compra con ID {id}.");
-                throw new ArgumentException("El ID de la orden debe ser mayor a 0.");
 
             _ordenDeCompraRepositorio.EliminarOrdenDeCompra(id);
         }

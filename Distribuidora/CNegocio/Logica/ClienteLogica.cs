@@ -26,26 +26,43 @@ namespace CNegocio.Logica
         public async Task<List<ClienteDTO>> ObtenerClientes()
         {
             var clientes = await _clienteRepositorio.ObtenerClientes();
+            var clientesDTO = new List<ClienteDTO>();
 
-            var clientesDTO = clientes.Select(c => new ClienteDTO
+            foreach (var c in clientes)
             {
-                Id = c.Id,
-                EstadoId = c.EstadoId,
-                Persona = new PersonaDTO
+                string nombreCiudad = string.Empty;
+
+                if (c.Persona.CiudadId > 0)
                 {
-                    Id = c.Persona.Id,
-                    Nombre = c.Persona.Nombre,
-                    Apellido = c.Persona.Apellido,
-                    Nro_Doc = c.Persona.Nro_Doc,
-                    Telefono = c.Persona.Telefono,
-                    Email = c.Persona.Email,
-                    Direccion = c.Persona.Direccion,
-                    CiudadId = c.Persona.CiudadId,
-                    EstadoId = c.Persona.EstadoId,
-                },
-            }).ToList();
+                    var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(c.Persona.CiudadId);
+                    if (ciudad != null)
+                    {
+                        nombreCiudad = ciudad.Nombre;
+                    }
+                }
+
+                clientesDTO.Add(new ClienteDTO
+                {
+                    Id = c.Id,
+                    EstadoId = c.EstadoId,
+                    Persona = new PersonaDTO
+                    {
+                        Id = c.Persona.Id,
+                        Nombre = c.Persona.Nombre,
+                        Apellido = c.Persona.Apellido,
+                        Nro_Doc = c.Persona.Nro_Doc,
+                        Telefono = c.Persona.Telefono,
+                        Email = c.Persona.Email,
+                        Direccion = c.Persona.Direccion,
+                        CiudadId = c.Persona.CiudadId,
+                        NombreCiudad = nombreCiudad, // <-- acá agregamos el nombre
+                        EstadoId = c.Persona.EstadoId,
+                    },
+                });
+            }
 
             return clientesDTO;
+
         }
 
         public async Task<ClienteDTO> ObtenerClientePorId(int id)
