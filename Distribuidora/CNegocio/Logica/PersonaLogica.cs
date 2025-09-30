@@ -1,4 +1,5 @@
-﻿using CDatos.Repositorios.IRepositorios;
+﻿using CDatos.Repositorios;
+using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
 using System;
@@ -12,26 +13,47 @@ namespace CNegocio.Logica
     public class PersonaLogica : IPersonaLogica
     {
         private readonly IPersonaRepositorio _personaRepositorio;
-        public PersonaLogica(IPersonaRepositorio personaRepositorio)
+        private readonly ICiudadRepositorio _ciudadRepositorio;
+        public PersonaLogica(IPersonaRepositorio personaRepositorio, ICiudadRepositorio ciudadRepositorio)
         {
             _personaRepositorio = personaRepositorio;
+            _ciudadRepositorio = ciudadRepositorio;
         }
         public async Task<List<PersonaDTO>> ObtenerPersonas()
         {
             var personas = await _personaRepositorio.ObtenerPersonas();
-            return personas.Select(p => new PersonaDTO
+            var personasDTO = new List<PersonaDTO>();
+
+            foreach (var p in personas)
             {
-                Id = p.Id,
-                Nombre = p.Nombre,
-                Apellido = p.Apellido,
-                Tipo_DocId = p.Tipo_DocId,
-                Nro_Doc = p.Nro_Doc,
-                CiudadId = p.CiudadId,
-                Email = p.Email,
-                Direccion = p.Direccion,
-                Telefono = p.Telefono,
-                EstadoId = p.EstadoId
-            }).ToList();
+                string nombreCiudad = string.Empty;
+
+                if (p.CiudadId > 0)
+                {
+                    var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(p.CiudadId);
+                    if (ciudad != null)
+                    {
+                        nombreCiudad = ciudad.Nombre;
+                    }
+                }
+
+                personasDTO.Add(new PersonaDTO
+                {
+                    Id = p.Id,
+                    Nombre = p.Nombre,
+                    Apellido = p.Apellido,
+                    Tipo_DocId = p.Tipo_DocId,
+                    Nro_Doc = p.Nro_Doc,
+                    CiudadId = p.CiudadId,
+                    NombreCiudad = nombreCiudad,
+                    Email = p.Email,
+                    Direccion = p.Direccion,
+                    Telefono = p.Telefono,
+                    EstadoId = p.EstadoId
+                });
+            }
+
+            return personasDTO;
         }
         public async Task<PersonaDTO> ObtenerPersonaPorId(int id)
         {
