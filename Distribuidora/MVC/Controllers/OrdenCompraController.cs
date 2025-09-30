@@ -19,7 +19,7 @@ namespace MVC.Controllers
         }
 
         // GET: OrdenDeCompra
-        public async Task<IActionResult> listaOrdenesCompra()
+        public async Task<IActionResult> listaCompras()
         {
             var url = $"{_settings.BaseUrl}/{_settings.OrdenDeCompraGet}";
             var response = await _httpClient.GetAsync(url);
