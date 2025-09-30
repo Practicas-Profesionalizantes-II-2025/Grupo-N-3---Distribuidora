@@ -19,7 +19,7 @@ namespace CDatos.Repositorios
         }
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompra()
         {
-            return await _context.OrdenCompra
+            return await _context.OrdenDeCompra
               .Include(o => o.Productos) // <--- Incluye la relación
                   .ThenInclude(op => op.Producto)     // <--- Opcional, si querés info del producto
               .Include(o => o.Empleado)
@@ -28,7 +28,7 @@ namespace CDatos.Repositorios
         }
         public async Task<OrdenDeCompra> ObtenerOrdenDeCompraPorId(int id)
         {
-            return await _context.OrdenCompra
+            return await _context.OrdenDeCompra
                .Include(o => o.Productos)
                    .ThenInclude(op => op.Producto)
                .Include(o => o.Empleado)
@@ -37,13 +37,13 @@ namespace CDatos.Repositorios
         }
         public async Task<OrdenDeCompra> CrearOrdenDeCompra(OrdenDeCompra ordenDeCompra)
         {
-            _context.OrdenCompra.Add(ordenDeCompra);
+            _context.OrdenDeCompra.Add(ordenDeCompra);
             await _context.SaveChangesAsync();
             return ordenDeCompra;
         }
         public void ActualizarOrdenDeCompra(OrdenDeCompra ordenDeCompra)
         {
-            var ordenDeCompraExistente = _context.OrdenCompra.Find(ordenDeCompra.Id);
+            var ordenDeCompraExistente = _context.OrdenDeCompra.Find(ordenDeCompra.Id);
             if (ordenDeCompra == null)
             {
                 throw new Exception("Orden de Compra no encontrada.");
@@ -56,12 +56,12 @@ namespace CDatos.Repositorios
         }
         public void EliminarOrdenDeCompra(int id)
         {
-            var orden = _context.OrdenCompra
+            var orden = _context.OrdenDeCompra
                 .Include(o => o.Productos) // asegurar que EF borre los hijos si está cascade
                 .FirstOrDefault(x => x.Id == id);
             if (orden != null)
             {
-                _context.OrdenCompra.Remove(orden);
+                _context.OrdenDeCompra.Remove(orden);
                 _context.SaveChanges();
             }
         }
@@ -70,7 +70,7 @@ namespace CDatos.Repositorios
 
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompraPorDistribuidorId(int distribuidorId)
         {
-            return await _context.OrdenCompra
+            return await _context.OrdenDeCompra
                   .Include(o => o.Productos)
                       .ThenInclude(op => op.Producto)
                   .Include(o => o.Empleado)
@@ -80,7 +80,7 @@ namespace CDatos.Repositorios
         }
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompraPorEmpleadoId(int empleadoId)
         {
-            return await _context.OrdenCompra
+            return await _context.OrdenDeCompra
                  .Include(o => o.Productos)
                      .ThenInclude(op => op.Producto)
                  .Include(o => o.Empleado)
@@ -90,7 +90,7 @@ namespace CDatos.Repositorios
         }
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompraPorFecha(DateTime fecha)
         {
-            return await _context.OrdenCompra
+            return await _context.OrdenDeCompra
                .Include(o => o.Productos)
                    .ThenInclude(op => op.Producto)
                .Include(o => o.Empleado)
