@@ -27,9 +27,14 @@
                     <input type="hidden" asp-for="Id" />
                     <input type="text" asp-for="Nombre" placeholder="Nombre categoría" class="input-text" />
                     <span asp-validation-for="Nombre" class="text-danger"></span>
+                </div>
 
-                    <button type="submit" class="btn yellow">Guardar</button>
-                    <a asp-action="listaCategorias" asp-controller="Categorias" class="btn back">Volver</a>
+                <!-- Botones -->
+                <div class="form-buttons-wrapper">
+                    <div class="form-buttons">
+                        <button type="submit" class="btn yellow">Guardar</button>
+                        <a asp-action="listaCategorias" asp-controller="Categorias" class="btn back">Volver</a>
+                    </div>
                 </div>
 
 
