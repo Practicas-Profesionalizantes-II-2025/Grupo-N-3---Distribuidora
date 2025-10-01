@@ -23,7 +23,7 @@ namespace CDatos.Repositorios
               .Include(o => o.Productos) // <--- Incluye la relación
                   .ThenInclude(op => op.Producto)     // <--- Opcional, si querés info del producto
               .Include(o => o.Empleado)
-              .Include(o => o.Distribuidor)
+              .Include(o => o.Proveedor)
               .ToListAsync();
         }
         public async Task<OrdenDeCompra> ObtenerOrdenDeCompraPorId(int id)
@@ -32,7 +32,7 @@ namespace CDatos.Repositorios
                .Include(o => o.Productos)
                    .ThenInclude(op => op.Producto)
                .Include(o => o.Empleado)
-               .Include(o => o.Distribuidor)
+               .Include(o => o.Proveedor)
                .FirstOrDefaultAsync(o => o.Id == id);
         }
         public async Task<OrdenDeCompra> CrearOrdenDeCompra(OrdenDeCompra ordenDeCompra)
@@ -50,7 +50,7 @@ namespace CDatos.Repositorios
             }
             ordenDeCompraExistente.FechaOrden = ordenDeCompra.FechaOrden;
             ordenDeCompraExistente.EmpleadoId = ordenDeCompra.Id;
-            ordenDeCompraExistente.DistribuidorId = ordenDeCompra.DistribuidorId;
+            ordenDeCompraExistente.ProveedorId = ordenDeCompra.ProveedorId;
 
             _context.SaveChanges();
         }
@@ -68,14 +68,14 @@ namespace CDatos.Repositorios
 
         // Obtener lista de Ordenes de Compra segun el atributo de clave foranea (EmpleadoId, ClienteId, DistribuidorId)
 
-        public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompraPorDistribuidorId(int distribuidorId)
+        public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompraPorDistribuidorId(int proveedorId)
         {
             return await _context.OrdenDeCompra
                   .Include(o => o.Productos)
                       .ThenInclude(op => op.Producto)
                   .Include(o => o.Empleado)
-                  .Include(o => o.Distribuidor)
-                  .Where(c => c.DistribuidorId == distribuidorId)
+                  .Include(o => o.Proveedor)
+                  .Where(c => c.ProveedorId == proveedorId)
                   .ToListAsync();
         }
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompraPorEmpleadoId(int empleadoId)
@@ -84,7 +84,7 @@ namespace CDatos.Repositorios
                  .Include(o => o.Productos)
                      .ThenInclude(op => op.Producto)
                  .Include(o => o.Empleado)
-                 .Include(o => o.Distribuidor)
+                 .Include(o => o.Proveedor)
                  .Where(c => c.EmpleadoId == empleadoId)
                  .ToListAsync();
         }
@@ -94,7 +94,7 @@ namespace CDatos.Repositorios
                .Include(o => o.Productos)
                    .ThenInclude(op => op.Producto)
                .Include(o => o.Empleado)
-               .Include(o => o.Distribuidor)
+               .Include(o => o.Proveedor)
                .Where(c => c.FechaOrden == fecha)
                .ToListAsync();
         }
