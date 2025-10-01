@@ -37,14 +37,32 @@ namespace MVC.Controllers
         }
 
         // GET: Crear OrdenDeCompra
-        public IActionResult crearOrdenCompra()
+        public async Task<IActionResult> crearOrdenCompra()
         {
-            return View();
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new OrdenDeCompraDTO());
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json);
+
+            var model = new OrdenDeCompraDTO
+            {
+                FechaOrden = DateTime.Now,
+                Productos = productos
+            };
+
+            return View(model);
         }
 
         // POST: Crear OrdenDeCompra
         [HttpPost]
-        public async Task<IActionResult> crearOrdenCompra([Bind("Id,EmpleadoId,DistribuidorId,FechaOrden")] OrdenDeCompraDTO orden)
+        public async Task<IActionResult> crearOrdenCompra([Bind("Id,EmpleadoId,ProveedorId,FechaOrden")] OrdenDeCompraDTO orden)
         {
             if (!ModelState.IsValid)
                 return View(orden);

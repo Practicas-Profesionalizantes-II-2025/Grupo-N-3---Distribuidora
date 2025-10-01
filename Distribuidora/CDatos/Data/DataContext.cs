@@ -123,8 +123,8 @@ namespace CDatos.Data
 
             // Ordenes de Compra
             modelBuilder.Entity<OrdenDeCompra>().HasData(
-                new OrdenDeCompra { Id = 1, EmpleadoId = 1, DistribuidorId = 1, FechaOrden = new DateTime(2025, 8, 21) },
-                new OrdenDeCompra { Id = 2, EmpleadoId = 2, DistribuidorId = 2, FechaOrden = new DateTime(2025, 8, 20) }
+                new OrdenDeCompra { Id = 1, EmpleadoId = 1, ProveedorId = 1, FechaOrden = new DateTime(2025, 8, 21) },
+                new OrdenDeCompra { Id = 2, EmpleadoId = 2, ProveedorId = 2, FechaOrden = new DateTime(2025, 8, 20) }
             );
 
             // Ordenes de Compra Producto

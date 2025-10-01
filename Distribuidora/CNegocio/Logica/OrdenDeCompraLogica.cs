@@ -27,7 +27,7 @@ namespace CNegocio.Logica
                 Id = o.Id,
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                DistribuidorId = o.DistribuidorId, 
+                ProveedorId = o.ProveedorId, 
             }).ToList();
         }
 
@@ -45,7 +45,7 @@ namespace CNegocio.Logica
                 Id = ordenDeCompra.Id,
                 FechaOrden = ordenDeCompra.FechaOrden,
                 EmpleadoId = ordenDeCompra.EmpleadoId,
-                DistribuidorId = ordenDeCompra.DistribuidorId,
+                ProveedorId = ordenDeCompra.ProveedorId,
             };
         }
 
@@ -60,7 +60,7 @@ namespace CNegocio.Logica
                 Id = o.Id,
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                DistribuidorId = o.DistribuidorId,
+                ProveedorId = o.ProveedorId,
             }).ToList();
         }
 
@@ -75,7 +75,7 @@ namespace CNegocio.Logica
                 Id = o.Id,
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                DistribuidorId = o.DistribuidorId,
+                ProveedorId = o.ProveedorId,
             }).ToList();
         }
         #endregion obtener ordenes
@@ -87,8 +87,8 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO.EmpleadoId <= 0)
                 throw new ArgumentException("El ID del empleado debe ser mayor que cero.", nameof(ordenDeCompraDTO.EmpleadoId));
 
-            if (ordenDeCompraDTO.DistribuidorId <= 0)
-                throw new ArgumentException("El ID del distribuidor debe ser mayor que cero.", nameof(ordenDeCompraDTO.DistribuidorId));
+            if (ordenDeCompraDTO.ProveedorId <= 0)
+                throw new ArgumentException("El ID del proveedor debe ser mayor que cero.", nameof(ordenDeCompraDTO.ProveedorId));
 
             if (ordenDeCompraDTO.FechaOrden == default)
                 throw new ArgumentException("La fecha de la orden no es válida.", nameof(ordenDeCompraDTO.FechaOrden));
@@ -97,7 +97,7 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO.EmpleadoId <= 0)
                 camposErroneos.Add("EmpleadoId");
 
-            if (ordenDeCompraDTO.DistribuidorId <= 0)
+            if (ordenDeCompraDTO.ProveedorId <= 0)
                 camposErroneos.Add("DistribuidorId");
 
             if (ordenDeCompraDTO.FechaOrden == default)
@@ -109,7 +109,7 @@ namespace CNegocio.Logica
             var orden = new OrdenDeCompra
             {
                 EmpleadoId = ordenDeCompraDTO.EmpleadoId,
-                DistribuidorId = ordenDeCompraDTO.DistribuidorId,
+                ProveedorId = ordenDeCompraDTO.ProveedorId,
                 FechaOrden = ordenDeCompraDTO.FechaOrden,
                 Productos = ordenDeCompraDTO.Productos.Select(p => new OrdenDeCompraProducto
                 {
@@ -132,8 +132,8 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO.EmpleadoId <= 0)
                 throw new ArgumentException("El ID del empleado debe ser mayor que cero.", nameof(ordenDeCompraDTO.EmpleadoId));
 
-            if (ordenDeCompraDTO.DistribuidorId <= 0)
-                throw new ArgumentException("El ID del distribuidor debe ser mayor que cero.", nameof(ordenDeCompraDTO.DistribuidorId));
+            if (ordenDeCompraDTO.ProveedorId <= 0)
+                throw new ArgumentException("El ID del Proveedor debe ser mayor que cero.", nameof(ordenDeCompraDTO.ProveedorId));
 
             if (ordenDeCompraDTO.FechaOrden == default)
                 throw new ArgumentException("La fecha de la orden no es válida.", nameof(ordenDeCompraDTO.FechaOrden));
@@ -143,7 +143,7 @@ namespace CNegocio.Logica
                 throw new KeyNotFoundException($"No se encontró una orden de compra con ID {ordenDeCompraDTO.Id}.");
 
             existente.EmpleadoId = ordenDeCompraDTO.EmpleadoId;
-            existente.DistribuidorId = ordenDeCompraDTO.DistribuidorId;
+            existente.ProveedorId = ordenDeCompraDTO.ProveedorId;
             existente.FechaOrden = ordenDeCompraDTO.FechaOrden;
 
             _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(existente);
@@ -155,8 +155,8 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO.EmpleadoId <= 0)
                 camposErroneos.Add("EmpleadoId");
 
-            if (ordenDeCompraDTO.DistribuidorId <= 0)
-                camposErroneos.Add("DistribuidorId");
+            if (ordenDeCompraDTO.ProveedorId <= 0)
+                camposErroneos.Add("ProveedorId");
 
             if (ordenDeCompraDTO.FechaOrden == default)
                 camposErroneos.Add("FechaOrden");
