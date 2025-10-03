@@ -11,9 +11,6 @@
             <!-- Campos ocultos necesarios -->
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="Persona.Id" />
-            <input type="hidden" asp-for="Persona.Tipo_DocId" />
-            <input type="hidden" asp-for="Persona.Nro_Doc" />
-            <input type="hidden" asp-for="Persona.CiudadId" />
             <input type="hidden" asp-for="EstadoId" />
             <input type="hidden" asp-for="Foto" />
 
@@ -49,7 +46,7 @@
                 <!-- Cargo  <input asp-for="CargoId" placeholder="Cargo" /> -->
 
                 <!-- Estado -->
-                <input asp-for="EstadoId" placeholder="Estado" />
+                <input type="hidden" asp-for="EstadoId" value="1" />
             </div>
 
             <!-- Botones -->

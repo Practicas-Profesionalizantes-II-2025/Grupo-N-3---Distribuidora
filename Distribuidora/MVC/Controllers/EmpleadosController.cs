@@ -141,7 +141,7 @@ namespace MVC.Controllers
                 ModelState.AddModelError(string.Empty, "No se pudo cargar el empleado");
                 return RedirectToAction(nameof(listaEmpleados));
             }
-
+            ModelState.Remove("Foto");
             var json = await response.Content.ReadAsStringAsync();
             var empleados = JsonConvert.DeserializeObject<EmpleadoDTO>(json);
             
@@ -154,7 +154,6 @@ namespace MVC.Controllers
             EmpleadoDTO model = new EmpleadoDTO
             {
                 Id = empleados.Id,
-                Foto = empleados.Foto,
                 PersonaId = empleados.PersonaId,
                 Persona = new PersonaDTO
                 {
@@ -182,10 +181,6 @@ namespace MVC.Controllers
             if (!ModelState.IsValid)
                 return View(empleado);
 
-            if (empleado.Foto == null)
-            {
-                empleado.Foto = empleado.Foto; // conservar foto existente
-            }
             try
             {
                 empleado.EstadoId = 1;

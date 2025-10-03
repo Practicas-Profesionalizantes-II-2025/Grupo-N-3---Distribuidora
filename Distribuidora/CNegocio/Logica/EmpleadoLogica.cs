@@ -141,7 +141,6 @@ namespace CNegocio.Logica
                 throw new Exception("Empleado no encontrado.");
 
             empleadoExistente.EstadoId = empleadoDTO.EstadoId;
-
             await _empleadoRepositorio.ActualizarEmpleado(empleadoExistente);
         }
         public async Task EliminarEmpleado(int id)
