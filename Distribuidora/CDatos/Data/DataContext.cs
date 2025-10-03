@@ -26,7 +26,6 @@ namespace CDatos.Data
         public DbSet<Proveedor> Proveedor { get; set; } = null!;
         public DbSet<Sector> Sector { get; set; } = null!;
         public DbSet<TipoDocumento> TipoDocumento { get; set; } = null!;
-        public DbSet<Usuario> Usuario { get; set; } = null!;
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer("Data Source=localhost\\SQLEXPRESS;Initial Catalog=Distribuidora;Integrated Security=True;TrustServerCertificate=true;");
@@ -145,12 +144,6 @@ namespace CDatos.Data
                 new OrdenDeVentaProducto { Id = 1, OrdenVentaId = 1, ProductoId = 1, CantidadProducto = 1 },
                 new OrdenDeVentaProducto { Id = 2, OrdenVentaId = 1, ProductoId = 2, CantidadProducto = 2 },
                 new OrdenDeVentaProducto { Id = 3, OrdenVentaId = 2, ProductoId = 3, CantidadProducto = 5 }
-            );
-
-            // Usuarios
-            modelBuilder.Entity<Usuario>().HasData(
-                new Usuario { Id = 1, Nombre = "admin",      Contrasenia = "admin123",   PersonaId = 1, EstadoId = 1 },
-                new Usuario { Id = 2, Nombre = "cliente1",   Contrasenia = "cliente123", PersonaId = 7, EstadoId = 1 }
             );
         }
     }
