@@ -154,6 +154,7 @@ namespace MVC.Controllers
             EmpleadoDTO model = new EmpleadoDTO
             {
                 Id = empleados.Id,
+                Foto = empleados.Foto,
                 PersonaId = empleados.PersonaId,
                 Persona = new PersonaDTO
                 {

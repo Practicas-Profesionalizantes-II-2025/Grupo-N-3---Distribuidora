@@ -23,6 +23,11 @@
                 <input asp-for="Persona.Nombre" placeholder="Nombre" />
                 <input asp-for="Persona.Apellido" placeholder="Apellido" />
 
+                <!-- Tipo y Número de Documento -->
+                <select asp-for="Persona.Tipo_DocId"
+                        asp-items="@(new SelectList(Model.Persona.TiposDocumentos, "Id", "NombreTipoDocumento", Model.Persona.Tipo_DocId))">
+                </select>
+
                 <!-- Tipo y número de documento -->
                 <input asp-for="Persona.Nro_Doc" placeholder="Número de documento" readonly />
 
@@ -33,7 +38,9 @@
                 <input asp-for="Persona.Direccion" placeholder="Dirección" />
 
                 <!-- Ciudad -->
-                <input asp-for="Persona.CiudadId" placeholder="Ciudad" />
+                <select asp-for="Persona.CiudadId"
+                        asp-items="@(new SelectList(Model.Persona.Ciudades, "Id", "Nombre", Model.Persona.CiudadId))">
+                </select>
 
                 <!-- Email -->
                 <input asp-for="Persona.Email" placeholder="Email" />
