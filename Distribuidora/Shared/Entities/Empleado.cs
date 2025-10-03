@@ -13,8 +13,9 @@ namespace Shared.Entities
         public int SectorId { get; set; }
         public int PersonaId { get; set; }
         public Persona Persona { get; set; }
-        public string Foto { get; set; } //Ver tema foto string ubicación de foto, ruta
+        //public string Foto { get; set; } //Ver tema foto string ubicación de foto, ruta
         public int EstadoId { get; set; }
-
+        public string Contrasenia { get; set; }
+        public bool Admin { get; set; }
     }
 }
