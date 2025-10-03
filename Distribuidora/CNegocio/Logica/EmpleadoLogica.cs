@@ -26,26 +26,43 @@ namespace CNegocio.Logica
         public async Task<List<EmpleadoDTO>> ObtenerEmpleados()
         {
             var empleados = await _empleadoRepositorio.ObtenerEmpleados();
-            var empleadosDto = empleados.Select(c => new EmpleadoDTO
+            var empleadosDTO = new List<EmpleadoDTO>();
+            foreach (var c in empleados)
             {
-                Id = c.Id,
-                EstadoId = c.EstadoId,
-                Foto = c.Foto,
-                Persona = new PersonaDTO
-                {
-                    Id = c.Persona.Id,
-                    Nombre = c.Persona.Nombre,
-                    Apellido = c.Persona.Apellido,
-                    Nro_Doc = c.Persona.Nro_Doc,
-                    Telefono = c.Persona.Telefono,
-                    Email = c.Persona.Email,
-                    Direccion = c.Persona.Direccion,
-                    CiudadId = c.Persona.CiudadId,
-                    EstadoId = c.Persona.EstadoId,
-                },
-            }).ToList();
+                string nombreCiudad = string.Empty;
 
-            return empleadosDto;
+                if (c.Persona.CiudadId > 0)
+                {
+                    var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(c.Persona.CiudadId);
+                    if (ciudad != null)
+                    {
+                        nombreCiudad = ciudad.Nombre;
+                    }
+                }
+
+                empleadosDTO.Add(new EmpleadoDTO
+                {
+                    Id = c.Id,
+                    EstadoId = c.EstadoId,
+                    Foto = c.Foto,
+                    Persona = new PersonaDTO
+                    {
+                        Id = c.Persona.Id,
+                        Nombre = c.Persona.Nombre,
+                        Apellido = c.Persona.Apellido,
+                        Nro_Doc = c.Persona.Nro_Doc,
+                        Telefono = c.Persona.Telefono,
+                        Email = c.Persona.Email,
+                        Direccion = c.Persona.Direccion,
+                        CiudadId = c.Persona.CiudadId,
+                        NombreCiudad = nombreCiudad, // <-- acá agregamos el nombre
+                        EstadoId = c.Persona.EstadoId,
+                    },
+                });
+            }
+
+            return empleadosDTO;
+
         }
         public async Task<EmpleadoDTO> ObtenerEmpleadoPorId(int id)
         {
