@@ -127,7 +127,7 @@ namespace MVC.Controllers
         // GET: Modificar empleado
         public async Task<IActionResult> modificarEmpleado(int id)
         {
-            var url = $"{_settings.BaseUrl}/{_settings.EmpleadosGet}";
+            var url = $"{_settings.BaseUrl}/{_settings.EmpleadosGet}/{id}";
             var response = await _httpClient.GetAsync(url);
            
             var urlCiudad = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
