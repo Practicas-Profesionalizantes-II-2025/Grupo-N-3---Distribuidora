@@ -49,7 +49,9 @@ namespace MVC.Controllers
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json);
+            var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json,
+                new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
+
 
             var model = new OrdenDeCompraDTO
             {
