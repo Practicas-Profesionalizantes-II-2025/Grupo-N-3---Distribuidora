@@ -62,7 +62,7 @@ namespace MVC.Controllers
 
         // POST: Crear OrdenDeCompra
         [HttpPost]
-        public async Task<IActionResult> crearOrdenCompra([Bind("Id,EmpleadoId,ProveedorId,FechaOrden")] OrdenDeCompraDTO orden)
+        public async Task<IActionResult> crearOrdenCompra(OrdenDeCompraDTO orden)
         {
             if (!ModelState.IsValid)
                 return View(orden);

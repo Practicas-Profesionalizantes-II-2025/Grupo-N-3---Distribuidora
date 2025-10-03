@@ -14,15 +14,8 @@
         @Html.AntiForgeryToken()
 
         <!-- Datos generales -->
-        <div class="form-group">
-            <label>Empleado</label>
-            <input asp-for="EmpleadoId" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label>Distribuidor</label>
-            <input asp-for="ProveedorId" class="form-control" readonly />
-        </div>
+        <input type="hidden" asp-for="EmpleadoId" value="@Model.EmpleadoId" />
+        <input type="hidden" asp-for="ProveedorId" value="@Model.ProveedorId" />
 
         <input type="hidden" asp-for="FechaOrden" value="@DateTime.Now" />
 
