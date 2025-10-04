@@ -27,7 +27,14 @@ namespace CNegocio.Logica
                 Id = o.Id,
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                ProveedorId = o.ProveedorId, 
+                ProveedorId = o.ProveedorId,
+                Productos = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto,
+                    NombreProducto = p.Producto.Nombre,
+                    PrecioUnitario = p.Producto.PrecioProducto
+                }).ToList()
             }).ToList();
         }
 
@@ -46,6 +53,13 @@ namespace CNegocio.Logica
                 FechaOrden = ordenDeCompra.FechaOrden,
                 EmpleadoId = ordenDeCompra.EmpleadoId,
                 ProveedorId = ordenDeCompra.ProveedorId,
+                Productos = ordenDeCompra.Productos.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto,
+                    NombreProducto = p.Producto.Nombre,
+                    PrecioUnitario = p.Producto.PrecioProducto
+                }).ToList()
             };
         }
 
@@ -61,6 +75,13 @@ namespace CNegocio.Logica
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
                 ProveedorId = o.ProveedorId,
+                Productos = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto,
+                    NombreProducto = p.Producto.Nombre,
+                    PrecioUnitario = p.Producto.PrecioProducto
+                }).ToList()
             }).ToList();
         }
 
@@ -76,6 +97,13 @@ namespace CNegocio.Logica
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
                 ProveedorId = o.ProveedorId,
+                Productos = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto,
+                    NombreProducto = p.Producto.Nombre,
+                    PrecioUnitario = p.Producto.PrecioProducto
+                }).ToList()
             }).ToList();
         }
         #endregion obtener ordenes
