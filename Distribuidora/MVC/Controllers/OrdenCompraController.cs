@@ -89,7 +89,7 @@ namespace MVC.Controllers
             }
 
             // Mapear al objeto que la API espera
-            var model = new 
+            var model = new
             {
                 EmpleadoId = orden.EmpleadoId,
                 ProveedorId = orden.ProveedorId,
@@ -98,8 +98,8 @@ namespace MVC.Controllers
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto
-                    
-                    
+
+
                 }).ToList()
             };
 
@@ -158,18 +158,18 @@ namespace MVC.Controllers
         {
             if (id != orden.Id)
                 return NotFound();
-        
+
             if (!ModelState.IsValid)
                 return View(orden);
             var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraPut}/{id}";
             var jsonData = JsonConvert.SerializeObject(orden);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-        
+
             var response = await _httpClient.PutAsync(url, content);
-        
+
             if (!response.IsSuccessStatusCode)
                 return View("Error");
-        
+
             return RedirectToAction("listaOrdenesCompra");
         }
         // DELETE: OrdenDeCompra/Delete/5
@@ -185,12 +185,11 @@ namespace MVC.Controllers
             return RedirectToAction(nameof(listaOrdenCompras));
         }
 
-        
-        
+
+
         // GET: OrdenDeCompra/Detalle/5
         public async Task<IActionResult> detalleOrdenCompra(int id)
         {
-            // Llamada a la API para traer la orden
             var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraGet}/{id}";
             var response = await _httpClient.GetAsync(url);
 
@@ -200,38 +199,32 @@ namespace MVC.Controllers
             var json = await response.Content.ReadAsStringAsync();
             var ordenApi = JsonConvert.DeserializeObject<OrdenDeCompraDTO>(json);
 
-            // Mapear los productos seleccionados con los datos completos de cada producto
-            var productosConInfo = ordenApi.ProductosSeleccionados.Select(ps =>
-            {
-                var producto = ordenApi.Productos.FirstOrDefault(p => p.Id == ps.ProductoId);
+            if (ordenApi == null)
+                return RedirectToAction(nameof(listaOrdenCompras));
 
-                return new OrdenDeCompraProductoDTO
-                {
-                    Id = ps.Id,
-                    OrdenDeCompraId = ps.OrdenDeCompraId,
-                    ProductoId = ps.ProductoId,
-                    CantidadProducto = ps.CantidadProducto,
-                    NombreProducto = producto?.Nombre ?? "Sin nombre",
-                    PrecioUnitario = producto?.PrecioProducto ?? 0,
-                    ProveedorNombre = producto?.ProveedorNombre ?? "Sin proveedor"
-                };
-            }).ToList();
-
-            // Crear un DTO para la vista con toda la información
+            // Mapear los productos correctamente
             var ordenParaVista = new OrdenDeCompraDTO
             {
                 Id = ordenApi.Id,
                 FechaOrden = ordenApi.FechaOrden,
                 Estado = ordenApi.Estado,
                 EmpleadoId = ordenApi.EmpleadoId,
-                NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}", // o traelo de la API si existe
+                NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}",
                 ProveedorId = ordenApi.ProveedorId,
-                ProveedorNombre = $"Proveedor {ordenApi.ProveedorId}", // o traelo de la API si existe
-                ProductosSeleccionados = productosConInfo
+                ProveedorNombre = $"Proveedor {ordenApi.ProveedorId}",
+                ProductosSeleccionados = ordenApi.Productos?.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    Id = p.Id, // id del producto en la orden
+                    OrdenDeCompraId = ordenApi.Id, // id de la orden
+                    ProductoId = p.Id, // id real del producto
+                    NombreProducto = p.Nombre,
+                    CantidadProducto = p.Stock, // si Stock representa la cantidad pedida en la orden
+                    PrecioUnitario = p.PrecioProducto,
+                    ProveedorNombre = p.ProveedorNombre ?? $"Proveedor {p.ProveedorId}",
+                }).ToList() ?? new List<OrdenDeCompraProductoDTO>(),
             };
 
             return View(ordenParaVista);
         }
-
     }
 }

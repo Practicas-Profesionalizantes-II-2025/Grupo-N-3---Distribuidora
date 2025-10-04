@@ -16,7 +16,7 @@
     <main class="pedido">
         <!-- Header de la sección -->
         <div class="section-header">
-            <h2>Detalle pedido</h2>
+            <h2>Detalle pedido #@Model.Id</h2>
         </div>
 
         <table class="pedido__table">
@@ -31,15 +31,24 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var prod in Model.ProductosSeleccionados)
+                @if (Model.ProductosSeleccionados != null && Model.ProductosSeleccionados.Any())
+                {
+                    foreach (var prod in Model.ProductosSeleccionados)
+                    {
+                        <tr>
+                            <td>@prod.ProductoId</td>
+                            <td>@prod.NombreProducto</td>
+                            <td>@prod.ProveedorNombre</td>
+                            <td>@prod.CantidadProducto</td>
+                            <td>@String.Format("{0:C}", prod.PrecioUnitario)</td>
+                            <td>@String.Format("{0:C}", prod.CantidadProducto * prod.PrecioUnitario)</td>
+                        </tr>
+                    }
+                }
+                else
                 {
                     <tr>
-                        <td>@prod.ProductoId</td>
-                        <td>@prod.NombreProducto</td>
-                        <td>@prod.ProveedorNombre</td>
-                        <td>@prod.CantidadProducto</td>
-                        <td>@String.Format("{0:C}", prod.PrecioUnitario)</td>
-                        <td>@String.Format("{0:C}", prod.CantidadProducto * prod.PrecioUnitario)</td>
+                        <td colspan="6">No hay productos en esta orden</td>
                     </tr>
                 }
             </tbody>
@@ -47,7 +56,7 @@
                 <tr>
                     <td colspan="5" class="total-label">TOTAL:</td>
                     <td class="total-value">
-                        @String.Format("{0:C}", Model.ProductosSeleccionados.Sum(p => p.CantidadProducto * p.PrecioUnitario))
+                        @String.Format("{0:C}", Model.ProductosSeleccionados?.Sum(p => p.CantidadProducto * p.PrecioUnitario) ?? 0)
                     </td>
                 </tr>
             </tfoot>
