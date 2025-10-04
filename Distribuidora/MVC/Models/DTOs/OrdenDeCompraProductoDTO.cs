@@ -6,5 +6,8 @@
         public int OrdenDeCompraId { get; set; }
         public int ProductoId { get; set; }
         public int CantidadProducto { get; set; }
+        public string ProveedorNombre { get; set; }
+        public string NombreProducto { get; set; }
+        public float PrecioUnitario { get; set; }
     }
 }

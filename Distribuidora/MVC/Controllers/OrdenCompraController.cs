@@ -184,5 +184,54 @@ namespace MVC.Controllers
             }
             return RedirectToAction(nameof(listaOrdenCompras));
         }
+
+        
+        
+        // GET: OrdenDeCompra/Detalle/5
+        public async Task<IActionResult> detalleOrdenCompra(int id)
+        {
+            // Llamada a la API para traer la orden
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaOrdenCompras));
+
+            var json = await response.Content.ReadAsStringAsync();
+            var ordenApi = JsonConvert.DeserializeObject<OrdenDeCompraDTO>(json);
+
+            // Mapear los productos seleccionados con los datos completos de cada producto
+            var productosConInfo = ordenApi.ProductosSeleccionados.Select(ps =>
+            {
+                var producto = ordenApi.Productos.FirstOrDefault(p => p.Id == ps.ProductoId);
+
+                return new OrdenDeCompraProductoDTO
+                {
+                    Id = ps.Id,
+                    OrdenDeCompraId = ps.OrdenDeCompraId,
+                    ProductoId = ps.ProductoId,
+                    CantidadProducto = ps.CantidadProducto,
+                    NombreProducto = producto?.Nombre ?? "Sin nombre",
+                    PrecioUnitario = producto?.PrecioProducto ?? 0,
+                    ProveedorNombre = producto?.ProveedorNombre ?? "Sin proveedor"
+                };
+            }).ToList();
+
+            // Crear un DTO para la vista con toda la información
+            var ordenParaVista = new OrdenDeCompraDTO
+            {
+                Id = ordenApi.Id,
+                FechaOrden = ordenApi.FechaOrden,
+                Estado = ordenApi.Estado,
+                EmpleadoId = ordenApi.EmpleadoId,
+                NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}", // o traelo de la API si existe
+                ProveedorId = ordenApi.ProveedorId,
+                ProveedorNombre = $"Proveedor {ordenApi.ProveedorId}", // o traelo de la API si existe
+                ProductosSeleccionados = productosConInfo
+            };
+
+            return View(ordenParaVista);
+        }
+
     }
 }
