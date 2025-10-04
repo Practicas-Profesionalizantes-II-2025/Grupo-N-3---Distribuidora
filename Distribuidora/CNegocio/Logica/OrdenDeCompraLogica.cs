@@ -33,7 +33,7 @@ namespace CNegocio.Logica
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
                     NombreProducto = p.Producto.Nombre,
-                    PrecioUnitario = p.Producto.PrecioProducto
+                    PrecioUnitario = p.Producto.PrecioProducto,
                 }).ToList()
             }).ToList();
         }
@@ -55,10 +55,12 @@ namespace CNegocio.Logica
                 ProveedorId = ordenDeCompra.ProveedorId,
                 Productos = ordenDeCompra.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
-                    ProductoId = p.ProductoId,
+                    Id = p.Id,                           // ID del registro de la relación
+                    OrdenDeCompraId = ordenDeCompra.Id,  // ID de la orden
+                    ProductoId = p.ProductoId,           // ID del producto
                     CantidadProducto = p.CantidadProducto,
                     NombreProducto = p.Producto.Nombre,
-                    PrecioUnitario = p.Producto.PrecioProducto
+                    PrecioUnitario = p.Producto.PrecioProducto,
                 }).ToList()
             };
         }
