@@ -70,7 +70,6 @@ namespace API.Controllers
             {
                 PersonaId = personaCreada.Id,
                 Persona = personaCreada, 
-                Foto = empleado.Foto,
                 EstadoId = empleado.EstadoId
             };
 

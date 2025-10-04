@@ -56,7 +56,6 @@ namespace CNegocio.Logica
                         Direccion = c.Persona.Direccion,
                         CiudadId = c.Persona.CiudadId,
                         NombreCiudad = nombreCiudad, // <-- acá agregamos el nombre
-                        EstadoId = c.Persona.EstadoId,
                     },
                 });
             }
@@ -85,7 +84,6 @@ namespace CNegocio.Logica
                     Email = cliente.Persona.Email,
                     Direccion = cliente.Persona.Direccion,
                     CiudadId = cliente.Persona.CiudadId,
-                    EstadoId = cliente.Persona.EstadoId
                 }
             };
         }
@@ -121,7 +119,6 @@ namespace CNegocio.Logica
                     Email = persona.Email,
                     Direccion = persona.Direccion,
                     Telefono = persona.Telefono,
-                    EstadoId = persona.EstadoId,
                 }
             };
         }

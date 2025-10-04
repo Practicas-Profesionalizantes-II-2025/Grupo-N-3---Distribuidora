@@ -8,6 +8,7 @@
         //public string Foto { get; set; } //Ver tema foto string ubicación de foto, ruta
         public int EstadoId { get; set; }
         public string Contrasenia { get; set; }
+        public string ContraseniaConfimarcion { get; set; }
         public bool Admin { get; set; }
     }
 }

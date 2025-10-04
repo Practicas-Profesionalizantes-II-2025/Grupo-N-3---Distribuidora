@@ -65,54 +65,66 @@ namespace MVC.Controllers
             var ciudadesJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
             var ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(ciudadesJson);
 
-            // Obtener tipos de documentos desde la API
             var tiposDocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
             var tiposDoc = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(tiposDocJson);
 
-            var empleado = new EmpleadoDTO
+            EmpleadoVista_CargarEmpleadoDTO empleadoVista_CargarEmpleado = new EmpleadoVista_CargarEmpleadoDTO
             {
-                Persona = new PersonaDTO()
+                ciudades = ciudades,
+                tiposDocumentos = tiposDoc,
+                empleado = new EmpleadoDTO
                 {
-                    Ciudades = ciudades,
-                    TiposDocumentos = tiposDoc
+                    Persona = new PersonaDTO()
                 }
             };
-            return View(empleado);
+            return View(empleadoVista_CargarEmpleado);
         }
 
         // POST: Crear Empleado
         [HttpPost]
-        public async Task<IActionResult> crearEmpleado(EmpleadoDTO empleado)
+        public async Task<IActionResult> crearEmpleado(EmpleadoVista_CargarEmpleadoDTO modelo)
         {
             try
             {
-                // Aseguramos que Persona no sea null
-                if (empleado.Persona == null)
-                {
-                    empleado.Persona = new PersonaDTO();
-                }
-                var CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
-                var DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+                var empleado = modelo.empleado;
 
-                empleado.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
-                empleado.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
-
-                // Forzamos estado de Persona en Alta
-                empleado.Persona.EstadoId = 1;
+                // Forzar estado
                 empleado.EstadoId = 1;
+
+                // Validación: contraseñas iguales
+                if (empleado.Contrasenia != empleado.ContraseniaConfimarcion)
+                {
+                    ModelState.AddModelError("empleado.ContraseniaConfimarcion", "Las contraseñas no coinciden.");
+
+                    // Recargar selects para que no se pierdan al volver a la vista
+                    var ciudadesJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+                    var tiposDocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+
+                    modelo.ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(ciudadesJson);
+                    modelo.tiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(tiposDocJson);
+
+                    return View(modelo);
+                }
                 if (!ModelState.IsValid)
                 {
-                    return View(empleado);
-                }
-                var JsonData = JsonConvert.SerializeObject(empleado);
-                var Content = new StringContent(JsonData, Encoding.UTF8, "application/json");
-                var Response = await _httpClient.PostAsync($"{_settings.BaseUrl}/{_settings.EmpleadosPost}", Content);
+                    var ciudadesJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+                    var tiposDocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
 
-                if (!Response.IsSuccessStatusCode)
+                    modelo.ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(ciudadesJson);
+                    modelo.tiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(tiposDocJson);
+
+                    return View(modelo);
+                }
+
+                var jsonData = JsonConvert.SerializeObject(empleado);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PostAsync($"{_settings.BaseUrl}/{_settings.EmpleadosPost}", content);
+
+                if (!response.IsSuccessStatusCode)
                 {
-                    var error = await Response.Content.ReadAsStringAsync();
+                    var error = await response.Content.ReadAsStringAsync();
                     ModelState.AddModelError(string.Empty, $"Error creando empleado: {error}");
-                    return View(empleado);
+                    return View(modelo);
                 }
 
                 return RedirectToAction(nameof(listaEmpleados));
@@ -120,9 +132,50 @@ namespace MVC.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
-                return View(empleado);
+                return View(modelo);
             }
         }
+        //public async Task<IActionResult> crearEmpleado(EmpleadoDTO empleado)
+        //{
+        //    try
+        //    {
+        //        // Aseguramos que Persona no sea null
+        //        if (empleado.Persona == null)
+        //        {
+        //            empleado.Persona = new PersonaDTO();
+        //        }
+        //        var CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+        //        var DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+
+        //        empleado.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+        //        empleado.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+
+        //        // Forzamos estado de Persona en Alta
+        //        empleado.Persona.EstadoId = 1;
+        //        empleado.EstadoId = 1;
+        //        if (!ModelState.IsValid)
+        //        {
+        //            return View(empleado);
+        //        }
+        //        var JsonData = JsonConvert.SerializeObject(empleado);
+        //        var Content = new StringContent(JsonData, Encoding.UTF8, "application/json");
+        //        var Response = await _httpClient.PostAsync($"{_settings.BaseUrl}/{_settings.EmpleadosPost}", Content);
+
+        //        if (!Response.IsSuccessStatusCode)
+        //        {
+        //            var error = await Response.Content.ReadAsStringAsync();
+        //            ModelState.AddModelError(string.Empty, $"Error creando empleado: {error}");
+        //            return View(empleado);
+        //        }
+
+        //        return RedirectToAction(nameof(listaEmpleados));
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
+        //        return View(empleado);
+        //    }
+        //}
 
         // GET: Modificar empleado
         public async Task<IActionResult> modificarEmpleado(int id)
@@ -181,10 +234,6 @@ namespace MVC.Controllers
             if (!ModelState.IsValid)
                 return View(empleado);
 
-            if (empleado.Foto == null)
-            {
-                empleado.Foto = empleado.Foto; // conservar foto existente
-            }
             try
             {
                 empleado.EstadoId = 1;

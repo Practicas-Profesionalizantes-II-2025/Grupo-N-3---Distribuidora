@@ -7,6 +7,7 @@ using CDatos.Data;
 using CDatos.Repositorios.IRepositorios;
 using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
+using CDatos.Encriptador;
 
 namespace CDatos.Repositorios
 {
@@ -33,9 +34,7 @@ namespace CDatos.Repositorios
         }
         public async Task<Empleado> CrearEmpleado(Empleado empleado)
         {
-            if (string.IsNullOrEmpty(empleado.Foto))
-                empleado.Foto = "default.jpg"; // valor por defecto
-
+            empleado.Contrasenia = Encriptador.Encriptador.GetSHA256(empleado.Contrasenia);
             _context.Empleado.Add(empleado);
             await _context.SaveChangesAsync();
             return empleado;
@@ -49,7 +48,6 @@ namespace CDatos.Repositorios
             }
             empleadoExistente.PersonaId = empleado.PersonaId;
             empleadoExistente.EstadoId = empleado.EstadoId;
-            empleadoExistente.Foto = empleadoExistente.Foto;
 
             await _context.SaveChangesAsync();
         }

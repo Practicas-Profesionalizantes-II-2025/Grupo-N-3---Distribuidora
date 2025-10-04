@@ -4,6 +4,7 @@ using CDatos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CDatos.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20251003214934_adddd1")]
+    partial class adddd1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -530,6 +533,9 @@ namespace CDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("EstadoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -557,6 +563,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Falsa 123",
                             Email = "juan@mail.com",
+                            EstadoId = 1,
                             Nombre = "Juan",
                             Nro_Doc = "12345678",
                             Telefono = "11111111",
@@ -569,6 +576,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Av. Siempre Viva 742",
                             Email = "ana@mail.com",
+                            EstadoId = 1,
                             Nombre = "Ana",
                             Nro_Doc = "87654321",
                             Telefono = "22222222",
@@ -581,6 +589,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Calle Luna 45",
                             Email = "luis@mail.com",
+                            EstadoId = 1,
                             Nombre = "Luis",
                             Nro_Doc = "11223344",
                             Telefono = "33333333",
@@ -593,6 +602,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Sol 99",
                             Email = "maria@mail.com",
+                            EstadoId = 2,
                             Nombre = "María",
                             Nro_Doc = "44332211",
                             Telefono = "44444444",
@@ -605,6 +615,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Norte 10",
                             Email = "pedro@mail.com",
+                            EstadoId = 1,
                             Nombre = "Pedro",
                             Nro_Doc = "55555555",
                             Telefono = "55555555",
@@ -617,6 +628,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Sur 20",
                             Email = "lucia@mail.com",
+                            EstadoId = 2,
                             Nombre = "Lucía",
                             Nro_Doc = "66666666",
                             Telefono = "66666666",
@@ -629,6 +641,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Este 30",
                             Email = "carlos@mail.com",
+                            EstadoId = 1,
                             Nombre = "Carlos",
                             Nro_Doc = "77777777",
                             Telefono = "77777777",
@@ -641,6 +654,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Oeste 40",
                             Email = "sofia@mail.com",
+                            EstadoId = 1,
                             Nombre = "Sofía",
                             Nro_Doc = "88888888",
                             Telefono = "88888888",
@@ -653,6 +667,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Sur 50",
                             Email = "miguel@mail.com",
+                            EstadoId = 1,
                             Nombre = "Miguel",
                             Nro_Doc = "99999999",
                             Telefono = "99999999",
@@ -665,6 +680,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Norte 60",
                             Email = "valentina@mail.com",
+                            EstadoId = 2,
                             Nombre = "Valentina",
                             Nro_Doc = "10101010",
                             Telefono = "10101010",
@@ -677,6 +693,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Central 70",
                             Email = "diego@mail.com",
+                            EstadoId = 1,
                             Nombre = "Diego",
                             Nro_Doc = "11111112",
                             Telefono = "11111112",
@@ -689,6 +706,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Principal 80",
                             Email = "martina@mail.com",
+                            EstadoId = 2,
                             Nombre = "Martina",
                             Nro_Doc = "12121212",
                             Telefono = "12121212",

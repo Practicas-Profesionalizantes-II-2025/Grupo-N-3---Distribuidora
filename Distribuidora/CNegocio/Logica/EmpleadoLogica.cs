@@ -30,7 +30,6 @@ namespace CNegocio.Logica
             {
                 Id = c.Id,
                 EstadoId = c.EstadoId,
-                Foto = c.Foto,
                 Persona = new PersonaDTO
                 {
                     Id = c.Persona.Id,
@@ -41,7 +40,6 @@ namespace CNegocio.Logica
                     Email = c.Persona.Email,
                     Direccion = c.Persona.Direccion,
                     CiudadId = c.Persona.CiudadId,
-                    EstadoId = c.Persona.EstadoId,
                 },
             }).ToList();
 
@@ -59,7 +57,6 @@ namespace CNegocio.Logica
                 Id = empleado.Id,
                 EstadoId = empleado.EstadoId,
                 PersonaId = empleado.PersonaId,
-                Foto = empleado.Foto,
                 Persona = new PersonaDTO
                 {
                     Id = empleado.Persona.Id,
@@ -79,9 +76,6 @@ namespace CNegocio.Logica
                 camposErroneos.Add("PersonaId");
             if (empleadoDTO.EstadoId <= 0)
                 camposErroneos.Add("EstadoId");
-            //if (string.IsNullOrWhiteSpace(empleadoDTO.Foto))
-            //    camposErroneos.Add("Foto");
-
 
             if (camposErroneos.Count > 0)
             {
@@ -91,8 +85,8 @@ namespace CNegocio.Logica
             var empleado = new Empleado
             {
                 PersonaId = empleadoDTO.PersonaId,
-                Foto = empleadoDTO.Foto,
                 EstadoId = empleadoDTO.EstadoId,
+                Contrasenia = empleadoDTO.Contrasenia
             };
             var nuevoEmpleado = await _empleadoRepositorio.CrearEmpleado(empleado);
 
@@ -103,7 +97,6 @@ namespace CNegocio.Logica
                 Id = nuevoEmpleado.Id,
                 PersonaId = nuevoEmpleado.PersonaId,
                 EstadoId = nuevoEmpleado.EstadoId,
-                Foto = nuevoEmpleado.Foto,
                 Persona = new PersonaDTO
                 {
                     Id = persona.Id,
@@ -116,8 +109,7 @@ namespace CNegocio.Logica
                     Email = persona.Email,
                     Direccion = persona.Direccion,
                     Telefono = persona.Telefono,
-                    EstadoId = persona.EstadoId,
-                }
+                },
             };
         }
         public async Task ActualizarEmpleado(EmpleadoDTO empleadoDTO)
