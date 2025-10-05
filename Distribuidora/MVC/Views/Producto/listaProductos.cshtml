@@ -14,20 +14,46 @@
     <!--=============== REMIXICONS ===============-->
     <link href="https:cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css">
+
+    <style>
+        .tabla-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .tabla-empleados thead {
+            position: sticky;
+            top: 0;
+            background-color: #f5f5f5;
+            z-index: 1;
+        }
+
+        .tabla-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tabla-container::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+            .tabla-container::-webkit-scrollbar-thumb:hover {
+                background-color: #555;
+            }
+    </style>
 </head>
 <body>
 
     <main class="container full-width">
-        <h2 class="titulo">Lista de productos</h2>
-        
-        <!-- Filtro de búsqueda + Crear Producto -->
-        <form asp-action="bucarProductos" method="get">
-            <input type="text" placeholder="Buscar por Nombre" id="searchInput" name="nombre">
-            <button type="submit" class="btn yellow">Buscar</button>
-        </form>
-        <a asp-action="crearProducto" class="">
-            <button class="btn yellow">Crear</button>
-        </a>
+        <h2 class="titulo">Lista de Productos</h2>
+
+        <div class="search-filter">
+            <input type="text" placeholder="Buscar por ID o Nombre de producto" id="searchInput">
+            <button class="btn yellow">Buscar</button>
+            <a asp-controller="Productos" asp-action="crearProducto" class="btn green">Crear Producto</a>
+        </div>
 
         <div class="tabla-container">
             <table class="tabla-empleados">
@@ -55,13 +81,17 @@
                             <td>@producto.PrecioProducto</td>
 
                             <td class="acciones">
-                                <a asp-action="modificarProducto" asp-route-id="@producto.Id" class="btn-icon edit">
+                                <a asp-controller="Productos" asp-action="modificarProducto" asp-route-id="@producto.Id"
+                                   class="btn-icon yellow-outline" title="Editar">
                                     <i class="ri-pencil-line"></i>
                                 </a>
-                                <form asp-action="eliminarProducto" asp-route-id="@producto.Id" method="post" style="display:inline">
-                                    <button type="submit" class="btn-icon delete">
+
+                                <!-- FORMULARIO POST PARA ELIMINAR -->
+                                <form asp-controller="Productos" asp-action="eliminarProducto" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@producto.Id" />
+                                    <a href="#" class="btn-icon yellow-outline" title="Eliminar" onclick="confirmDelete(this)">
                                         <i class="ri-delete-bin-line"></i>
-                                    </button>
+                                    </a>
                                 </form>
                             </td>
                         </tr>
