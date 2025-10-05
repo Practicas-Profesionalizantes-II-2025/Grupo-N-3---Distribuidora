@@ -61,7 +61,6 @@
                     <tr>
                         <th>ID</th>
                         <th>Fecha de orden</th>
-                        <th>Distribuidor</th>
                         <th>Empleado</th>
                         <th>Acciones</th>
                     </tr>
@@ -72,7 +71,6 @@
                         <tr>
                             <td>@item.Id</td>
                             <td>@item.FechaOrden.ToString("dd/MM/yyyy")</td>
-                            <td>@item.ProveedorNombre</td>
                             <td>@item.NombreEmpleado</td>
                             <td class="acciones">
                                 <a asp-controller="OrdenCompra" asp-action="modificarCompra" asp-route-id="@item.Id"

@@ -15,13 +15,15 @@ namespace MVC.Models.DTOs
         [ValidateNever]
         public string NombreEmpleado { get; set; }
         [ValidateNever]
-        public int ProductoId { get; set; }
-        [ValidateNever]
-        public List<ProductoDTO> Productos { get; set; }
-        [ValidateNever]
         public int ProveedorId { get; set; }
         [ValidateNever]
         public string ProveedorNombre { get; set; }
+
+        //Productos disponibles para crear
+        [ValidateNever]
+        public List<ProductoDTO> Productos { get; set; }
+
+        // Productos seleccionados en la orden (para detalle)
         [ValidateNever]
         public List<OrdenDeCompraProductoDTO> ProductosSeleccionados { get; set; } = new();
     }

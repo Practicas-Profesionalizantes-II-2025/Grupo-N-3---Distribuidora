@@ -172,6 +172,7 @@ namespace MVC.Controllers
 
             return RedirectToAction("listaOrdenesCompra");
         }
+        
         // DELETE: OrdenDeCompra/Delete/5
         public async Task<IActionResult> eliminarOrdenCompra(int? id)
         {
@@ -185,43 +186,48 @@ namespace MVC.Controllers
             return RedirectToAction(nameof(listaOrdenCompras));
         }
 
-
-
         // GET: OrdenDeCompra/Detalle/5
         public async Task<IActionResult> detalleOrdenCompra(int id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraGet}/{id}";
             var response = await _httpClient.GetAsync(url);
-
             if (!response.IsSuccessStatusCode)
                 return RedirectToAction(nameof(listaOrdenCompras));
 
             var json = await response.Content.ReadAsStringAsync();
-            var ordenApi = JsonConvert.DeserializeObject<OrdenDeCompraDTO>(json);
-
-            if (ordenApi == null)
+            var content = JsonConvert.DeserializeObject<DetalleOrdenCompraDTO>(json);
+            if (content == null)
                 return RedirectToAction(nameof(listaOrdenCompras));
 
-            // Mapear los productos correctamente
+            var urlProductos = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var responseProductos = await _httpClient.GetAsync(urlProductos);
+            var jsonProductos = await responseProductos.Content.ReadAsStringAsync();
+            var catalogoProductos = JsonConvert.DeserializeObject<List<ProductoDTOvista>>(jsonProductos);
+
+            var productosSeleccionados = content.Productos.Select(p =>
+            {
+                var prodCatalogo = catalogoProductos.FirstOrDefault(x => x.Id == p.ProductoId);
+                return new OrdenDeCompraProductoDTO
+                {
+                    Id = p.Id,
+                    OrdenDeCompraId = p.OrdenDeCompraId,
+                    ProductoId = p.ProductoId,
+                    NombreProducto = p.NombreProducto,
+                    CantidadProducto = p.CantidadProducto,
+                    PrecioUnitario = p.PrecioUnitario,
+                    ProveedorNombre = prodCatalogo?.ProveedorNombre ?? $"Proveedor {prodCatalogo?.ProveedorId ?? 0}"
+                };
+            }).ToList();
+
             var ordenParaVista = new OrdenDeCompraDTO
             {
-                Id = ordenApi.Id,
-                FechaOrden = ordenApi.FechaOrden,
-                Estado = ordenApi.Estado,
-                EmpleadoId = ordenApi.EmpleadoId,
-                NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}",
-                ProveedorId = ordenApi.ProveedorId,
-                ProveedorNombre = $"Proveedor {ordenApi.ProveedorId}",
-                ProductosSeleccionados = ordenApi.Productos?.Select(p => new OrdenDeCompraProductoDTO
-                {
-                    Id = p.Id, // id del producto en la orden
-                    OrdenDeCompraId = ordenApi.Id, // id de la orden
-                    ProductoId = p.Id, // id real del producto
-                    NombreProducto = p.Nombre,
-                    CantidadProducto = p.Stock, // si Stock representa la cantidad pedida en la orden
-                    PrecioUnitario = p.PrecioProducto,
-                    ProveedorNombre = p.ProveedorNombre ?? $"Proveedor {p.ProveedorId}",
-                }).ToList() ?? new List<OrdenDeCompraProductoDTO>(),
+                Id = content.Id,
+                FechaOrden = content.FechaOrden,
+                EmpleadoId = content.EmpleadoId,
+                NombreEmpleado = $"Empleado {content.EmpleadoId}",
+                ProveedorId = content.ProveedorId,
+                ProveedorNombre = $"Proveedor {content.ProveedorId}",
+                ProductosSeleccionados = productosSeleccionados
             };
 
             return View(ordenParaVista);
