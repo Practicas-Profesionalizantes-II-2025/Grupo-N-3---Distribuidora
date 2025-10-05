@@ -11,87 +11,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
-
-    <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="~/css/site.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+    <link rel="stylesheet" href="~/css/style.css">
 
     <title>@ViewData["Title"]</title>
-
-    <style>
-        /* ==== Estilos para mantener el formato original ==== */
-        .pedido__table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-            .pedido__table th, .pedido__table td {
-                border: 1px solid #ccc;
-                padding: 8px;
-                text-align: center;
-            }
-
-            .pedido__table th {
-                background-color: #f4f4f4;
-            }
-
-            .pedido__table input {
-                width: 90px;
-                font-size: 0.9rem;
-                padding: 3px;
-                text-align: center;
-            }
-
-        .subtotal, .total-value {
-            text-align: right;
-            font-weight: bold;
-        }
-
-        .btn {
-            padding: 5px 10px;
-            font-size: 0.85rem;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .btn-delete {
-            background-color: #e74c3c;
-            color: white;
-        }
-
-        .btn.yellow {
-            background-color: #f1c40f;
-            color: #000;
-        }
-
-        .btn.back {
-            background-color: #bdc3c7;
-            color: #000;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .actions {
-            margin-top: 10px;
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-        }
-
-        .section-header h2 {
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 <body>
-    <main class="pedido container full-width">
+    <!--=============== MODIFICAR PEDIDO ===============-->
+    <main class="pedido">
         <div class="section-header">
-            <h2>Modificar Compra</h2>
+            <h2>Modificar compra</h2>
         </div>
 
-        <form asp-action="ModificarOrdenCompra" method="post" class="form" id="pedidoForm">
+        @using (Html.BeginForm("ModificarOrdenCompra", "OrdenCompra", FormMethod.Post, new { id = "pedidoForm" }))
+        {
             <table class="pedido__table" id="pedidoTable">
                 <thead>
                     <tr>
@@ -109,12 +43,24 @@
                         foreach (var prod in Model.ProductosSeleccionados)
                         {
                             <tr>
-                                <td><input type="text" name="id[]" value="@prod.ProductoId" readonly /></td>
-                                <td><input type="text" name="nombre[]" value="@prod.NombreProducto" readonly /></td>
-                                <td><input type="number" name="cantidad[]" value="@prod.CantidadProducto" min="1" class="cantidad" /></td>
-                                <td><input type="number" name="precio[]" value="@prod.PrecioUnitario" step="0.01" class="precio" /></td>
-                                <td class="subtotal">@String.Format("{0:C}", prod.CantidadProducto * prod.PrecioUnitario)</td>
-                                <td><button type="button" class="btn btn-delete">Eliminar</button></td>
+                                <td>
+                                    <input type="text" name="id[]" value="@prod.ProductoId" readonly />
+                                </td>
+                                <td>
+                                    <input type="text" name="nombre[]" value="@prod.NombreProducto" readonly />
+                                </td>
+                                <td>
+                                    <input type="number" name="cantidad[]" value="@prod.CantidadProducto" min="1" class="cantidad" />
+                                </td>
+                                <td>
+                                    <input type="number" name="precio[]" value="@prod.PrecioUnitario" step="0.01" class="precio" />
+                                </td>
+                                <td class="subtotal">
+                                    @String.Format("{0:C}", prod.CantidadProducto * prod.PrecioUnitario)
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-delete">Eliminar</button>
+                                </td>
                             </tr>
                         }
                     }
@@ -138,13 +84,13 @@
 
             <div class="actions">
                 <button type="button" class="btn" id="agregarFila">Agregar Producto</button>
-                <button type="submit" class="btn yellow">Guardar Cambios</button>
-                <a asp-action="ListaCompras" class="btn back">Volver</a>
+                <button type="submit" class="btn">Guardar Cambios</button>
+                <a asp-action="istaOrdenCompras" class="btn back">Volver</a>
             </div>
-        </form>
+        }
     </main>
 
     <!--=============== JS ===============-->
-    <script src="~/js/modificarcompra.js"></script>
+    <script src="~/js/modificarPedido.js"></script>
 </body>
 </html>

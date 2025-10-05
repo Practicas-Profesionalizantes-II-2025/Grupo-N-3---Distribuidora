@@ -144,6 +144,8 @@ namespace MVC.Controllers
                 ProductosSeleccionados = ordenApi.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
+                    NombreProducto = p.NombreProducto,
+                    PrecioUnitario = p.PrecioUnitario,
                     CantidadProducto = p.CantidadProducto
                 }).ToList()
             };
