@@ -223,6 +223,7 @@ namespace MVC.Controllers
             {
                 Id = content.Id,
                 FechaOrden = content.FechaOrden,
+                Estado = content.Estado,
                 EmpleadoId = content.EmpleadoId,
                 NombreEmpleado = $"Empleado {content.EmpleadoId}",
                 ProveedorId = content.ProveedorId,
