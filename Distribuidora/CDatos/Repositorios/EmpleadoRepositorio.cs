@@ -32,6 +32,13 @@ namespace CDatos.Repositorios
                .Include(c => c.Persona)
                .FirstOrDefaultAsync(c => c.Id == id);
         }
+        public async Task<string> GetContraseniaHasheadaEmpleadoPorDni(string dni)
+        {
+            var empleado = await _context.Empleado
+                .Include(c => c.Persona)
+                .FirstOrDefaultAsync(c => c.Persona.Nro_Doc == dni);
+            return empleado.Contrasenia;
+        }
         public async Task<Empleado> CrearEmpleado(Empleado empleado)
         {
             empleado.Contrasenia = Encriptador.Encriptador.GetSHA256(empleado.Contrasenia);

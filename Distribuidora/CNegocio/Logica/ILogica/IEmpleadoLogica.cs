@@ -15,5 +15,6 @@ namespace CNegocio.Logica.ILogica
         Task ActualizarEmpleado(EmpleadoDTO empleadoDTO);
         Task EliminarEmpleado(int id);
         Task<List<EmpleadoDTO>> ObtenerEmpleadosPorDni(string dni);
+        Task<bool> ValidacionEmpleado(string dni, string contrasenia);
     }
 }

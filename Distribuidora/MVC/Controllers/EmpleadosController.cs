@@ -19,7 +19,17 @@ namespace MVC.Controllers
             _httpClient = httpClientFactory.CreateClient("API");
             _settings = settings.Value;
         }
+        // Loggin
 
+        public IActionResult Login()
+        {
+            return View();
+        }
+        //public IActionResult LoginAccion(DatosInicioSesionDTO datos)
+        //{
+        //    bool confirmacionLoggin = $"{_settings.BaseUrl}/{_settings.ValidacionEmpleado}";
+        //    return View();
+        //}
         // GET: Empleados
         public async Task<IActionResult> listaEmpleados()
         {

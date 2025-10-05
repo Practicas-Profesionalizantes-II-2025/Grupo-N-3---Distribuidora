@@ -5,6 +5,8 @@ using Shared.DTOs;
 using Shared.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -68,6 +70,11 @@ namespace CNegocio.Logica
                     Direccion = empleado.Persona.Direccion,
                 }
             };
+        }
+        public async Task<bool> ValidacionEmpleado(string dni, string contrasenia)
+        {
+            var contraseniaEmpleado = await _empleadoRepositorio.GetContraseniaHasheadaEmpleadoPorDni(dni);
+            return Encriptador.Encriptador.GetSHA256(contrasenia) == contraseniaEmpleado;
         }
         public async Task<EmpleadoDTO> CrearEmpleado(EmpleadoDTO empleadoDTO)
         {
@@ -151,7 +158,6 @@ namespace CNegocio.Logica
                 PersonaId = c.PersonaId
             }).ToList();
         }
-
         public async Task<PersonaDTO> ObtenerPersonaPorEmpleadoId(int empleadoId)
         {
             var persona = await _empleadoRepositorio.ObtenerPersonaPorEmpleadoId(empleadoId);

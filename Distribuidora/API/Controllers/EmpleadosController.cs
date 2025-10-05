@@ -46,6 +46,13 @@ namespace API.Controllers
             return empleado;
         }
 
+        // GET: api/Empleados/dni/12345678
+        [HttpGet("dni/{dni}")]
+        public async Task<bool> ValidacionEmpleado(string dni, string contrasenia)
+        {
+            return await _empleadoLogic.ValidacionEmpleado(dni, contrasenia);
+        }
+
         // PUT: api/Empleados/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
