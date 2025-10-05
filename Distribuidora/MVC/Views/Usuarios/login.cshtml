@@ -1,8 +1,6 @@
-﻿@model IEnumerable<MVC.Models.Entities.Usuario>
-
-@{
+﻿@{
     Layout = null;
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Login";
 }
 
 <!DOCTYPE html>
@@ -10,39 +8,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Nombre App</title>
+
+    <!--=============== REMIXICONS ===============-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
     <link rel="stylesheet" href="~/css/site.css">
+
+    <title>@ViewData["Title"]</title>
 </head>
 <body>
-    <div class="login-container">
-        <!-- Header -->
-        <div class="login-header">
-            <h2><i class="fa-solid fa-user"></i> INICIO DE SESIÓN</h2>
-            <div class="app-logo">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <span>NOMBRE APP</span>
-            </div>
-        </div>
+    <div class="login">
+        <img src="~/img/login-bg.jpg" alt="image" class="login__bg" id="login_img">
 
-        <!-- Formulario -->
-        <form class="login-form">
-            <div class="form-group">
-                <label for="usuario">Usuario</label>
-                <div class="input-icon">
-                    <input type="text" id="usuario" placeholder="Usuario" required>
-                    <i class="fa-solid fa-user"></i>
+        <!-- Formulario MVC -->
+        <form asp-controller="Account" asp-action="Login" method="post" class="login__form">
+            <h1 class="login__title">Iniciar sesión</h1>
+
+            <div class="login__inputs">
+                <div class="login__box">
+                    <input type="text" name="Usuario" placeholder="Usuario" required class="login__input" />
+                    <i class="ri-mail-fill"></i>
+                </div>
+
+                <div class="login__box">
+                    <input type="password" name="Contrasenia" placeholder="Contraseña" required class="login__input" />
+                    <i class="ri-lock-2-fill"></i>
                 </div>
             </div>
 
-            <div class="form-group">
-                <label for="contrasenia">Contraseña</label>
-                <div class="input-icon">
-                    <input type="password" id="contrasenia" placeholder="Contraseña" required>
-                    <i class="fa-solid fa-lock"></i>
-                </div>
-            </div>
+            <button type="submit" class="login__button">Entrar</button>
 
-            <button type="submit" class="btn">Iniciar sesión</button>
         </form>
     </div>
 </body>
