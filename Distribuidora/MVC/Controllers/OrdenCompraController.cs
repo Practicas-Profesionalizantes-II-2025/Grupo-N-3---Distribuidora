@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 using MVC.ConfigAPI;
 using MVC.Models.DTOs;
@@ -41,6 +42,7 @@ namespace MVC.Controllers
                 NombreEmpleado = $"Empleado {o.EmpleadoId}",
                 ProveedorId = o.ProveedorId,
                 ProveedorNombre = $"Proveedor {o.ProveedorId}",
+                Estado = o.Estado,
                 ProductosSeleccionados = o.ProductosSeleccionados,
             }).ToList();
 
@@ -94,12 +96,11 @@ namespace MVC.Controllers
                 EmpleadoId = orden.EmpleadoId,
                 ProveedorId = orden.ProveedorId,
                 FechaOrden = DateTime.Now,
+                Estado = "Pendiente",
                 Productos = orden.ProductosSeleccionados.Select(p => new
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto
-
-
                 }).ToList()
             };
 
@@ -137,6 +138,7 @@ namespace MVC.Controllers
                 Id = ordenApi.Id,
                 FechaOrden = ordenApi.FechaOrden,
                 EmpleadoId = ordenApi.EmpleadoId,
+                Estado = ordenApi.Estado,
                 NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}",
                 ProveedorId = ordenApi.ProveedorId,
                 ProveedorNombre = $"Proveedor {ordenApi.ProveedorId}",
@@ -149,6 +151,12 @@ namespace MVC.Controllers
                 }).ToList()
             };
 
+            // Aquí definimos el ViewBag por separado
+            ViewBag.Estados = new SelectList(
+                new List<string> { "Pendiente", "Realizado", "Entregado" },
+                ordenApi.Estado // valor seleccionado
+            );
+
             return View(ordenMvc);
         }
 
@@ -160,18 +168,42 @@ namespace MVC.Controllers
             if (id != orden.Id)
                 return NotFound();
 
-            if (!ModelState.IsValid)
+            if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+            {
+                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
                 return View(orden);
+            }
+
+            // Mapear al objeto que la API espera
+            var model = new
+            {
+                Id = orden.Id,
+                FechaOrden = orden.FechaOrden,
+                Estado = orden.Estado,
+                EmpleadoId = orden.EmpleadoId,
+                ProveedorId = orden.ProveedorId,
+                Productos = orden.ProductosSeleccionados.Select(p => new
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto,
+                    PrecioUnitario = p.PrecioUnitario
+                }).ToList()
+            };
+
+            var jsonData = JsonConvert.SerializeObject(model);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
             var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraPut}/{id}";
-            var jsonData = JsonConvert.SerializeObject(orden);
-            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
             var response = await _httpClient.PutAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError("", $"Error actualizando la orden: {error}");
+                return View(orden);
+            }
 
-            return RedirectToAction("listaOrdenesCompra");
+            return RedirectToAction(nameof(listaOrdenCompras));
         }
         
         // DELETE: OrdenDeCompra/Delete/5

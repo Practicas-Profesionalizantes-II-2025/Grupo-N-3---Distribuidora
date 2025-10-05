@@ -21,8 +21,18 @@
             <h2>Modificar compra</h2>
         </div>
 
-        @using (Html.BeginForm("modificarOrdenCompra", "OrdenCompra", FormMethod.Post, new { id = "pedidoForm" }))
+        @using (Html.BeginForm("modificarOrdenCompra", "OrdenCompra", FormMethod.Post, new { @id = "pedidoForm" }))
         {
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <input type="hidden" name="FechaOrden" value="@Model.FechaOrden.ToString("yyyy-MM-ddTHH:mm:ss")" />
+            <input type="hidden" name="EmpleadoId" value="@Model.EmpleadoId" />
+            <input type="hidden" name="ProveedorId" value="@Model.ProveedorId" />
+
+            <div class="form-group">
+                <label for="Estado">Estado:</label> 
+                @Html.DropDownListFor(m => m.Estado, (SelectList)ViewBag.Estados, "Seleccione un estado", new { @class = "form-control" })
+            </div>
+
             <table class="pedido__table" id="pedidoTable">
                 <thead>
                     <tr>
@@ -79,6 +89,6 @@
         }
     </main>
 
-    <script src="~/js/modificarPedido.js"></script>
+    <script src="~/js/modificarcompra.js"></script>
 </body>
 </html>

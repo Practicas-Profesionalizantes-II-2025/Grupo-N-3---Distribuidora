@@ -250,7 +250,8 @@ namespace CDatos.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     EmpleadoId = table.Column<int>(type: "int", nullable: false),
                     ProveedorId = table.Column<int>(type: "int", nullable: false),
-                    FechaOrden = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    FechaOrden = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -446,11 +447,11 @@ namespace CDatos.Migrations
 
             migrationBuilder.InsertData(
                 table: "OrdenDeCompra",
-                columns: new[] { "Id", "EmpleadoId", "FechaOrden", "ProveedorId" },
+                columns: new[] { "Id", "EmpleadoId", "Estado", "FechaOrden", "ProveedorId" },
                 values: new object[,]
                 {
-                    { 1, 1, new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
-                    { 2, 2, new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 }
+                    { 1, 1, null, new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified), 1 },
+                    { 2, 2, null, new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified), 2 }
                 });
 
             migrationBuilder.InsertData(

@@ -43,14 +43,28 @@ namespace CDatos.Repositorios
         }
         public void ActualizarOrdenDeCompra(OrdenDeCompra ordenDeCompra)
         {
-            var ordenDeCompraExistente = _context.OrdenDeCompra.Find(ordenDeCompra.Id);
-            if (ordenDeCompra == null)
-            {
+            var existente = _context.OrdenDeCompra
+                           .Include(o => o.Productos)
+                           .FirstOrDefault(o => o.Id == ordenDeCompra.Id);
+
+            if (existente == null)
                 throw new Exception("Orden de Compra no encontrada.");
+
+            existente.FechaOrden = ordenDeCompra.FechaOrden;
+            existente.EmpleadoId = ordenDeCompra.EmpleadoId;
+            existente.ProveedorId = ordenDeCompra.ProveedorId;
+            existente.Estado = ordenDeCompra.Estado;
+
+            existente.Productos.Clear();
+
+            foreach (var p in ordenDeCompra.Productos)
+            {
+                existente.Productos.Add(new OrdenDeCompraProducto
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto
+                });
             }
-            ordenDeCompraExistente.FechaOrden = ordenDeCompra.FechaOrden;
-            ordenDeCompraExistente.EmpleadoId = ordenDeCompra.Id;
-            ordenDeCompraExistente.ProveedorId = ordenDeCompra.ProveedorId;
 
             _context.SaveChanges();
         }
