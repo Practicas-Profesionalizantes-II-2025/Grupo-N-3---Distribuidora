@@ -127,9 +127,8 @@ namespace MVC.Controllers
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-            {
                 return RedirectToAction(nameof(listaOrdenCompras));
-            }
+
             var json = await response.Content.ReadAsStringAsync();
             var ordenApi = JsonConvert.DeserializeObject<Shared.DTOs.OrdenDeCompraDTO>(json);
 
@@ -163,10 +162,10 @@ namespace MVC.Controllers
 
             if (!ModelState.IsValid)
                 return View(orden);
+
             var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraPut}/{id}";
             var jsonData = JsonConvert.SerializeObject(orden);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-
             var response = await _httpClient.PutAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
