@@ -95,12 +95,12 @@ namespace CDatos.Data
 
             // Empleados (6 instancias, PersonaId 1-6)
             modelBuilder.Entity<Empleado>().HasData(
-                new Empleado { Id = 1, PersonaId = 1, EstadoId = 1, SectorId = 1, Contrasenia = Encriptador.Encriptador.GetSHA256("e1"), Admin = true },
-                new Empleado { Id = 2, PersonaId = 2, EstadoId = 1, SectorId = 2, Contrasenia = Encriptador.Encriptador.GetSHA256("e2"), Admin = false },
-                new Empleado { Id = 3, PersonaId = 3, EstadoId = 1, SectorId = 1, Contrasenia = Encriptador.Encriptador.GetSHA256("e3"), Admin = true },
-                new Empleado { Id = 4, PersonaId = 4, EstadoId = 2, SectorId = 2, Contrasenia = Encriptador.Encriptador.GetSHA256("e4"), Admin = false },
-                new Empleado { Id = 5, PersonaId = 5, EstadoId = 1, SectorId = 1, Contrasenia = Encriptador.Encriptador.GetSHA256("e5"), Admin = true },
-                new Empleado { Id = 6, PersonaId = 6, EstadoId = 2, SectorId = 2, Contrasenia = Encriptador.Encriptador.GetSHA256("e6"), Admin = false }
+                new Empleado { Id = 1, PersonaId = 1, EstadoId = 1, Contrasenia = Encriptador.Encriptador.GetSHA256("e1"), Admin = true },
+                new Empleado { Id = 2, PersonaId = 2, EstadoId = 1, Contrasenia = Encriptador.Encriptador.GetSHA256("e2"), Admin = false },
+                new Empleado { Id = 3, PersonaId = 3, EstadoId = 1, Contrasenia = Encriptador.Encriptador.GetSHA256("e3"), Admin = true },
+                new Empleado { Id = 4, PersonaId = 4, EstadoId = 2, Contrasenia = Encriptador.Encriptador.GetSHA256("e4"), Admin = false },
+                new Empleado { Id = 5, PersonaId = 5, EstadoId = 1, Contrasenia = Encriptador.Encriptador.GetSHA256("e5"), Admin = true },
+                new Empleado { Id = 6, PersonaId = 6, EstadoId = 2, Contrasenia = Encriptador.Encriptador.GetSHA256("e6"), Admin = false }
             );
 
             // Clientes (6 instancias, PersonaId 7-12)

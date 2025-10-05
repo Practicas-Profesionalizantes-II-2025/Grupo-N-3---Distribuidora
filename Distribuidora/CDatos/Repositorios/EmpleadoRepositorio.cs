@@ -35,6 +35,11 @@ namespace CDatos.Repositorios
         public async Task<Empleado> CrearEmpleado(Empleado empleado)
         {
             empleado.Contrasenia = Encriptador.Encriptador.GetSHA256(empleado.Contrasenia);
+
+            // Asegurás que EF no intente insertar la persona de nuevo
+            _context.Entry(empleado).Reference(e => e.Persona).IsModified = false;
+            _context.Entry(empleado).State = EntityState.Added;
+
             _context.Empleado.Add(empleado);
             await _context.SaveChangesAsync();
             return empleado;

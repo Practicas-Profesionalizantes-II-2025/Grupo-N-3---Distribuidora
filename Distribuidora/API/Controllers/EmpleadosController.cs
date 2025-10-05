@@ -70,7 +70,8 @@ namespace API.Controllers
             {
                 PersonaId = personaCreada.Id,
                 Persona = personaCreada, 
-                EstadoId = empleado.EstadoId
+                EstadoId = empleado.EstadoId,
+                Contrasenia = empleado.Contrasenia
             };
 
             var nuevoEmpleado = await _empleadoLogic.CrearEmpleado(empleadoDto);
