@@ -53,6 +53,7 @@ namespace CDatos.Repositorios
             existente.FechaOrden = ordenDeCompra.FechaOrden;
             existente.EmpleadoId = ordenDeCompra.EmpleadoId;
             existente.ProveedorId = ordenDeCompra.ProveedorId;
+            existente.Estado = ordenDeCompra.Estado;
 
             existente.Productos.Clear();
 

@@ -42,6 +42,7 @@ namespace MVC.Controllers
                 NombreEmpleado = $"Empleado {o.EmpleadoId}",
                 ProveedorId = o.ProveedorId,
                 ProveedorNombre = $"Proveedor {o.ProveedorId}",
+                Estado = o.Estado,
                 ProductosSeleccionados = o.ProductosSeleccionados,
             }).ToList();
 
@@ -95,6 +96,7 @@ namespace MVC.Controllers
                 EmpleadoId = orden.EmpleadoId,
                 ProveedorId = orden.ProveedorId,
                 FechaOrden = DateTime.Now,
+                Estado = "Pendiente",
                 Productos = orden.ProductosSeleccionados.Select(p => new
                 {
                     ProductoId = p.ProductoId,

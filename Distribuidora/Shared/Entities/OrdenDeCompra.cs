@@ -16,5 +16,6 @@ namespace Shared.Entities
         public Proveedor Proveedor { get; set; }
         public DateTime FechaOrden { get; set; }
         public List<OrdenDeCompraProducto> Productos { get; set; } = new();
+        public string? Estado { get; set; } 
     }
 }
