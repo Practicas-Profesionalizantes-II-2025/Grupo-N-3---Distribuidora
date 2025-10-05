@@ -33,6 +33,8 @@
         public string EmpleadosPost { get; set; } = string.Empty;
         public string EmpleadosPut { get; set; } = string.Empty;
         public string EmpleadosDelete { get; set; } = string.Empty;
+        public string ValidacionEmpleado { get; set; } = string.Empty;
+
 
         // Endpoints FacturaCabecera
         public string FacturaCabeceraGet { get; set; } = string.Empty;

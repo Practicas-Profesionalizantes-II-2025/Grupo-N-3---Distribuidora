@@ -7,6 +7,7 @@ using CDatos.Data;
 using CDatos.Repositorios.IRepositorios;
 using Microsoft.EntityFrameworkCore;
 using Shared.Entities;
+using CDatos.Encriptador;
 
 namespace CDatos.Repositorios
 {
@@ -31,10 +32,20 @@ namespace CDatos.Repositorios
                .Include(c => c.Persona)
                .FirstOrDefaultAsync(c => c.Id == id);
         }
+        public async Task<string> GetContraseniaHasheadaEmpleadoPorDni(string dni)
+        {
+            var empleado = await _context.Empleado
+                .Include(c => c.Persona)
+                .FirstOrDefaultAsync(c => c.Persona.Nro_Doc == dni);
+            return empleado.Contrasenia;
+        }
         public async Task<Empleado> CrearEmpleado(Empleado empleado)
         {
-            if (string.IsNullOrEmpty(empleado.Foto))
-                empleado.Foto = "default.jpg"; // valor por defecto
+            empleado.Contrasenia = Encriptador.Encriptador.GetSHA256(empleado.Contrasenia);
+
+            // Asegurás que EF no intente insertar la persona de nuevo
+            _context.Entry(empleado).Reference(e => e.Persona).IsModified = false;
+            _context.Entry(empleado).State = EntityState.Added;
 
             _context.Empleado.Add(empleado);
             await _context.SaveChangesAsync();
@@ -49,9 +60,6 @@ namespace CDatos.Repositorios
             }
             empleadoExistente.PersonaId = empleado.PersonaId;
             empleadoExistente.EstadoId = empleado.EstadoId;
-            empleadoExistente.Foto = string.IsNullOrEmpty(empleado.Foto)
-                ? empleadoExistente.Foto
-                : empleado.Foto;
 
             await _context.SaveChangesAsync();
         }

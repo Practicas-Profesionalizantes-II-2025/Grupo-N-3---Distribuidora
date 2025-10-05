@@ -1,37 +1,7 @@
-﻿@model MVC.Models.DTOs.EmpleadoDTO
+﻿@model MVC.Models.DTOs.EmpleadoVista_CargarEmpleadoDTO
 
 @{
     ViewData["Title"] = "Crear Empleado";
-
-    // Lista de tipos de documento
-    var tiposDoc = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "1", Text = "DNI" },
-        new SelectListItem { Value = "2", Text = "Pasaporte" },
-        new SelectListItem { Value = "3", Text = "Libreta De Enrolamiento" }
-    };
-
-    // Lista de ciudades (puede venir del controlador o hardcode)
-    var ciudades = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "1", Text = "Ciudad A" },
-        new SelectListItem { Value = "2", Text = "Ciudad B" }
-    };
-
-    // Lista de estados
-    var estados = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "1", Text = "Activo" },
-        new SelectListItem { Value = "2", Text = "Inactivo" }
-    };
-
-    // Lista de cargos (hardcode o desde BD)
-    var cargos = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "1", Text = "Gerente" },
-        new SelectListItem { Value = "2", Text = "Vendedor" },
-        new SelectListItem { Value = "3", Text = "Administrativo" }
-    };
 }
 
 <main>
@@ -45,44 +15,40 @@
         <form asp-action="crearEmpleado" method="post">
             <div class="form">
                 <!-- Nombre y Apellido -->
-                <input type="text" asp-for="Persona.Nombre" placeholder="Nombre" class="input-text" />
-                <input type="text" asp-for="Persona.Apellido" placeholder="Apellido" class="input-text" />
+                <input type="text" asp-for="empleado.Persona.Nombre" placeholder="Nombre" class="input-text" />
+                <input type="text" asp-for="empleado.Persona.Apellido" placeholder="Apellido" class="input-text" />
+
 
                 <!-- Tipo y Número de Documento -->
-                <select asp-for="Persona.Tipo_DocId" class="input-text" asp-items="tiposDoc">
+                <select asp-for="empleado.Persona.Tipo_DocId" class="input-text"
+                        asp-items="@(new SelectList(Model.tiposDocumentos, "Id", "NombreTipoDocumento"))">
                     <option value="">Seleccionar tipo documento</option>
                 </select>
-                <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de documento" class="input-text" />
+
+                <input type="text" asp-for="empleado.Persona.Nro_Doc" placeholder="Número de documento" class="input-text" />
+
 
                 <!-- Teléfono -->
-                <input type="tel" asp-for="Persona.Telefono" placeholder="Número de teléfono" class="input-text" />
+                <input type="tel" asp-for="empleado.Persona.Telefono" placeholder="Número de teléfono" class="input-text" />
 
                 <!-- Dirección -->
-                <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" />
+                <input type="text" asp-for="empleado.Persona.Direccion" placeholder="Dirección" class="input-text" />
 
                 <!-- Código Postal (opcional, no en DTO) -->
                 <input type="text" id="cp" placeholder="Código Postal" class="input-text" />
 
                 <!-- Ciudad -->
-                <select asp-for="Persona.CiudadId" class="input-text" asp-items="ciudades">
+                <select asp-for="empleado.Persona.CiudadId" class="input-text"
+                        asp-items="@(new SelectList(Model.ciudades, "Id", "Nombre"))">
                     <option value="">Seleccionar ciudad</option>
                 </select>
 
                 <!-- Email -->
-                <input type="email" asp-for="Persona.Email" placeholder="Email" class="input-text" />
+                <input type="email" asp-for="empleado.Persona.Email" placeholder="Email" class="input-text" />
 
-                <!-- Cargo -->
-                <!-- <select asp-for="CargoId" class="input-text" asp-items="cargos">
-                    <option value="">Seleccionar cargo</option>
-                </select> -->
-                <!-- Estado -->
-                <select asp-for="EstadoId" class="input-text" asp-items="estados">
-                    <option value="">Seleccionar estado</option>
-                </select>
-
-                <!-- Foto (hidden con valor por defecto) -->
-                <input type="hidden" asp-for="Foto" value="default.jpg" />
-
+                <!-- Contrasenia -->
+                <input type="password" asp-for="empleado.Contrasenia" placeholder="Contrasenia" class="input-text" />
+                <input type="password" asp-for="empleado.ContraseniaConfimarcion" placeholder="Repetir Contrasenia" class="input-text" />
             </div>
 
             <!-- Botones -->

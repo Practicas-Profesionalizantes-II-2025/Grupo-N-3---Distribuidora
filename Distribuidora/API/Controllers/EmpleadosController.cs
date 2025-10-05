@@ -46,6 +46,13 @@ namespace API.Controllers
             return empleado;
         }
 
+        // GET: api/Empleados/dni/12345678/contrasenia
+        [HttpGet("dni/{dni}/{contrasenia}")]
+        public async Task<bool> ValidacionEmpleado(string dni, string contrasenia)
+        {
+            return await _empleadoLogic.ValidacionEmpleado(dni, contrasenia);
+        }
+
         // PUT: api/Empleados/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
@@ -70,8 +77,8 @@ namespace API.Controllers
             {
                 PersonaId = personaCreada.Id,
                 Persona = personaCreada, 
-                Foto = empleado.Foto,
-                EstadoId = empleado.EstadoId
+                EstadoId = empleado.EstadoId,
+                Contrasenia = empleado.Contrasenia
             };
 
             var nuevoEmpleado = await _empleadoLogic.CrearEmpleado(empleadoDto);

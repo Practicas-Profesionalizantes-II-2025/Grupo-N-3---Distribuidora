@@ -16,5 +16,6 @@ namespace CDatos.Repositorios.IRepositorios
         void EliminarEmpleado(int id);
         Task<List<Empleado>> ObtenerEmpleadosPorDni(string dni);
         Task<Persona> ObtenerPersonaPorEmpleadoId(int empleadoId);
+        Task<string> GetContraseniaHasheadaEmpleadoPorDni(string dni);
     }
 }

@@ -5,6 +5,8 @@ using Shared.DTOs;
 using Shared.Entities;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,43 +28,24 @@ namespace CNegocio.Logica
         public async Task<List<EmpleadoDTO>> ObtenerEmpleados()
         {
             var empleados = await _empleadoRepositorio.ObtenerEmpleados();
-            var empleadosDTO = new List<EmpleadoDTO>();
-            foreach (var c in empleados)
+            var empleadosDto = empleados.Select(c => new EmpleadoDTO
             {
-                string nombreCiudad = string.Empty;
-
-                if (c.Persona.CiudadId > 0)
+                Id = c.Id,
+                EstadoId = c.EstadoId,
+                Persona = new PersonaDTO
                 {
-                    var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(c.Persona.CiudadId);
-                    if (ciudad != null)
-                    {
-                        nombreCiudad = ciudad.Nombre;
-                    }
-                }
+                    Id = c.Persona.Id,
+                    Nombre = c.Persona.Nombre,
+                    Apellido = c.Persona.Apellido,
+                    Nro_Doc = c.Persona.Nro_Doc,
+                    Telefono = c.Persona.Telefono,
+                    Email = c.Persona.Email,
+                    Direccion = c.Persona.Direccion,
+                    CiudadId = c.Persona.CiudadId,
+                },
+            }).ToList();
 
-                empleadosDTO.Add(new EmpleadoDTO
-                {
-                    Id = c.Id,
-                    EstadoId = c.EstadoId,
-                    Foto = c.Foto,
-                    Persona = new PersonaDTO
-                    {
-                        Id = c.Persona.Id,
-                        Nombre = c.Persona.Nombre,
-                        Apellido = c.Persona.Apellido,
-                        Nro_Doc = c.Persona.Nro_Doc,
-                        Telefono = c.Persona.Telefono,
-                        Email = c.Persona.Email,
-                        Direccion = c.Persona.Direccion,
-                        CiudadId = c.Persona.CiudadId,
-                        NombreCiudad = nombreCiudad, // <-- acá agregamos el nombre
-                        EstadoId = c.Persona.EstadoId,
-                    },
-                });
-            }
-
-            return empleadosDTO;
-
+            return empleadosDto;
         }
         public async Task<EmpleadoDTO> ObtenerEmpleadoPorId(int id)
         {
@@ -76,7 +59,6 @@ namespace CNegocio.Logica
                 Id = empleado.Id,
                 EstadoId = empleado.EstadoId,
                 PersonaId = empleado.PersonaId,
-                Foto = empleado.Foto,
                 Persona = new PersonaDTO
                 {
                     Id = empleado.Persona.Id,
@@ -89,6 +71,11 @@ namespace CNegocio.Logica
                 }
             };
         }
+        public async Task<bool> ValidacionEmpleado(string dni, string contrasenia)
+        {
+            var contraseniaEmpleado = await _empleadoRepositorio.GetContraseniaHasheadaEmpleadoPorDni(dni);
+            return Encriptador.Encriptador.GetSHA256(contrasenia) == contraseniaEmpleado;
+        }
         public async Task<EmpleadoDTO> CrearEmpleado(EmpleadoDTO empleadoDTO)
         {
             List<string> camposErroneos = new List<string>();
@@ -96,9 +83,6 @@ namespace CNegocio.Logica
                 camposErroneos.Add("PersonaId");
             if (empleadoDTO.EstadoId <= 0)
                 camposErroneos.Add("EstadoId");
-            //if (string.IsNullOrWhiteSpace(empleadoDTO.Foto))
-            //    camposErroneos.Add("Foto");
-
 
             if (camposErroneos.Count > 0)
             {
@@ -108,8 +92,8 @@ namespace CNegocio.Logica
             var empleado = new Empleado
             {
                 PersonaId = empleadoDTO.PersonaId,
-                Foto = empleadoDTO.Foto,
                 EstadoId = empleadoDTO.EstadoId,
+                Contrasenia = empleadoDTO.Contrasenia
             };
             var nuevoEmpleado = await _empleadoRepositorio.CrearEmpleado(empleado);
 
@@ -120,7 +104,6 @@ namespace CNegocio.Logica
                 Id = nuevoEmpleado.Id,
                 PersonaId = nuevoEmpleado.PersonaId,
                 EstadoId = nuevoEmpleado.EstadoId,
-                Foto = nuevoEmpleado.Foto,
                 Persona = new PersonaDTO
                 {
                     Id = persona.Id,
@@ -133,8 +116,7 @@ namespace CNegocio.Logica
                     Email = persona.Email,
                     Direccion = persona.Direccion,
                     Telefono = persona.Telefono,
-                    EstadoId = persona.EstadoId,
-                }
+                },
             };
         }
         public async Task ActualizarEmpleado(EmpleadoDTO empleadoDTO)
@@ -158,6 +140,7 @@ namespace CNegocio.Logica
                 throw new Exception("Empleado no encontrado.");
 
             empleadoExistente.EstadoId = empleadoDTO.EstadoId;
+
             await _empleadoRepositorio.ActualizarEmpleado(empleadoExistente);
         }
         public async Task EliminarEmpleado(int id)
@@ -175,7 +158,6 @@ namespace CNegocio.Logica
                 PersonaId = c.PersonaId
             }).ToList();
         }
-
         public async Task<PersonaDTO> ObtenerPersonaPorEmpleadoId(int empleadoId)
         {
             var persona = await _empleadoRepositorio.ObtenerPersonaPorEmpleadoId(empleadoId);

@@ -4,6 +4,7 @@ using CDatos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CDatos.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20251004224339_addsad")]
+    partial class addsad
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -223,6 +226,9 @@ namespace CDatos.Migrations
                     b.Property<int>("PersonaId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SectorId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PersonaId");
@@ -236,7 +242,8 @@ namespace CDatos.Migrations
                             Admin = true,
                             Contrasenia = "8b5cc4df7eec7d32a7814eca4af047ae33b2d52342667715682e19c25b0b9faa",
                             EstadoId = 1,
-                            PersonaId = 1
+                            PersonaId = 1,
+                            SectorId = 1
                         },
                         new
                         {
@@ -244,7 +251,8 @@ namespace CDatos.Migrations
                             Admin = false,
                             Contrasenia = "ac0f09c0f8bf5e7a4b063d863255f16d8ce9abe600e288d934cf313bcbff63eb",
                             EstadoId = 1,
-                            PersonaId = 2
+                            PersonaId = 2,
+                            SectorId = 2
                         },
                         new
                         {
@@ -252,7 +260,8 @@ namespace CDatos.Migrations
                             Admin = true,
                             Contrasenia = "cef7fc13a38180936ffa2635489088778e059f07a5d1beda53f1719d35577631",
                             EstadoId = 1,
-                            PersonaId = 3
+                            PersonaId = 3,
+                            SectorId = 1
                         },
                         new
                         {
@@ -260,7 +269,8 @@ namespace CDatos.Migrations
                             Admin = false,
                             Contrasenia = "449777124b1466a8ed667d0dd4c0620993f59e20fb27b3fa8894e957f8762353",
                             EstadoId = 2,
-                            PersonaId = 4
+                            PersonaId = 4,
+                            SectorId = 2
                         },
                         new
                         {
@@ -268,7 +278,8 @@ namespace CDatos.Migrations
                             Admin = true,
                             Contrasenia = "43700797e2f9d4ad38ccf1355df3233453396bfcc8db8e424486e37bae42a9ec",
                             EstadoId = 1,
-                            PersonaId = 5
+                            PersonaId = 5,
+                            SectorId = 1
                         },
                         new
                         {
@@ -276,7 +287,8 @@ namespace CDatos.Migrations
                             Admin = false,
                             Contrasenia = "f33422b95e3b98310adedc93655de579f6e311120ea0c27c3e2317b5116d6afb",
                             EstadoId = 2,
-                            PersonaId = 6
+                            PersonaId = 6,
+                            SectorId = 2
                         });
                 });
 

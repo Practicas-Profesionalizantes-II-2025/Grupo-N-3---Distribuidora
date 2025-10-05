@@ -49,7 +49,6 @@ namespace CNegocio.Logica
                     Email = p.Email,
                     Direccion = p.Direccion,
                     Telefono = p.Telefono,
-                    EstadoId = p.EstadoId
                 });
             }
 
@@ -75,7 +74,6 @@ namespace CNegocio.Logica
                 Email = persona.Email,
                 Direccion = persona.Direccion,
                 Telefono = persona.Telefono,
-                EstadoId = persona.EstadoId
             };
         }
         public async Task<PersonaDTO> CrearPersona(PersonaDTO personaDTO)
@@ -95,7 +93,6 @@ namespace CNegocio.Logica
                 Email = personaDTO.Email,
                 Direccion = personaDTO.Direccion,
                 Telefono = personaDTO.Telefono,
-                EstadoId = personaDTO.EstadoId
             };
 
             await _personaRepositorio.CrearPersona(persona);
@@ -111,7 +108,6 @@ namespace CNegocio.Logica
                 Email = persona.Email,
                 Direccion = persona.Direccion,
                 Telefono = persona.Telefono,
-                EstadoId = persona.EstadoId
             };
         }
         public async Task ActualizarPersona(PersonaDTO personaDTO)
@@ -132,7 +128,6 @@ namespace CNegocio.Logica
                 Email = personaDTO.Email,
                 Direccion = personaDTO.Direccion,
                 Telefono = personaDTO.Telefono,
-                EstadoId = personaDTO.EstadoId
             };
             await _personaRepositorio.ActualizarPersona(persona);
         }
@@ -160,7 +155,6 @@ namespace CNegocio.Logica
                 Email = p.Email,
                 Direccion = p.Direccion,
                 Telefono = p.Telefono,
-                EstadoId = p.EstadoId
             }).ToList();
         }
 
@@ -195,9 +189,6 @@ namespace CNegocio.Logica
 
             if (string.IsNullOrWhiteSpace(persona.Telefono) || !IsValidTelefono(persona.Telefono))
                 errores.Add("Telefono");
-
-            if (persona.EstadoId <= 0)
-                errores.Add("EstadoId");
 
             return errores;
         }

@@ -4,6 +4,7 @@ using CDatos.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CDatos.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20251003214850_adddd")]
+    partial class adddd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -223,6 +226,9 @@ namespace CDatos.Migrations
                     b.Property<int>("PersonaId")
                         .HasColumnType("int");
 
+                    b.Property<int>("SectorId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("PersonaId");
@@ -236,7 +242,8 @@ namespace CDatos.Migrations
                             Admin = true,
                             Contrasenia = "8b5cc4df7eec7d32a7814eca4af047ae33b2d52342667715682e19c25b0b9faa",
                             EstadoId = 1,
-                            PersonaId = 1
+                            PersonaId = 1,
+                            SectorId = 1
                         },
                         new
                         {
@@ -244,7 +251,8 @@ namespace CDatos.Migrations
                             Admin = false,
                             Contrasenia = "ac0f09c0f8bf5e7a4b063d863255f16d8ce9abe600e288d934cf313bcbff63eb",
                             EstadoId = 1,
-                            PersonaId = 2
+                            PersonaId = 2,
+                            SectorId = 2
                         },
                         new
                         {
@@ -252,7 +260,8 @@ namespace CDatos.Migrations
                             Admin = true,
                             Contrasenia = "cef7fc13a38180936ffa2635489088778e059f07a5d1beda53f1719d35577631",
                             EstadoId = 1,
-                            PersonaId = 3
+                            PersonaId = 3,
+                            SectorId = 1
                         },
                         new
                         {
@@ -260,7 +269,8 @@ namespace CDatos.Migrations
                             Admin = false,
                             Contrasenia = "449777124b1466a8ed667d0dd4c0620993f59e20fb27b3fa8894e957f8762353",
                             EstadoId = 2,
-                            PersonaId = 4
+                            PersonaId = 4,
+                            SectorId = 2
                         },
                         new
                         {
@@ -268,7 +278,8 @@ namespace CDatos.Migrations
                             Admin = true,
                             Contrasenia = "43700797e2f9d4ad38ccf1355df3233453396bfcc8db8e424486e37bae42a9ec",
                             EstadoId = 1,
-                            PersonaId = 5
+                            PersonaId = 5,
+                            SectorId = 1
                         },
                         new
                         {
@@ -276,7 +287,8 @@ namespace CDatos.Migrations
                             Admin = false,
                             Contrasenia = "f33422b95e3b98310adedc93655de579f6e311120ea0c27c3e2317b5116d6afb",
                             EstadoId = 2,
-                            PersonaId = 6
+                            PersonaId = 6,
+                            SectorId = 2
                         });
                 });
 
@@ -521,6 +533,9 @@ namespace CDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("EstadoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -548,6 +563,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Falsa 123",
                             Email = "juan@mail.com",
+                            EstadoId = 1,
                             Nombre = "Juan",
                             Nro_Doc = "12345678",
                             Telefono = "11111111",
@@ -560,6 +576,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Av. Siempre Viva 742",
                             Email = "ana@mail.com",
+                            EstadoId = 1,
                             Nombre = "Ana",
                             Nro_Doc = "87654321",
                             Telefono = "22222222",
@@ -572,6 +589,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Calle Luna 45",
                             Email = "luis@mail.com",
+                            EstadoId = 1,
                             Nombre = "Luis",
                             Nro_Doc = "11223344",
                             Telefono = "33333333",
@@ -584,6 +602,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Sol 99",
                             Email = "maria@mail.com",
+                            EstadoId = 2,
                             Nombre = "María",
                             Nro_Doc = "44332211",
                             Telefono = "44444444",
@@ -596,6 +615,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Norte 10",
                             Email = "pedro@mail.com",
+                            EstadoId = 1,
                             Nombre = "Pedro",
                             Nro_Doc = "55555555",
                             Telefono = "55555555",
@@ -608,6 +628,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Sur 20",
                             Email = "lucia@mail.com",
+                            EstadoId = 2,
                             Nombre = "Lucía",
                             Nro_Doc = "66666666",
                             Telefono = "66666666",
@@ -620,6 +641,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Este 30",
                             Email = "carlos@mail.com",
+                            EstadoId = 1,
                             Nombre = "Carlos",
                             Nro_Doc = "77777777",
                             Telefono = "77777777",
@@ -632,6 +654,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Oeste 40",
                             Email = "sofia@mail.com",
+                            EstadoId = 1,
                             Nombre = "Sofía",
                             Nro_Doc = "88888888",
                             Telefono = "88888888",
@@ -644,6 +667,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Sur 50",
                             Email = "miguel@mail.com",
+                            EstadoId = 1,
                             Nombre = "Miguel",
                             Nro_Doc = "99999999",
                             Telefono = "99999999",
@@ -656,6 +680,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Norte 60",
                             Email = "valentina@mail.com",
+                            EstadoId = 2,
                             Nombre = "Valentina",
                             Nro_Doc = "10101010",
                             Telefono = "10101010",
@@ -668,6 +693,7 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Central 70",
                             Email = "diego@mail.com",
+                            EstadoId = 1,
                             Nombre = "Diego",
                             Nro_Doc = "11111112",
                             Telefono = "11111112",
@@ -680,6 +706,7 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Principal 80",
                             Email = "martina@mail.com",
+                            EstadoId = 2,
                             Nombre = "Martina",
                             Nro_Doc = "12121212",
                             Telefono = "12121212",
