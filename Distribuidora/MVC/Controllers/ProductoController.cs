@@ -305,7 +305,7 @@ namespace MVC.Controllers
             // Aquí podés devolver la lista con los productos para que no rompa
             var listaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ProductoGet}");
             var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(listaJson);
-            return View("listaProductos", productos);
+            return RedirectToAction(nameof(listaProductos));
         }
     }
 }

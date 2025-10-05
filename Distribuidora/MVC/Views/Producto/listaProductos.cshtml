@@ -52,7 +52,7 @@
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID o Nombre de producto" id="searchInput">
             <button class="btn yellow">Buscar</button>
-            <a asp-controller="Productos" asp-action="crearProducto" class="btn green">Crear Producto</a>
+            <a asp-controller="Producto" asp-action="crearProducto" class="btn green">Crear Producto</a>
         </div>
 
         <div class="tabla-container">
@@ -81,13 +81,13 @@
                             <td>@producto.PrecioProducto</td>
 
                             <td class="acciones">
-                                <a asp-controller="Productos" asp-action="modificarProducto" asp-route-id="@producto.Id"
+                                <a asp-controller="Producto" asp-action="modificarProducto" asp-route-id="@producto.Id"
                                    class="btn-icon yellow-outline" title="Editar">
                                     <i class="ri-pencil-line"></i>
                                 </a>
 
                                 <!-- FORMULARIO POST PARA ELIMINAR -->
-                                <form asp-controller="Productos" asp-action="eliminarProducto" method="post" style="display:inline;">
+                                <form asp-controller="Producto" asp-action="eliminarProducto" method="post" style="display:inline;">
                                     <input type="hidden" name="id" value="@producto.Id" />
                                     <a href="#" class="btn-icon yellow-outline" title="Eliminar" onclick="confirmDelete(this)">
                                         <i class="ri-delete-bin-line"></i>
@@ -103,7 +103,7 @@
     </main>
 
     <!-- Modal de Confirmación -->
-    <div id="deleteModal" class="modal" style="display: none;">
+    <div id="deleteModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
                 <i class="ri-alert-line" style="font-size: 2rem; color: #ff4d4d;"></i>
@@ -118,30 +118,24 @@
     </div>
 
     <script>
-        function confirmDelete(element) {
-            const modal = document.getElementById('deleteModal');
-            modal.style.display = 'block';
+        let rowToDelete = null;
 
-            const productRow = element.closest('tr');
-            const productId = productRow.querySelector('td').innerText;
-
-            const confirmBtn = document.getElementById('confirmBtn');
-            confirmBtn.onclick = function() {
-                console.log('Eliminar producto con ID:', productId);
-                modal.style.display = 'none';
-            }
-
-            const cancelBtn = document.getElementById('cancelBtn');
-            cancelBtn.onclick = function() {
-                modal.style.display = 'none';
-            }
+        function confirmDelete(button) {
+            rowToDelete = button.closest('tr');
+            document.getElementById('deleteModal').style.display = 'flex';
         }
 
-        window.onclick = function(event) {
-            const modal = document.getElementById('deleteModal');
-            if (event.target == modal) {
-                modal.style.display = 'none';
+        document.getElementById('confirmBtn').onclick = function () {
+            if (rowToDelete) {
+                rowToDelete.querySelector('form').submit();
+                rowToDelete = null;
             }
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        document.getElementById('cancelBtn').onclick = function () {
+            rowToDelete = null;
+            document.getElementById('deleteModal').style.display = 'none';
         }
     </script>
 
