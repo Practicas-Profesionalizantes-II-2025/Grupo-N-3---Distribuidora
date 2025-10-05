@@ -58,6 +58,29 @@ namespace MVC.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public IActionResult Login(string Usuario, string Contrasenia)
+        {
+            // 🔹 Acá validás usuario y contraseña
+            if (Usuario == "admin" && Contrasenia == "1234") // ejemplo
+            {
+                // Redirige a la página de inicio
+                return RedirectToAction("PaginaInicial", "Usuarios");
+                // o a otra acción/vista que quieras
+            }
+
+            // Si falla, devolvés el mismo login con error
+            ViewBag.Error = "Usuario o contraseña incorrectos";
+            return View();
+        }
+
+        public IActionResult PaginaInicial()
+        {
+            return View();
+        }
+
+
+
         // GET: Usuario/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
