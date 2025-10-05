@@ -25,11 +25,33 @@ namespace MVC.Controllers
         {
             return View();
         }
-        //public IActionResult LoginAccion(DatosInicioSesionDTO datos)
-        //{
-        //    bool confirmacionLoggin = $"{_settings.BaseUrl}/{_settings.ValidacionEmpleado}";
-        //    return View();
-        //}
+        public async Task<IActionResult> LoginAccion(DatosInicioSesionDTO datos)
+        {
+            // Construir la URL del endpoint
+            string url = $"{_settings.BaseUrl}/{_settings.ValidacionEmpleado}/{datos.dni}/{datos.Contrasenia}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.Error = "Error al conectar con el servidor.";
+                return View("Login");
+            }
+
+            bool confirmacionLoggin = await response.Content.ReadFromJsonAsync<bool>();
+
+            if (confirmacionLoggin)
+            {
+                // Inicio de sesión exitoso
+                return RedirectToAction("PaginaInicial", "PaginaInicial");
+            }
+            else
+            {
+                // Datos incorrectos
+                ViewBag.Error = "DNI o contraseña incorrectos.";
+                return View("Login");
+            }
+        }
+
         // GET: Empleados
         public async Task<IActionResult> listaEmpleados()
         {

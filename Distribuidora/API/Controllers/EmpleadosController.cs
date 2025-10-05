@@ -46,8 +46,8 @@ namespace API.Controllers
             return empleado;
         }
 
-        // GET: api/Empleados/dni/12345678
-        [HttpGet("dni/{dni}")]
+        // GET: api/Empleados/dni/12345678/contrasenia
+        [HttpGet("dni/{dni}/{contrasenia}")]
         public async Task<bool> ValidacionEmpleado(string dni, string contrasenia)
         {
             return await _empleadoLogic.ValidacionEmpleado(dni, contrasenia);
