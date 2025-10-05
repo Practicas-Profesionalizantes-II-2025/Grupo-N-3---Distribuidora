@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace CDatos.Migrations
 {
     /// <inheritdoc />
-    public partial class Initialdb : Migration
+    public partial class InitialDb : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -116,8 +116,7 @@ namespace CDatos.Migrations
                     CiudadId = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Direccion = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    EstadoId = table.Column<int>(type: "int", nullable: false)
+                    Telefono = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -185,22 +184,6 @@ namespace CDatos.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Usuario",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Nombre = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Contrasenia = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PersonaId = table.Column<int>(type: "int", nullable: false),
-                    EstadoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Usuario", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Cliente",
                 columns: table => new
                 {
@@ -226,10 +209,10 @@ namespace CDatos.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SectorId = table.Column<int>(type: "int", nullable: false),
                     PersonaId = table.Column<int>(type: "int", nullable: false),
-                    Foto = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    EstadoId = table.Column<int>(type: "int", nullable: false)
+                    EstadoId = table.Column<int>(type: "int", nullable: false),
+                    Contrasenia = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Admin = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -355,21 +338,21 @@ namespace CDatos.Migrations
 
             migrationBuilder.InsertData(
                 table: "Persona",
-                columns: new[] { "Id", "Apellido", "CiudadId", "Direccion", "Email", "EstadoId", "Nombre", "Nro_Doc", "Telefono", "Tipo_DocId" },
+                columns: new[] { "Id", "Apellido", "CiudadId", "Direccion", "Email", "Nombre", "Nro_Doc", "Telefono", "Tipo_DocId" },
                 values: new object[,]
                 {
-                    { 1, "Pérez", 1, "Calle Falsa 123", "juan@mail.com", 1, "Juan", "12345678", "11111111", 1 },
-                    { 2, "García", 1, "Av. Siempre Viva 742", "ana@mail.com", 1, "Ana", "87654321", "22222222", 2 },
-                    { 3, "Martínez", 2, "Calle Luna 45", "luis@mail.com", 1, "Luis", "11223344", "33333333", 3 },
-                    { 4, "Rodríguez", 2, "Av. Sol 99", "maria@mail.com", 2, "María", "44332211", "44444444", 1 },
-                    { 5, "Sánchez", 1, "Calle Norte 10", "pedro@mail.com", 1, "Pedro", "55555555", "55555555", 2 },
-                    { 6, "Fernández", 2, "Av. Sur 20", "lucia@mail.com", 2, "Lucía", "66666666", "66666666", 3 },
-                    { 7, "Ramírez", 1, "Calle Este 30", "carlos@mail.com", 1, "Carlos", "77777777", "77777777", 1 },
-                    { 8, "López", 2, "Av. Oeste 40", "sofia@mail.com", 1, "Sofía", "88888888", "88888888", 2 },
-                    { 9, "Torres", 1, "Calle Sur 50", "miguel@mail.com", 1, "Miguel", "99999999", "99999999", 3 },
-                    { 10, "Gómez", 2, "Av. Norte 60", "valentina@mail.com", 2, "Valentina", "10101010", "10101010", 1 },
-                    { 11, "Castro", 1, "Calle Central 70", "diego@mail.com", 1, "Diego", "11111112", "11111112", 2 },
-                    { 12, "Vega", 2, "Av. Principal 80", "martina@mail.com", 2, "Martina", "12121212", "12121212", 3 }
+                    { 1, "Pérez", 1, "Calle Falsa 123", "juan@mail.com", "Juan", "12345678", "11111111", 1 },
+                    { 2, "García", 1, "Av. Siempre Viva 742", "ana@mail.com", "Ana", "87654321", "22222222", 2 },
+                    { 3, "Martínez", 2, "Calle Luna 45", "luis@mail.com", "Luis", "11223344", "33333333", 3 },
+                    { 4, "Rodríguez", 2, "Av. Sol 99", "maria@mail.com", "María", "44332211", "44444444", 1 },
+                    { 5, "Sánchez", 1, "Calle Norte 10", "pedro@mail.com", "Pedro", "55555555", "55555555", 2 },
+                    { 6, "Fernández", 2, "Av. Sur 20", "lucia@mail.com", "Lucía", "66666666", "66666666", 3 },
+                    { 7, "Ramírez", 1, "Calle Este 30", "carlos@mail.com", "Carlos", "77777777", "77777777", 1 },
+                    { 8, "López", 2, "Av. Oeste 40", "sofia@mail.com", "Sofía", "88888888", "88888888", 2 },
+                    { 9, "Torres", 1, "Calle Sur 50", "miguel@mail.com", "Miguel", "99999999", "99999999", 3 },
+                    { 10, "Gómez", 2, "Av. Norte 60", "valentina@mail.com", "Valentina", "10101010", "10101010", 1 },
+                    { 11, "Castro", 1, "Calle Central 70", "diego@mail.com", "Diego", "11111112", "11111112", 2 },
+                    { 12, "Vega", 2, "Av. Principal 80", "martina@mail.com", "Martina", "12121212", "12121212", 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -411,15 +394,6 @@ namespace CDatos.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "Usuario",
-                columns: new[] { "Id", "Contrasenia", "EstadoId", "Nombre", "PersonaId" },
-                values: new object[,]
-                {
-                    { 1, "admin123", 1, "admin", 1 },
-                    { 2, "cliente123", 1, "cliente1", 7 }
-                });
-
-            migrationBuilder.InsertData(
                 table: "Cliente",
                 columns: new[] { "Id", "EstadoId", "PersonaId" },
                 values: new object[,]
@@ -434,15 +408,15 @@ namespace CDatos.Migrations
 
             migrationBuilder.InsertData(
                 table: "Empleado",
-                columns: new[] { "Id", "EstadoId", "Foto", "PersonaId", "SectorId" },
+                columns: new[] { "Id", "Admin", "Contrasenia", "EstadoId", "PersonaId" },
                 values: new object[,]
                 {
-                    { 1, 1, "", 1, 1 },
-                    { 2, 1, "", 2, 2 },
-                    { 3, 1, "", 3, 1 },
-                    { 4, 2, "", 4, 2 },
-                    { 5, 1, "", 5, 1 },
-                    { 6, 2, "", 6, 2 }
+                    { 1, true, "8b5cc4df7eec7d32a7814eca4af047ae33b2d52342667715682e19c25b0b9faa", 1, 1 },
+                    { 2, false, "ac0f09c0f8bf5e7a4b063d863255f16d8ce9abe600e288d934cf313bcbff63eb", 1, 2 },
+                    { 3, true, "cef7fc13a38180936ffa2635489088778e059f07a5d1beda53f1719d35577631", 1, 3 },
+                    { 4, false, "449777124b1466a8ed667d0dd4c0620993f59e20fb27b3fa8894e957f8762353", 2, 4 },
+                    { 5, true, "43700797e2f9d4ad38ccf1355df3233453396bfcc8db8e424486e37bae42a9ec", 1, 5 },
+                    { 6, false, "f33422b95e3b98310adedc93655de579f6e311120ea0c27c3e2317b5116d6afb", 2, 6 }
                 });
 
             migrationBuilder.InsertData(
@@ -527,9 +501,6 @@ namespace CDatos.Migrations
 
             migrationBuilder.DropTable(
                 name: "TipoDocumento");
-
-            migrationBuilder.DropTable(
-                name: "Usuario");
 
             migrationBuilder.DropTable(
                 name: "OrdenDeCompra");
