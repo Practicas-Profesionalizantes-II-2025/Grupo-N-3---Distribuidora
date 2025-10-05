@@ -64,12 +64,11 @@
     }
   
 </main>
-
+</body>
+</html>
 @section Scripts {
     <script>
         const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos));
     </script>
     <script src="~/js/crearcompra.js"></script>
 }
-</body>
-</html>
