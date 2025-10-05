@@ -1,95 +1,87 @@
-﻿// crearPedido.js
+﻿console.log("Productos desde API:", productos);
 
 document.addEventListener("DOMContentLoaded", () => {
-    const pedidoTable = document.getElementById("pedidoTable").getElementsByTagName("tbody")[0];
-    const totalGeneralEl = document.getElementById("totalGeneral");
+    const tbody = document.querySelector("#pedidoTable tbody");
+    const productosContainer = document.getElementById("productosContainer");
+    const totalGeneral = document.getElementById("totalGeneral");
     const agregarFilaBtn = document.getElementById("agregarFila");
+    const formOrden = document.getElementById("formOrden");
 
-    // Función para recalcular subtotal y total general
-    function recalcularTotal() {
-        let totalGeneral = 0;
-        const filas = pedidoTable.querySelectorAll("tr");
-
-        filas.forEach(fila => {
-            const cantidad = parseFloat(fila.querySelector(".cantidad").value) || 0;
-            const precio = parseFloat(fila.querySelector(".precio").value) || 0;
+    // Actualiza subtotales y total general
+    function actualizarTotales() {
+        let total = 0;
+        tbody.querySelectorAll("tr").forEach(row => {
+            const cantidad = parseFloat(row.querySelector(".cantidadInput").value || 0);
+            const precio = parseFloat(row.querySelector(".precioUnitario").dataset.precio || 0);
             const subtotal = cantidad * precio;
-
-            const subtotalCell = fila.querySelector(".subtotal");
-            subtotalCell.textContent = `$${subtotal.toLocaleString()}`;
-            subtotalCell.style.textAlign = "right"; // <-- esto lo agrega
-            totalGeneral += subtotal;
+            row.querySelector(".subtotal").textContent = "$" + subtotal.toFixed(2);
+            total += subtotal;
         });
-
-        totalGeneralEl.textContent = `$${totalGeneral.toLocaleString()}`;
-        totalGeneralEl.style.textAlign = "right"; // <-- esto alinea el total general
+        totalGeneral.textContent = "$" + total.toFixed(2);
     }
 
-    // Función para crear una nueva fila
-    function crearFila(id = "", nombre = "", cantidad = 1, precio = 0) {
-        const fila = document.createElement("tr");
+    // Genera inputs hidden antes de enviar el formulario
+    function generarInputsHidden() {
+        productosContainer.innerHTML = "";
+        tbody.querySelectorAll("tr").forEach((row, index) => {
+            const prodId = row.querySelector(".productoSelect").value;
+            const cantidad = row.querySelector(".cantidadInput").value;
 
-        fila.innerHTML = `
-      <td><input type="text" name="id[]" value="${id}"></td>
-      <td><input type="text" name="nombre[]" value="${nombre}"></td>
-      <td><input type="number" name="cantidad[]" value="${cantidad}" min="1" class="cantidad"></td>
-      <td><input type="number" name="precio[]" value="${precio}" step="0.01" class="precio"></td>
-      <td class="subtotal">$${(cantidad * precio).toLocaleString()}</td>
-      <td><button type="button" class="btn btn-delete">Eliminar</button></td>
-    `;
-
-        // Eventos para recalcular al cambiar cantidad o precio
-        fila.querySelector(".cantidad").addEventListener("input", recalcularTotal);
-        fila.querySelector(".precio").addEventListener("input", recalcularTotal);
-
-        // Evento para eliminar fila
-        fila.querySelector(".btn-delete").addEventListener("click", () => {
-            fila.remove();
-            recalcularTotal();
-        });
-
-        pedidoTable.appendChild(fila);
-        recalcularTotal();
-    }   
-
-    // Botón agregar fila
-    agregarFilaBtn.addEventListener("click", () => {
-        crearFila();
-    });
-
-    // Evento submit del formulario
-    document.getElementById("pedidoForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-
-        // Obtener los datos de la tabla
-        const productos = [];
-        const filas = pedidoTable.querySelectorAll("tr");
-        filas.forEach(fila => {
-            const id = fila.querySelector('input[name="id[]"]').value;
-            const nombre = fila.querySelector('input[name="nombre[]"]').value;
-            const cantidad = parseFloat(fila.querySelector('input[name="cantidad[]"]').value);
-            const precio = parseFloat(fila.querySelector('input[name="precio[]"]').value);
-            if (id && cantidad && precio) {
-                productos.push({ id, nombre, cantidad, precio });
+            if (prodId && cantidad > 0) {
+                productosContainer.innerHTML +=
+                    `<input type="hidden" name="ProductosSeleccionados[${index}].ProductoId" value="${prodId}" />` +
+                    `<input type="hidden" name="ProductosSeleccionados[${index}].CantidadProducto" value="${cantidad}" />`;
             }
         });
+    }
 
-        // Enviar al controller con fetch
-        fetch('/OrdenCompra/crearOrdenCompra', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ Productos: productos })
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('Compra creada con éxito!');
-                    window.location.href = '/OrdenCompra/ListaCompras';
-                } else {
-                    alert('Error al crear la compra');
-                }
-            });
+    // Agrega una fila nueva a la tabla
+    function agregarFila() {
+        const tr = document.createElement("tr");
+
+        let options = '<option value="">--Seleccione--</option>';
+        productos.forEach(p => {
+            options += `<option value="${p.Id}" data-precio="${p.PrecioProducto}">${p.Nombre}</option>`;
+        });
+
+        tr.innerHTML = `
+            <td><select class="form-control productoSelect">${options}</select></td>
+            <td><input type="number" class="form-control cantidadInput" value="1" min="1"></td>
+            <td class="precioUnitario" data-precio="0">$0.00</td>
+            <td class="subtotal">$0.00</td>
+            <td><button type="button" class="btn btn-danger eliminarFila">X</button></td>
+        `;
+
+        tbody.appendChild(tr);
+
+        const select = tr.querySelector(".productoSelect");
+        const cantidadInput = tr.querySelector(".cantidadInput");
+        const precioTd = tr.querySelector(".precioUnitario");
+
+        // Cambia el precio al seleccionar un producto
+        select.addEventListener("change", () => {
+            const precio = parseFloat(select.selectedOptions[0].dataset.precio || 0);
+            precioTd.dataset.precio = precio;
+            precioTd.textContent = "$" + precio.toFixed(2);
+            actualizarTotales();
+        });
+
+        cantidadInput.addEventListener("input", actualizarTotales);
+
+        tr.querySelector(".eliminarFila").addEventListener("click", () => {
+            tr.remove();
+            actualizarTotales();
+        });
+    }
+
+    // Botón para agregar filas manualmente
+    agregarFilaBtn.addEventListener("click", agregarFila);
+
+    // Antes de enviar el formulario, generar inputs hidden
+    formOrden.addEventListener("submit", () => {
+        generarInputsHidden();
     });
 
-    // Opcional: agregar una fila inicial
-    crearFila();
+    // Fila inicial al cargar la página
+    agregarFila();
 });

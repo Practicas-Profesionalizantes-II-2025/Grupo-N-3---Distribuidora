@@ -11,9 +11,6 @@
             <!-- Campos ocultos necesarios -->
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="Persona.Id" />
-            <input type="hidden" asp-for="Persona.Tipo_DocId" />
-            <input type="hidden" asp-for="Persona.Nro_Doc" />
-            <input type="hidden" asp-for="Persona.CiudadId" />
             <input type="hidden" asp-for="EstadoId" />
             <input type="hidden" asp-for="Foto" />
 
@@ -22,6 +19,11 @@
                 <!-- Nombre y apellido -->
                 <input asp-for="Persona.Nombre" placeholder="Nombre" />
                 <input asp-for="Persona.Apellido" placeholder="Apellido" />
+
+                <!-- Tipo y Número de Documento -->
+                <select asp-for="Persona.Tipo_DocId"
+                        asp-items="@(new SelectList(Model.Persona.TiposDocumentos, "Id", "NombreTipoDocumento", Model.Persona.Tipo_DocId))">
+                </select>
 
                 <!-- Tipo y número de documento -->
                 <input asp-for="Persona.Nro_Doc" placeholder="Número de documento" readonly />
@@ -33,7 +35,9 @@
                 <input asp-for="Persona.Direccion" placeholder="Dirección" />
 
                 <!-- Ciudad -->
-                <input asp-for="Persona.CiudadId" placeholder="Ciudad" />
+                <select asp-for="Persona.CiudadId"
+                        asp-items="@(new SelectList(Model.Persona.Ciudades, "Id", "Nombre", Model.Persona.CiudadId))">
+                </select>
 
                 <!-- Email -->
                 <input asp-for="Persona.Email" placeholder="Email" />
@@ -42,7 +46,7 @@
                 <!-- Cargo  <input asp-for="CargoId" placeholder="Cargo" /> -->
 
                 <!-- Estado -->
-                <input asp-for="EstadoId" placeholder="Estado" />
+                <input type="hidden" asp-for="EstadoId" value="1" />
             </div>
 
             <!-- Botones -->

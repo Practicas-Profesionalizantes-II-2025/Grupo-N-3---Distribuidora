@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CDatos.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20250924201859_add1")]
-    partial class add1
+    [Migration("20251004161955_Initialdb")]
+    partial class Initialdb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -73,17 +73,6 @@ namespace CDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Acp")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Cp")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EstadoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -96,17 +85,11 @@ namespace CDatos.Migrations
                         new
                         {
                             Id = 1,
-                            Acp = "A1000",
-                            Cp = "1000",
-                            EstadoId = 1,
                             Nombre = "Ciudad A"
                         },
                         new
                         {
                             Id = 2,
-                            Acp = "B2000",
-                            Cp = "2000",
-                            EstadoId = 1,
                             Nombre = "Ciudad B"
                         });
                 });
@@ -234,7 +217,6 @@ namespace CDatos.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Foto")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("PersonaId")
@@ -337,20 +319,20 @@ namespace CDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DistribuidorId")
-                        .HasColumnType("int");
-
                     b.Property<int>("EmpleadoId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("FechaOrden")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ProveedorId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.HasIndex("DistribuidorId");
-
                     b.HasIndex("EmpleadoId");
+
+                    b.HasIndex("ProveedorId");
 
                     b.ToTable("OrdenDeCompra");
 
@@ -358,16 +340,16 @@ namespace CDatos.Migrations
                         new
                         {
                             Id = 1,
-                            DistribuidorId = 1,
                             EmpleadoId = 1,
-                            FechaOrden = new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            FechaOrden = new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProveedorId = 1
                         },
                         new
                         {
                             Id = 2,
-                            DistribuidorId = 2,
                             EmpleadoId = 2,
-                            FechaOrden = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            FechaOrden = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProveedorId = 2
                         });
                 });
 
@@ -389,6 +371,10 @@ namespace CDatos.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrdenDeCompraId");
+
+                    b.HasIndex("ProductoId");
 
                     b.ToTable("OrdenDeCompraProducto");
 
@@ -950,7 +936,7 @@ namespace CDatos.Migrations
             modelBuilder.Entity("Shared.Entities.Empleado", b =>
                 {
                     b.HasOne("Shared.Entities.Persona", "Persona")
-                        .WithMany()
+                        .WithMany("Empleados")
                         .HasForeignKey("PersonaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -960,26 +946,50 @@ namespace CDatos.Migrations
 
             modelBuilder.Entity("Shared.Entities.OrdenDeCompra", b =>
                 {
-                    b.HasOne("Shared.Entities.Proveedor", "Distribuidor")
-                        .WithMany()
-                        .HasForeignKey("DistribuidorId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Shared.Entities.Empleado", "Empleado")
                         .WithMany()
                         .HasForeignKey("EmpleadoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Distribuidor");
+                    b.HasOne("Shared.Entities.Proveedor", "Proveedor")
+                        .WithMany()
+                        .HasForeignKey("ProveedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Empleado");
+
+                    b.Navigation("Proveedor");
+                });
+
+            modelBuilder.Entity("Shared.Entities.OrdenDeCompraProducto", b =>
+                {
+                    b.HasOne("Shared.Entities.OrdenDeCompra", null)
+                        .WithMany("Productos")
+                        .HasForeignKey("OrdenDeCompraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shared.Entities.Producto", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+                });
+
+            modelBuilder.Entity("Shared.Entities.OrdenDeCompra", b =>
+                {
+                    b.Navigation("Productos");
                 });
 
             modelBuilder.Entity("Shared.Entities.Persona", b =>
                 {
                     b.Navigation("Clientes");
+
+                    b.Navigation("Empleados");
                 });
 #pragma warning restore 612, 618
         }

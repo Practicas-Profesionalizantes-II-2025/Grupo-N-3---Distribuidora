@@ -49,7 +49,9 @@ namespace CDatos.Repositorios
             }
             empleadoExistente.PersonaId = empleado.PersonaId;
             empleadoExistente.EstadoId = empleado.EstadoId;
-            empleadoExistente.Foto = empleadoExistente.Foto;
+            empleadoExistente.Foto = string.IsNullOrEmpty(empleado.Foto)
+                ? empleadoExistente.Foto
+                : empleado.Foto;
 
             await _context.SaveChangesAsync();
         }

@@ -61,7 +61,6 @@
                     <tr>
                         <th>ID</th>
                         <th>Fecha de orden</th>
-                        <th>Distribuidor</th>
                         <th>Empleado</th>
                         <th>Acciones</th>
                     </tr>
@@ -72,20 +71,19 @@
                         <tr>
                             <td>@item.Id</td>
                             <td>@item.FechaOrden.ToString("dd/MM/yyyy")</td>
-                            <td>@item.ProveedorNombre</td>
-                            <td>@item.Empleado?.Persona.Nombre</td>
+                            <td>@item.NombreEmpleado</td>
                             <td class="acciones">
-                                <a asp-controller="OrdenCompra" asp-action="modificarCompra" asp-route-id="@item.Id"
+                                <a asp-controller="OrdenCompra" asp-action="modificarOrdenCompra" asp-route-id="@item.Id"
                                    class="btn-icon yellow-outline" title="Editar">
                                     <i class="ri-pencil-line"></i>
                                 </a>
-                                <form asp-controller="OrdenCompra" asp-action="eliminarCompra" method="post" style="display:inline;">
+                                <form asp-controller="OrdenCompra" asp-action="eliminarOrdenCompra" method="post" style="display:inline;">
                                     <input type="hidden" name="id" value="@item.Id" />
                                     <a href="#" class="btn-icon yellow-outline" title="Eliminar" onclick="confirmDelete(this)">
                                         <i class="ri-delete-bin-line"></i>
                                     </a>
-                                </form>
-                                <a asp-controller="OrdenCompra" asp-action="detalleCompra" asp-route-id="@item.Id"
+                                </form> 
+                                <a asp-controller="OrdenCompra" asp-action="detalleOrdenCompra" asp-route-id="@item.Id"
                                    class="btn-icon blue-outline" title="Ver detalle">
                                     <i class="ri-eye-line"></i>
                                 </a>

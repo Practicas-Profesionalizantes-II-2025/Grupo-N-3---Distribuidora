@@ -14,16 +14,9 @@
         @Html.AntiForgeryToken()
 
         <!-- Datos generales -->
-        <div class="form-group">
-            <label>Empleado</label>
-            <input asp-for="EmpleadoId" class="form-control" />
-        </div>
-
-        <div class="form-group">
-            <label>Distribuidor</label>
-            <input asp-for="ProveedorId" class="form-control" readonly />
-        </div>
-
+        <input type="hidden" asp-for="EmpleadoId" value="@Model.EmpleadoId" />
+        <input type="hidden" asp-for="ProveedorId" value="@Model.ProveedorId" />
+        <input type="hidden" asp-for="Estado" value="Pendiente" />
         <input type="hidden" asp-for="FechaOrden" value="@DateTime.Now" />
 
         <!-- Tabla de productos -->
@@ -58,92 +51,12 @@
             <a asp-controller="OrdenCompra" asp-action="listaOrdenCompras" class="btn back">Volver</a>
         </div>
     }
-
+  
 </main>
 
 @section Scripts {
-<script>
-    // Lista de productos desde Razor
-    var productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos));
-
-    var tbody = document.querySelector("#pedidoTable tbody");
-    var productosContainer = document.getElementById("productosContainer");
-    var totalGeneral = document.getElementById("totalGeneral");
-
-    function actualizarTotales() {
-        let total = 0;
-        tbody.querySelectorAll("tr").forEach((row) => {
-            const cantidad = parseFloat(row.querySelector(".cantidadInput").value || 0);
-            const precio = parseFloat(row.querySelector(".precioUnitario").dataset.precio || 0);
-            const subtotal = cantidad * precio;
-            row.querySelector(".subtotal").textContent = "$" + subtotal.toFixed(2);
-            total += subtotal;
-        });
-        totalGeneral.textContent = "$" + total.toFixed(2);
-    }
-
-    function generarInputsHidden() {
-        productosContainer.innerHTML = "";
-        tbody.querySelectorAll("tr").forEach((row, index) => {
-            const prodId = row.querySelector(".productoSelect").value;
-            const cantidad = row.querySelector(".cantidadInput").value;
-
-            if (prodId && cantidad > 0) {
-                productosContainer.innerHTML +=
-                    `<input type="hidden" name="Productos[${index}].ProductoId" value="${prodId}" />` +
-                    `<input type="hidden" name="Productos[${index}].CantidadProducto" value="${cantidad}" />`;
-            }
-        });
-    }
-
-    function agregarFila() {
-        const tr = document.createElement("tr");
-
-        // Combo de productos
-        let options = '<option value="">--Seleccione--</option>';
-        productos.forEach(p => {
-            options += `<option value="${p.id}" data-precio="${p.precioProducto}">${p.nombre}</option>`;
-        });
-
-        tr.innerHTML = `
-            <td>
-                <select class="form-control productoSelect">${options}</select>
-            </td>
-            <td><input type="number" class="form-control cantidadInput" value="1" min="1" /></td>
-            <td class="precioUnitario" data-precio="0">$0.00</td>
-            <td class="subtotal">$0.00</td>
-            <td><button type="button" class="btn btn-danger eliminarFila">X</button></td>
-        `;
-
-        tbody.appendChild(tr);
-
-        // Eventos
-        const select = tr.querySelector(".productoSelect");
-        const cantidadInput = tr.querySelector(".cantidadInput");
-        const precioTd = tr.querySelector(".precioUnitario");
-
-        select.addEventListener("change", () => {
-            const precio = parseFloat(select.selectedOptions[0].dataset.precio || 0);
-            precioTd.dataset.precio = precio;
-            precioTd.textContent = "$" + precio.toFixed(2);
-            actualizarTotales();
-        });
-
-        cantidadInput.addEventListener("input", actualizarTotales);
-
-        tr.querySelector(".eliminarFila").addEventListener("click", () => {
-            tr.remove();
-            actualizarTotales();
-        });
-    }
-
-    document.getElementById("agregarFila").addEventListener("click", agregarFila);
-
-    // Antes de enviar el form, generar inputs hidden
-    document.getElementById("formOrden").addEventListener("submit", () => {
-        generarInputsHidden();
-    });
-
-</script>
+    <script>
+        const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos));
+    </script>
     <script src="~/js/crearcompra.js"></script>
 }

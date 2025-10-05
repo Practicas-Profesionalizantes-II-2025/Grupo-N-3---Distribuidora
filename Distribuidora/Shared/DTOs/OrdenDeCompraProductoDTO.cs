@@ -15,5 +15,7 @@ namespace Shared.DTOs
         [ValidateNever]
         public string NombreProducto { get; set; }
         public int CantidadProducto { get; set; }
+        [ValidateNever]
+        public float PrecioUnitario { get; set; }
     }
 }

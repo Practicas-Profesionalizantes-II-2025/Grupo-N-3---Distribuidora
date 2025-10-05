@@ -65,9 +65,15 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<OrdenDeCompra>> PostOrdenDeCompra(OrdenDeCompraDTO ordenDeCompra)
         {
-            await _ordenDeCompraLogic.CrearOrdenDeCompra(ordenDeCompra);
-
-            return CreatedAtAction("GetOrdenDeCompraPorId", new { id = ordenDeCompra.Id }, ordenDeCompra);
+            try
+            {
+                await _ordenDeCompraLogic.CrearOrdenDeCompra(ordenDeCompra);
+                return CreatedAtAction("GetOrdenDeCompraPorId", new { id = ordenDeCompra.Id }, ordenDeCompra);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/OrdenDeCompras/5

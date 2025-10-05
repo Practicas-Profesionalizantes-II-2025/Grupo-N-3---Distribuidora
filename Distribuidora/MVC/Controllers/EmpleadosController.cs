@@ -127,7 +127,7 @@ namespace MVC.Controllers
         // GET: Modificar empleado
         public async Task<IActionResult> modificarEmpleado(int id)
         {
-            var url = $"{_settings.BaseUrl}/{_settings.EmpleadosGet}";
+            var url = $"{_settings.BaseUrl}/{_settings.EmpleadosGet}/{id}";
             var response = await _httpClient.GetAsync(url);
            
             var urlCiudad = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
@@ -141,7 +141,7 @@ namespace MVC.Controllers
                 ModelState.AddModelError(string.Empty, "No se pudo cargar el empleado");
                 return RedirectToAction(nameof(listaEmpleados));
             }
-
+            ModelState.Remove("Foto");
             var json = await response.Content.ReadAsStringAsync();
             var empleados = JsonConvert.DeserializeObject<EmpleadoDTO>(json);
             
@@ -181,10 +181,6 @@ namespace MVC.Controllers
             if (!ModelState.IsValid)
                 return View(empleado);
 
-            if (empleado.Foto == null)
-            {
-                empleado.Foto = empleado.Foto; // conservar foto existente
-            }
             try
             {
                 empleado.EstadoId = 1;
