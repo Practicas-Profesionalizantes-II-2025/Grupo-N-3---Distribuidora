@@ -21,7 +21,7 @@ namespace MVC.Models.DTOs
 
         //Productos disponibles para crear
         [ValidateNever]
-        public List<ProductoDTO> Productos { get; set; }
+        public List<ProductoDTO> Productos { get; set; } = new List<ProductoDTO>();
 
         // Productos seleccionados en la orden (para detalle)
         [ValidateNever]
