@@ -53,13 +53,26 @@ agregarFilaBtn.addEventListener("click", () => {
     const tbody = table.querySelector("tbody");
     const nuevaFila = document.createElement("tr");
 
+    const index = tbody.querySelectorAll("tr").length;
+
     nuevaFila.innerHTML = `
-        <td><input type="hidden" name="ProductosSeleccionados[].ProductoId" value="0" />0</td>
-        <td><input type="text" name="ProductosSeleccionados[].NombreProducto" value="" /></td>
-        <td><input type="number" name="ProductosSeleccionados[].CantidadProducto" value="1" min="1" class="cantidad" /></td>
-        <td><input type="number" name="ProductosSeleccionados[].PrecioUnitario" value="0" step="0.01" class="precio" /></td>
+        <td>
+            <input type="hidden" name="ProductosSeleccionados[${index}].ProductoId" value="0" />
+            0
+        </td>
+        <td>
+            <input type="text" name="ProductosSeleccionados[${index}].NombreProducto" value="" />
+        </td>
+        <td>
+            <input type="number" name="ProductosSeleccionados[${index}].CantidadProducto" value="1" min="1" class="cantidad" />
+        </td>
+        <td>
+            <input type="number" name="ProductosSeleccionados[${index}].PrecioUnitario" value="0" step="0.01" class="precio" />
+        </td>
         <td class="subtotal">$0</td>
-        <td><button type="button" class="btn btn-delete">Eliminar</button></td>
+        <td>
+            <button type="button" class="btn btn-delete">Eliminar</button>
+        </td>
     `;
 
     tbody.appendChild(nuevaFila);

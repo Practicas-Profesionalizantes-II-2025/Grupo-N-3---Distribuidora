@@ -156,44 +156,20 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO == null)
                 throw new ArgumentNullException(nameof(ordenDeCompraDTO));
 
-            if (ordenDeCompraDTO.Id <= 0)
-                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(ordenDeCompraDTO.Id));
+            var orden = new OrdenDeCompra
+            {
+                Id = ordenDeCompraDTO.Id,
+                EmpleadoId = ordenDeCompraDTO.EmpleadoId,
+                ProveedorId = ordenDeCompraDTO.ProveedorId,
+                FechaOrden = ordenDeCompraDTO.FechaOrden,
+                Productos = ordenDeCompraDTO.Productos.Select(p => new OrdenDeCompraProducto
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto                   
+                }).ToList()
+            };
 
-            if (ordenDeCompraDTO.EmpleadoId <= 0)
-                throw new ArgumentException("El ID del empleado debe ser mayor que cero.", nameof(ordenDeCompraDTO.EmpleadoId));
-
-            if (ordenDeCompraDTO.ProveedorId <= 0)
-                throw new ArgumentException("El ID del Proveedor debe ser mayor que cero.", nameof(ordenDeCompraDTO.ProveedorId));
-
-            if (ordenDeCompraDTO.FechaOrden == default)
-                throw new ArgumentException("La fecha de la orden no es válida.", nameof(ordenDeCompraDTO.FechaOrden));
-
-            var existente = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(ordenDeCompraDTO.Id);
-            if (existente == null)
-                throw new KeyNotFoundException($"No se encontró una orden de compra con ID {ordenDeCompraDTO.Id}.");
-
-            existente.EmpleadoId = ordenDeCompraDTO.EmpleadoId;
-            existente.ProveedorId = ordenDeCompraDTO.ProveedorId;
-            existente.FechaOrden = ordenDeCompraDTO.FechaOrden;
-
-            _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(existente);
-            List<string> camposErroneos = new List<string>();
-
-            if (ordenDeCompraDTO.Id <= 0)
-                camposErroneos.Add("Id");
-
-            if (ordenDeCompraDTO.EmpleadoId <= 0)
-                camposErroneos.Add("EmpleadoId");
-
-            if (ordenDeCompraDTO.ProveedorId <= 0)
-                camposErroneos.Add("ProveedorId");
-
-            if (ordenDeCompraDTO.FechaOrden == default)
-                camposErroneos.Add("FechaOrden");
-
-            if (camposErroneos.Count > 0)
-                throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
-
+            _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(orden);
         }
 
         public async Task EliminarOrdenDeCompra(int id)
