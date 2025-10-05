@@ -47,12 +47,19 @@ a {
     text-decoration: none;
 }
 
-html, body {
+body, html {
     margin: 0;
     padding: 0;
-    height: 100%;
-    overflow: hidden; /* evita scroll innecesario */
+    width: 100%;
 }
+
+.container {
+    width: 100% !important;
+    max-width: 100% !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
 
 
 #login_img {
@@ -1449,3 +1456,13 @@ a {
         border-color: #f5c518;
         box-shadow: 0 0 5px rgba(245, 197, 24, 0.5);
     }
+
+/* For all main content containers */
+.container, .content, .tabla-empleados, .form, .pedido {
+    max-width: 100%;
+    width: 100%;
+    margin-left: 0;
+    margin-right: 0;
+    padding-left: 1rem; /* opcional para que no toque los bordes */
+    padding-right: 1rem; /* opcional */
+}
