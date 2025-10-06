@@ -14,6 +14,5 @@ namespace CDatos.Repositorios.IRepositorios
         Task<Categoria> CrearCategoria(Categoria categoria);
         void ActualizarCategoria(Categoria Categoria);
         void EliminarCategoria(int id);
-        Task<List<Categoria>> BuscarCategoria(string filtro);
     }
 }

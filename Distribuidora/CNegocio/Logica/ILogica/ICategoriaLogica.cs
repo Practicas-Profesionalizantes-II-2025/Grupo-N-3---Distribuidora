@@ -14,6 +14,5 @@ namespace CNegocio.Logica.ILogica
         Task CrearCategoria(CategoriaDTO categoriaDTO);
         Task ActualizarCategoria(CategoriaDTO categoriaDTO);
         Task EliminarCategoria(int id);
-        Task<List<CategoriaDTO>> BuscarCategoria(string filtro);
     }
 }

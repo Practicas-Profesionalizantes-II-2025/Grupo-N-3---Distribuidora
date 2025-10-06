@@ -87,16 +87,6 @@ namespace CNegocio.Logica
             _categoriaRepositorio.EliminarCategoria(id);
         }
 
-        public async Task<List<CategoriaDTO>> BuscarCategoria(string filtro)
-        {
-            var categorias = await _categoriaRepositorio.BuscarCategoria(filtro);
-
-            return categorias.Select(c => new CategoriaDTO
-            {
-                Id = c.Id,
-                Nombre = c.Nombre
-            }).ToList();
-        }
         #region Validaciones
         private bool ContainsInvalidCharacter(string text)
         {

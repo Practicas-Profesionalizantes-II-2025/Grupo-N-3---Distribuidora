@@ -78,13 +78,5 @@ namespace API.Controllers
 
             return NoContent();
         }
-
-        // GET: api/Categorias/buscar?filtro=texto
-        [HttpGet("buscar")]
-        public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Buscar(string filtro)
-        {
-            var resultados = await _IcategoriaLogica.BuscarCategoria(filtro);
-            return Ok(resultados);
-        }
     }
 }

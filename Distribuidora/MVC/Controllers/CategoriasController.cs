@@ -132,23 +132,5 @@ namespace MVC.Controllers
 
             return RedirectToAction("listaCategorias");
         }
-
-        //GET: Buscar categoria
-        public async Task<IActionResult> buscarCategoria(string filtro)
-        {
-            if (string.IsNullOrWhiteSpace(filtro))
-                return Json(new List<CategoriaDTO>());
-
-            var url = $"{_settings.BaseUrl}/{_settings.BuscarCategoria}?filtro={filtro}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return Json(new List<CategoriaDTO>());
-
-            var json = await response.Content.ReadAsStringAsync();
-            var categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(json);
-
-            return Json(categorias);
-        }
     }
 }
