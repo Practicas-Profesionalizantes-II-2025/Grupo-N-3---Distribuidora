@@ -55,7 +55,7 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            _IcategoriaLogica.ActualizarCategoria(categoria);
+            await _IcategoriaLogica.ActualizarCategoria(categoria);
 
             return NoContent();
         }
@@ -65,7 +65,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<CategoriaDTO>> PostCategoria(CategoriaDTO categoria)
         {
-            _IcategoriaLogica.CrearCategoria(categoria);
+            await _IcategoriaLogica.CrearCategoria(categoria);
 
             return CreatedAtAction("GetCategoria", new { id = categoria.Id }, categoria);
         }
@@ -74,9 +74,17 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategoria(int id)
         {
-            _IcategoriaLogica.EliminarCategoria(id);
+            await _IcategoriaLogica.EliminarCategoria(id);
 
             return NoContent();
+        }
+
+        // GET: api/Categorias/buscar?filtro=texto
+        [HttpGet("buscar")]
+        public async Task<ActionResult<IEnumerable<CategoriaDTO>>> Buscar(string filtro)
+        {
+            var resultados = await _IcategoriaLogica.BuscarCategoria(filtro);
+            return Ok(resultados);
         }
     }
 }

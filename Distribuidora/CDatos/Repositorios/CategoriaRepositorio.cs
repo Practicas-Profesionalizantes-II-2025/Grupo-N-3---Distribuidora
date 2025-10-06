@@ -52,5 +52,18 @@ namespace CDatos.Repositorios
                 _context.SaveChanges();
             }
         }
+
+        public async Task<List<Categoria>> BuscarCategoria(string filtro)
+        {
+            if (string.IsNullOrWhiteSpace(filtro))
+                return await _context.Categoria.ToListAsync();
+
+            filtro = filtro.ToLower();
+
+            return await _context.Categoria
+                .Where(c => c.Nombre.ToLower().Contains(filtro)
+                         || c.Id.ToString().Contains(filtro))
+                .ToListAsync();
+        }
     }
 }

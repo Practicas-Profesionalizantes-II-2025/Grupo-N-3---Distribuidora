@@ -20,8 +20,8 @@ namespace CDatos.Repositorios
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompra()
         {
             return await _context.OrdenDeCompra
-              .Include(o => o.Productos) // <--- Incluye la relación
-                  .ThenInclude(op => op.Producto)     // <--- Opcional, si querés info del producto
+              .Include(o => o.Productos) 
+                  .ThenInclude(op => op.Producto)   
               .Include(o => o.Empleado)
               .Include(o => o.Proveedor)
               .ToListAsync();
@@ -71,7 +71,7 @@ namespace CDatos.Repositorios
         public void EliminarOrdenDeCompra(int id)
         {
             var orden = _context.OrdenDeCompra
-                .Include(o => o.Productos) // asegurar que EF borre los hijos si está cascade
+                .Include(o => o.Productos) 
                 .FirstOrDefault(x => x.Id == id);
             if (orden != null)
             {
@@ -81,7 +81,6 @@ namespace CDatos.Repositorios
         }
 
         // Obtener lista de Ordenes de Compra segun el atributo de clave foranea (EmpleadoId, ClienteId, DistribuidorId)
-
         public async Task<List<OrdenDeCompra>> ObtenerOrdenesDeCompraPorDistribuidorId(int proveedorId)
         {
             return await _context.OrdenDeCompra

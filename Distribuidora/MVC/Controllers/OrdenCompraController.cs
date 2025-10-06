@@ -90,7 +90,6 @@ namespace MVC.Controllers
                 return View(orden);
             }
 
-            // Mapear al objeto que la API espera
             var model = new
             {
                 EmpleadoId = orden.EmpleadoId,

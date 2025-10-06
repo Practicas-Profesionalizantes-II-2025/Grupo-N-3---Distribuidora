@@ -143,6 +143,7 @@ namespace CNegocio.Logica
                 EmpleadoId = ordenDeCompraDTO.EmpleadoId,
                 ProveedorId = ordenDeCompraDTO.ProveedorId,
                 FechaOrden = ordenDeCompraDTO.FechaOrden,
+                Estado = ordenDeCompraDTO.Estado = "Pendiente",
                 Productos = ordenDeCompraDTO.Productos.Select(p => new OrdenDeCompraProducto
                 {
                     ProductoId = p.ProductoId,
