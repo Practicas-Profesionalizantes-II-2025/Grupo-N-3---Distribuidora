@@ -32,7 +32,7 @@ namespace CNegocio.Logica
                 EmpleadoId = o.EmpleadoId,
                 Estado = o.Estado,
                 ProveedorId = o.ProveedorId,
-                Productos = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                ProductosSeleccionados = o.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
@@ -58,7 +58,7 @@ namespace CNegocio.Logica
                 EmpleadoId = ordenDeCompra.EmpleadoId,
                 Estado = ordenDeCompra.Estado,
                 ProveedorId = ordenDeCompra.ProveedorId,
-                Productos = ordenDeCompra.Productos.Select(p => new OrdenDeCompraProductoDTO
+                ProductosSeleccionados = ordenDeCompra.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
                     Id = p.Id,                           // ID del registro de la relación
                     OrdenDeCompraId = ordenDeCompra.Id,  // ID de la orden
@@ -82,7 +82,7 @@ namespace CNegocio.Logica
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
                 ProveedorId = o.ProveedorId,
-                Productos = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                ProductosSeleccionados = o.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
@@ -104,7 +104,7 @@ namespace CNegocio.Logica
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
                 ProveedorId = o.ProveedorId,
-                Productos = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                ProductosSeleccionados = o.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
@@ -147,7 +147,7 @@ namespace CNegocio.Logica
                 ProveedorId = ordenDeCompraDTO.ProveedorId,
                 FechaOrden = ordenDeCompraDTO.FechaOrden,
                 Estado = ordenDeCompraDTO.Estado = "Pendiente",
-                Productos = ordenDeCompraDTO.Productos.Select(p => new OrdenDeCompraProducto
+                Productos = ordenDeCompraDTO.ProductosSeleccionados.Select(p => new OrdenDeCompraProducto
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto
@@ -177,7 +177,7 @@ namespace CNegocio.Logica
                 ProveedorId = ordenDeCompraDTO.ProveedorId,
                 FechaOrden = ordenDeCompraDTO.FechaOrden,
                 Estado = ordenDeCompraDTO.Estado,
-                Productos = ordenDeCompraDTO.Productos.Select(p => new OrdenDeCompraProducto
+                Productos = ordenDeCompraDTO.ProductosSeleccionados.Select(p => new OrdenDeCompraProducto
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto
