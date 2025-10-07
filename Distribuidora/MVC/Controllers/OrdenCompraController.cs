@@ -28,30 +28,45 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 ViewBag.Error = await response.Content.ReadAsStringAsync();
-                return View(new List<OrdenDeCompraDTO>());
+                return View(new List<MVC.Models.DTOs.OrdenDeCompraDTO>());
             }
 
             var json = await response.Content.ReadAsStringAsync();
-            var listaApi = JsonConvert.DeserializeObject<List<OrdenDeCompraDTO>>(json);
 
-            var listaMvc = listaApi.Select(o => new OrdenDeCompraDTO
+            var listaApi = JsonConvert.DeserializeObject<List<MVC.Models.DTOs.OrdenDeCompraDTO>>(json);
+
+            foreach (var orden in listaApi)
             {
-                Id = o.Id,
-                FechaOrden = o.FechaOrden,
-                EmpleadoId = o.EmpleadoId,
-                NombreEmpleado = $"Empleado {o.EmpleadoId}",
-                ProveedorId = o.ProveedorId,
-                ProveedorNombre = $"Proveedor {o.ProveedorId}",
-                Estado = o.Estado,
-                ProductosSeleccionados = o.ProductosSeleccionados,
-            }).ToList();
+                orden.NombreEmpleado = HttpContext.Session.GetString("EmpleadoNombre") ?? $"Empleado {orden.EmpleadoId}";
 
-            return View(listaMvc);
+                orden.ProveedorNombre = $"Proveedor {orden.ProveedorId}";
+
+                if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+                {
+                    orden.ProductosSeleccionados = orden.Productos.Select(p => new OrdenDeCompraProductoDTO
+                    {
+                        ProductoId = p.Id,
+                        NombreProducto = p.Nombre,
+                        PrecioUnitario = p.PrecioProducto,
+                        CantidadProducto = 0,
+                        ProveedorId = orden.ProveedorId,
+                        ProveedorNombre = orden.ProveedorNombre
+                    }).ToList();
+                }
+            }
+
+            return View(listaApi);
         }
 
         // GET: Crear OrdenDeCompra
         public async Task<IActionResult> crearOrdenCompra()
         {
+            var empleadoId = HttpContext.Session.GetInt32("EmpleadoId");
+            if (empleadoId == null || empleadoId == 0)
+                return RedirectToAction("Login", "Empleados");
+
+            var empleadoNombre = HttpContext.Session.GetString("EmpleadoNombre") ?? "Empleado";
+
             var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
             var response = await _httpClient.GetAsync(url);
 
@@ -65,13 +80,13 @@ namespace MVC.Controllers
             var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json,
             new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
 
-
+            
             var model = new OrdenDeCompraDTO
             {
-                EmpleadoId = 1, // Cambiarlo por el empleado que inicie sesion
+                EmpleadoId = empleadoId.Value, // Cambiarlo por el empleado que inicie sesion
+                NombreEmpleado = empleadoNombre,
                 ProveedorId = 1,
                 ProveedorNombre = "Proveedor 4",
-                NombreEmpleado = "Juan Pérez",
                 Estado = "Pendiente",
                 FechaOrden = DateTime.Now,
                 Productos = productos
@@ -90,9 +105,17 @@ namespace MVC.Controllers
                 return View(orden);
             }
 
+            orden.EmpleadoId = HttpContext.Session.GetInt32("EmpleadoId") ?? 0;
+
+            if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+            {
+                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
+                return View(orden);
+            }
+
             var model = new
             {
-                EmpleadoId = orden.EmpleadoId,
+                EmpleadoId = orden.EmpleadoId, // ahora seguro es el logueado
                 ProveedorId = orden.ProveedorId,
                 FechaOrden = DateTime.Now,
                 Estado = "Pendiente",
