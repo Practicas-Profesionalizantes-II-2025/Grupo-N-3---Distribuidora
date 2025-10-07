@@ -1,4 +1,5 @@
-﻿using CDatos.Repositorios.IRepositorios;
+﻿using CDatos.Repositorios;
+using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
 using Shared.Entities;
@@ -12,10 +13,12 @@ namespace CNegocio.Logica
     public class OrdenDeCompraLogica : IOrdenDeCompraLogica
     {
         private readonly IOrdenDeCompraRepositorio _ordenDeCompraRepositorio;
+        private readonly IProductoRepositorio _productoRepositorio;
 
-        public OrdenDeCompraLogica(IOrdenDeCompraRepositorio ordenDeCompraRepositorio)
+        public OrdenDeCompraLogica(IOrdenDeCompraRepositorio ordenDeCompraRepositorio, IProductoRepositorio productoRepositorio)
         {
             _ordenDeCompraRepositorio = ordenDeCompraRepositorio ?? throw new ArgumentNullException(nameof(ordenDeCompraRepositorio));
+            _productoRepositorio = productoRepositorio ?? throw new ArgumentNullException(nameof(productoRepositorio));
         }
 
         #region obtener ordenes
@@ -159,6 +162,14 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO == null)
                 throw new ArgumentNullException(nameof(ordenDeCompraDTO));
 
+            // Traemos la orden existente
+            var ordenExistente = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(ordenDeCompraDTO.Id);
+            if (ordenExistente == null)
+                throw new Exception("Orden de Compra no encontrada.");
+
+            bool cambioAEntregado = ordenExistente.Estado != "Entregado" && ordenDeCompraDTO.Estado == "Entregado";
+
+            // Mapeamos los nuevos datos
             var orden = new OrdenDeCompra
             {
                 Id = ordenDeCompraDTO.Id,
@@ -169,11 +180,26 @@ namespace CNegocio.Logica
                 Productos = ordenDeCompraDTO.Productos.Select(p => new OrdenDeCompraProducto
                 {
                     ProductoId = p.ProductoId,
-                    CantidadProducto = p.CantidadProducto                   
+                    CantidadProducto = p.CantidadProducto
                 }).ToList()
             };
 
+            // Actualizamos la orden en la base
             _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(orden);
+
+            // Si pasó a ENTREGADO → actualizamos el stock
+            if (cambioAEntregado)
+            {
+                foreach (var prod in orden.Productos)
+                {
+                    var producto = await _productoRepositorio.ObtenerProductoPorId(prod.ProductoId);
+                    if (producto != null)
+                    {
+                        producto.Stock += prod.CantidadProducto;
+                        await _productoRepositorio.ActualizarProducto(producto);
+                    }
+                }
+            }
         }
 
         public async Task EliminarOrdenDeCompra(int id)
