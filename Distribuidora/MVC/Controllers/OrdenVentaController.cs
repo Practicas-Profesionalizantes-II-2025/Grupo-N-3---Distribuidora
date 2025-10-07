@@ -20,7 +20,7 @@ namespace MVC.Controllers
         }
 
         // GET: OrdenDeVentas
-        public async Task<IActionResult> listaOrdenesVentas()
+        public async Task<IActionResult> listaOrdenVentas()
         {
             var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}";
             var response = await _httpClient.GetAsync(url);
@@ -153,7 +153,7 @@ namespace MVC.Controllers
                 return View(orden);
             }
 
-            return RedirectToAction(nameof(listaOrdenesVentas));
+            return RedirectToAction(nameof(listaOrdenVentas));
         }
         // GET: OrdenDeVenta/Edit/5
         public async Task<IActionResult> modificarOrdenventa(int id)
@@ -162,7 +162,7 @@ namespace MVC.Controllers
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return RedirectToAction(nameof(listaOrdenesVentas));
+                return RedirectToAction(nameof(listaOrdenVentas));
 
             var json = await response.Content.ReadAsStringAsync();
             var ordenApi = JsonConvert.DeserializeObject<OrdenDeVentaDTO>(json);
@@ -235,7 +235,7 @@ namespace MVC.Controllers
                 return View(orden);
             }
 
-            return RedirectToAction(nameof(listaOrdenesVentas));
+            return RedirectToAction(nameof(listaOrdenVentas));
         }
 
         // DELETE: OrdenDeVenta/Delete/5
@@ -246,9 +246,9 @@ namespace MVC.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                return RedirectToAction(nameof(listaOrdenesVentas));
+                return RedirectToAction(nameof(listaOrdenVentas));
             }
-            return RedirectToAction(nameof(listaOrdenesVentas));
+            return RedirectToAction(nameof(listaOrdenVentas));
         }
 
         // GET: OrdenDeVenta/Detalle/5
@@ -257,12 +257,12 @@ namespace MVC.Controllers
             var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}/{id}";
             var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
-                return RedirectToAction(nameof(listaOrdenesVentas));
+                return RedirectToAction(nameof(listaOrdenVentas));
 
             var json = await response.Content.ReadAsStringAsync();
             var content = JsonConvert.DeserializeObject<DetalleOrdenVentaDTO>(json);
             if (content == null)
-                return RedirectToAction(nameof(listaOrdenesVentas));
+                return RedirectToAction(nameof(listaOrdenVentas));
 
             var urlProductos = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
             var responseProductos = await _httpClient.GetAsync(urlProductos);

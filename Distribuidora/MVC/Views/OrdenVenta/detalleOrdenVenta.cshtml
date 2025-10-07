@@ -32,7 +32,7 @@
                 </tr>
             </thead>
             <tbody>
-             @*@if (Model.ProductosSeleccionados != null && Model.ProductosSeleccionados.Any())
+             @if (Model.ProductosSeleccionados != null && Model.ProductosSeleccionados.Any())
                 {
                     foreach (var p in Model.ProductosSeleccionados)
                     {
@@ -50,13 +50,13 @@
                     <tr>
                         <td colspan="5">No hay productos en esta venta.</td>
                     </tr>
-                }*@   
+                } 
             </tbody>
             <tfoot>
                 <tr>
                     <td colspan="4" class="total-label">TOTAL:</td>
                     <td class="total-value">
-                        @*@Model.ProductosSeleccionados?.Sum(p => p.PrecioUnitario * p.CantidadProducto).ToString("C") ?? "$0.00" *@    
+                        @Model.ProductosSeleccionados?.Sum(p => p.PrecioUnitario * p.CantidadProducto).ToString("C") ?? "$0.00"    
                     </td>
                 </tr>
             </tfoot>

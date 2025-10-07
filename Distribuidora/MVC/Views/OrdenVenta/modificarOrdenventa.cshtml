@@ -41,52 +41,53 @@
                     </tr>
                 </thead>
                 <tbody>
-                 @*   @if (Model.ProductosSeleccionados != null && Model.ProductosSeleccionados.Any())
+                    @if (Model.ProductosSeleccionados != null && Model.ProductosSeleccionados.Any())
                     {
-                        foreach (var prod in Model.ProductosSeleccionados) *@
+                        foreach (var prod in Model.ProductosSeleccionados) 
                         {
                             <tr>
-                            @*     <td>@prod.ProductoId<input type="hidden" name="ProductosSeleccionados[@prod.ProductoId].ProductoId" value="@prod.ProductoId" /></td>
+                                 <td>@prod.ProductoId<input type="hidden" name="ProductosSeleccionados[@prod.ProductoId].ProductoId" value="@prod.ProductoId" /></td>
                                 <td>@prod.NombreProducto</td>
                                 <td><input type="number" name="ProductosSeleccionados[@prod.ProductoId].CantidadProducto" value="@prod.CantidadProducto" min="1" class="cantidad" /></td>
                                 <td><input type="number" name="ProductosSeleccionados[@prod.ProductoId].PrecioUnitario" value="@prod.PrecioUnitario" step="0.01" class="precio" /></td>
                                 <td class="subtotal">$@((prod.CantidadProducto * prod.PrecioUnitario).ToString("N2"))</td>
-                                <td><button type="button" class="btn btn-delete">Eliminar</button></td> *@
+                                <td><button type="button" class="btn btn-delete">Eliminar</button></td> 
                             </tr>
                         }
                     }
                 </tbody> 
                 <tfoot>
                     <tr>
-                      @*  <td colspan="4" class="total-label">TOTAL:</td>
+                        <td colspan="4" class="total-label">TOTAL:</td>
                         <td class="total-value" id="totalGeneral">$@Model.ProductosSeleccionados.Sum(p => p.CantidadProducto * p.PrecioUnitario).ToString("N2")</td>
-                        <td></td> *@
+                        <td></td> 
                     </tr>
                 </tfoot>
             </table>
 
             <div class="form-group">
                 <label for="estadoVenta">Estado de la venta:</label>
-              @*@Html.DropDownListFor(m => m.Estado, new List<SelectListItem>
+              @Html.DropDownListFor(m => m.Estado, new List<SelectListItem>
                 {
                     new SelectListItem { Text = "Pendiente", Value = "pendiente" },
                         new SelectListItem { Text = "Enviado", Value = "enviado" },
                         new SelectListItem { Text = "Entregado", Value = "entregado" }
-                        }, "Seleccione Estado", new { @class = "input-select", id = "estadoVenta" }) *@  
+                        }, "Seleccione Estado", new { @class = "input-select", id = "estadoVenta" })  
         </div> 
 
         <div class="actions">
             <button type="button" class="btn" id="agregarFila">Agregar Producto</button>
             <button type="submit" class="btn">Guardar Cambios</button>
-            <a asp-controller="OrdenVenta" asp-action="listaVentas" class="btn back">Volver</a>
+            <a asp-controller="listaOrdenVentas" class="btn back">Volver</a>
         </div>
                 }
     </main>
 
     @section Scripts {
-        <script> @*
-           const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos)); *@
+        <script> 
+           const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos)); 
         </script>
+        <!--=============== JS ===============-->
         <script src="~/js/Venta/modificarVenta.js"></script>
     }
 </body>

@@ -28,8 +28,8 @@
             <!-- Datos generales ocultos -->
             <input type="hidden" asp-for="EmpleadoId" value="@Model.EmpleadoId" />
             <input type="hidden" asp-for="ClienteId" value="@Model.ClienteId" />
-           @*<input type="hidden" asp-for="Estado" value="@Model.Estado" />
-            <input type="hidden" asp-for="FechaVenta" value="@Model.FechaVenta" /> *@ 
+           <input type="hidden" asp-for="Estado" value="@Model.Estado" />
+            <input type="hidden" asp-for="Fecha" value="@Model.Fecha" /> 
 
             <!-- Tabla de productos -->
             <table class="pedido__table" id="pedidoTable">
@@ -71,7 +71,7 @@
             <div class="actions">
                 <button type="button" class="btn" id="agregarFila">Agregar producto</button>
                 <button type="submit" class="btn">Confirmar Venta</button>
-                <a asp-controller="OrdenVenta" asp-action="listaVentas" class="btn back">Volver</a>
+                <a asp-controller="OrdenVenta" asp-action="listaOrdenVentas" class="btn back">Volver</a>
             </div>
         }
     </main>
@@ -79,7 +79,7 @@
 @section Scripts {
         <script>
             // Pasamos la lista de productos al JS
-         @*   const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos)); *@
+            const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos));
         </script>
         <script src="~/js/Venta/crearVenta.js"></script>
 }
