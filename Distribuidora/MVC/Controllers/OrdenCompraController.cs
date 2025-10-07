@@ -32,15 +32,31 @@ namespace MVC.Controllers
             }
 
             var json = await response.Content.ReadAsStringAsync();
-
             var listaApi = JsonConvert.DeserializeObject<List<OrdenDeCompraDTO>>(json);
+
+            if (listaApi == null || !listaApi.Any())
+                return View(new List<OrdenDeCompraDTO>());
 
             foreach (var orden in listaApi)
             {
-                orden.NombreEmpleado = HttpContext.Session.GetString("EmpleadoNombre") ?? $"Empleado {orden.EmpleadoId}";
+                // Obtener el empleado de forma individual para esta orden
+                var empleadoResponse = await _httpClient.GetAsync($"{_settings.BaseUrl}/Empleados/{orden.EmpleadoId}");
+                if (empleadoResponse.IsSuccessStatusCode)
+                {
+                    var empleado = await empleadoResponse.Content.ReadFromJsonAsync<EmpleadoDTO>();
+                    orden.NombreEmpleado = empleado != null
+                        ? $"{empleado.Persona.Nombre} {empleado.Persona.Apellido}"
+                        : $"Empleado {orden.EmpleadoId}";
+                }
+                else
+                {
+                    orden.NombreEmpleado = $"Empleado {orden.EmpleadoId}";
+                }
 
+                // Nombre del proveedor
                 orden.ProveedorNombre = $"Proveedor {orden.ProveedorId}";
 
+                // Mapear productos si no hay detalles
                 if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
                 {
                     orden.ProductosSeleccionados = orden.Productos.Select(p => new OrdenDeCompraProductoDTO
