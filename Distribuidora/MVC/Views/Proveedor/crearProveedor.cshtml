@@ -19,55 +19,6 @@
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
-    <!--=============== HEADER ===============-->
-    <header class="header">
-        <nav class="nav container">
-            <div class="nav__menu" id="nav-menu">
-                <ul class="nav__list">
-                    <li class="dropdown__item">
-                        <a asp-controller="Empleados" asp-action="listaEmpleados" class="nav__link">Empleados</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Clientes" asp-action="listaClientes" class="nav__link">Clientes</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Productos" asp-action="listaProductos" class="nav__link">Productos</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Categorias" asp-action="listaCategorias" class="nav__link">Categorias</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Stock" asp-action="index" class="nav__link">Stock</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Proveedores" asp-action="listaProveedores" class="nav__link">Proveedores</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Distribuidor" asp-action="listaDistribuidores" class="nav__link">Distribuidores</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Compras" asp-action="listaPedidos" class="nav__link">Compras</a>
-                    </li>
-                    <li class="dropdown__item">
-                        <a asp-controller="Ventas" asp-action="listaVentas" class="nav__link">Ventas</a>
-                    </li>
-                    <li class="dropdown__item user-dropdown">
-                        <div class="nav__link">
-                            <i class="ri-user-line"></i> <i class="ri-arrow-down-s-line dropdown__arrow"></i>
-                        </div>
-                        <ul class="dropdown__menu">
-                            <li>
-                                <a asp-controller="Auth" asp-action="Logout" class="dropdown__link">
-                                    <i class="ri-logout-box-line"></i> Salir
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </div>
-        </nav>
-    </header>
-
     <!--=============== CONTENIDO PRINCIPAL ===============-->
     <main>
         <div class="content">
@@ -95,6 +46,6 @@
     </main>
 
     <!--=============== JS ===============-->
-    <script src="~/js/main.js"></script>
+    <script src="~/js/site.js"></script>
 </body>
 </html>
