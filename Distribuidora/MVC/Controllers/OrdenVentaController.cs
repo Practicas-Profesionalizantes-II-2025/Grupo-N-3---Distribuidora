@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 using MVC.ConfigAPI;
 using MVC.Models.DTOs;
@@ -19,67 +20,283 @@ namespace MVC.Controllers
         }
 
         // GET: OrdenDeVentas
-        public async Task<IActionResult> listaOrdenes()
+        public async Task<IActionResult> listaOrdenesVentas()
         {
             var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}";
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+            {
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new List<OrdenDeVentaDTO>());
+            }
 
             var json = await response.Content.ReadAsStringAsync();
-            var lista_ordenes = JsonConvert.DeserializeObject<List<OrdenDeVentaDTO>>(json);
+            var listaApi = JsonConvert.DeserializeObject<List<OrdenDeVentaDTO>>(json);
 
-            return View(lista_ordenes);
+            if (listaApi == null || !listaApi.Any())
+                return View(new List<OrdenDeVentaDTO>());
+
+            foreach (var orden in listaApi)
+            {
+                // Obtener el empleado de forma individual para esta orden
+                var empleadoResponse = await _httpClient.GetAsync($"{_settings.BaseUrl}/Empleados/{orden.EmpleadoId}");
+                if (empleadoResponse.IsSuccessStatusCode)
+                {
+                    var empleado = await empleadoResponse.Content.ReadFromJsonAsync<EmpleadoDTO>();
+                    orden.NombreEmpleado = empleado != null
+                        ? $"{empleado.Persona.Nombre} {empleado.Persona.Apellido}"
+                        : $"Empleado {orden.EmpleadoId}";
+                }
+                else
+                {
+                    orden.NombreEmpleado = $"Empleado {orden.EmpleadoId}";
+                }
+                orden.DistribuidorNombre = $"Distribuidor {orden.DistribuidorId}";
+
+                // Mapear productos si no hay detalles
+                if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+                {
+                    orden.ProductosSeleccionados = orden.Productos.Select(p => new OrdenDeVentaProductoDTO
+                    {
+                        ProductoId = p.Id,
+                        NombreProducto = p.Nombre,
+                        PrecioUnitario = p.PrecioProducto,
+                        CantidadProducto = 0,
+                        ProveedorId = orden.DistribuidorId,
+                        ProveedorNombre = orden.DistribuidorNombre
+                    }).ToList();
+                }
+            }
+
+            return View(listaApi);
         }
 
         // GET: OrdenDeVenta/Create
-        public IActionResult crearOrden()
+        public async Task<IActionResult> crearOrdenVenta()
         {
-            return View();
+            var empleadoId = HttpContext.Session.GetInt32("EmpleadoId");
+            if (empleadoId == null || empleadoId == 0)
+                return RedirectToAction("Login", "Empleados");
+
+            var empleadoNombre = HttpContext.Session.GetString("EmpleadoNombre") ?? "Empleado";
+
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new OrdenDeVentaDTO());
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json,
+            new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
+
+
+            var model = new OrdenDeVentaDTO
+            {
+                EmpleadoId = empleadoId.Value,
+                NombreEmpleado = empleadoNombre,
+                DistribuidorId = 1,
+                DistribuidorNombre = "Distribuidor 4",
+                Estado = "Pendiente",
+                Fecha = DateTime.Now,
+                Productos = productos
+            };
+
+            return View(model);
         }
 
         // POST: OrdenDeVenta/Create
         [HttpPost]
-        public async Task<IActionResult> crearOrden([Bind("Id,Fecha,FacturaId,EmpleadoId,ClienteId,DistribuidorId")] OrdenDeVentaDTO orden)
+        public async Task<IActionResult> crearOrdenVenta(OrdenDeVentaDTO orden)
         {
-            if (!ModelState.IsValid)
+            if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+            {
+                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
                 return View(orden);
+            }
 
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaPost}";
-            var jsonData = JsonConvert.SerializeObject(orden);
+            orden.EmpleadoId = HttpContext.Session.GetInt32("EmpleadoId") ?? 0;
+
+            if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+            {
+                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
+                return View(orden);
+            }
+
+            var model = new
+            {
+                EmpleadoId = orden.EmpleadoId, // ahora seguro es el logueado
+                DistribuidorId = orden.DistribuidorId,
+                Fecha = DateTime.Now,
+                Estado = "Pendiente",
+                Productos = orden.ProductosSeleccionados.Select(p => new
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto
+                }).ToList()
+            };
+
+            var jsonData = JsonConvert.SerializeObject(model);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaPost}";
             var response = await _httpClient.PostAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError("", $"Error al crear la orden: {error}");
+                return View(orden);
+            }
 
-            return RedirectToAction("listaOrdenes");
+            return RedirectToAction(nameof(listaOrdenesVentas));
         }
-
-        // GET: OrdenDeVenta/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: OrdenDeVenta/Edit/5
+        public async Task<IActionResult> modificarOrdenCompra(int id)
         {
-            if (id == null)
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaOrdenesVentas));
+
+            var json = await response.Content.ReadAsStringAsync();
+            var ordenApi = JsonConvert.DeserializeObject<OrdenDeVentaDTO>(json);
+
+            var ordenMvc = new OrdenDeVentaDTO
+            {
+                Id = ordenApi.Id,
+                Fecha = ordenApi.Fecha,
+                EmpleadoId = ordenApi.EmpleadoId,
+                Estado = ordenApi.Estado,
+                NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}",
+                DistribuidorId = ordenApi.DistribuidorId,
+                DistribuidorNombre = $"Proveedor {ordenApi.DistribuidorId}",
+                ProductosSeleccionados = ordenApi.ProductosSeleccionados.Select(p => new OrdenDeVentaProductoDTO
+                {
+                    ProductoId = p.Id,
+                    NombreProducto = p.NombreProducto,
+                    PrecioUnitario = p.PrecioUnitario,
+                    CantidadProducto = p.CantidadProducto,
+                }).ToList()
+            };
+
+            // Aquí definimos el ViewBag por separado
+            ViewBag.Estados = new SelectList(
+                new List<string> { "Pendiente", "Realizado", "Entregado" },
+                ordenApi.Estado // valor seleccionado
+            );
+
+            return View(ordenMvc);
+        }
+        // POST: OrdenDeVenta/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> modificarOrdenventa(int id, OrdenDeVentaDTO orden)
+        {
+            if (id != orden.Id)
                 return NotFound();
 
+            if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+            {
+                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
+                return View(orden);
+            }
+
+            // Mapear al objeto que la API espera
+            var model = new
+            {
+                Id = orden.Id,
+                Fecha = orden.Fecha,
+                Estado = orden.Estado,
+                EmpleadoId = orden.EmpleadoId,
+                DistribuidorId = orden.DistribuidorId,
+                Productos = orden.ProductosSeleccionados.Select(p => new
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto,
+                    PrecioUnitario = p.PrecioUnitario
+                }).ToList()
+            };
+
+            var jsonData = JsonConvert.SerializeObject(model);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaPut}/{id}";
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError("", $"Error actualizando la orden: {error}");
+                return View(orden);
+            }
+
+            return RedirectToAction(nameof(listaOrdenesVentas));
+        }
+
+        // DELETE: OrdenDeVenta/Delete/5
+        public async Task<IActionResult> eliminarOrdenventa(int? id)
+        {
             var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaDelete}/{id}";
             var response = await _httpClient.DeleteAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error al eliminar la orden");
+            {
+                return RedirectToAction(nameof(listaOrdenesVentas));
+            }
+            return RedirectToAction(nameof(listaOrdenesVentas));
+        }
 
-            var url2 = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}";
-            var response2 = await _httpClient.GetAsync(url2);
+        // GET: OrdenDeVenta/Detalle/5
+        public async Task<IActionResult> detalleOrdenVenta(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaOrdenesVentas));
 
-            if (!response2.IsSuccessStatusCode)
-                return View("Error");
+            var json = await response.Content.ReadAsStringAsync();
+            var content = JsonConvert.DeserializeObject<DetalleOrdenCompraDTO>(json);
+            if (content == null)
+                return RedirectToAction(nameof(listaOrdenesVentas));
 
-            var json = await response2.Content.ReadAsStringAsync();
-            var lista_ordenes = JsonConvert.DeserializeObject<List<OrdenDeVentaDTO>>(json);
+            var urlProductos = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var responseProductos = await _httpClient.GetAsync(urlProductos);
+            var jsonProductos = await responseProductos.Content.ReadAsStringAsync();
+            var catalogoProductos = JsonConvert.DeserializeObject<List<ProductoDTOvista>>(jsonProductos);
 
-            return View("listaOrdenes", lista_ordenes);
+            var productosSeleccionados = content.Productos.Select(p =>
+            {
+                var prodCatalogo = catalogoProductos.FirstOrDefault(x => x.Id == p.ProductoId);
+                return new OrdenDeCompraProductoDTO
+                {
+                    Id = p.Id,
+                    OrdenDeCompraId = p.OrdenDeCompraId,
+                    ProductoId = p.ProductoId,
+                    NombreProducto = p.NombreProducto,
+                    CantidadProducto = p.CantidadProducto,
+                    PrecioUnitario = p.PrecioUnitario,
+                    ProveedorNombre = prodCatalogo?.ProveedorNombre ?? $"Proveedor {prodCatalogo?.ProveedorId ?? 0}"
+                };
+            }).ToList();
+
+            var ordenParaVista = new OrdenDeCompraDTO
+            {
+                Id = content.Id,
+                FechaOrden = content.FechaOrden,
+                Estado = content.Estado,
+                EmpleadoId = content.EmpleadoId,
+                NombreEmpleado = $"Empleado {content.EmpleadoId}",
+                ProveedorId = content.ProveedorId,
+                ProveedorNombre = $"Proveedor {content.ProveedorId}",
+                ProductosSeleccionados = productosSeleccionados
+            };
+
+            return View(ordenParaVista);
         }
     }
 }

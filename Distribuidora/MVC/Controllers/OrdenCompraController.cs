@@ -169,7 +169,7 @@ namespace MVC.Controllers
                 return RedirectToAction(nameof(listaOrdenCompras));
 
             var json = await response.Content.ReadAsStringAsync();
-            var ordenApi = JsonConvert.DeserializeObject<Shared.DTOs.OrdenDeCompraDTO>(json);
+            var ordenApi = JsonConvert.DeserializeObject<OrdenDeCompraDTO>(json);
 
             var ordenMvc = new OrdenDeCompraDTO
             {
@@ -180,7 +180,7 @@ namespace MVC.Controllers
                 NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}",
                 ProveedorId = ordenApi.ProveedorId,
                 ProveedorNombre = $"Proveedor {ordenApi.ProveedorId}",
-                ProductosSeleccionados = ordenApi.Productos.Select(p => new OrdenDeCompraProductoDTO
+                ProductosSeleccionados = ordenApi.ProductosSeleccionados.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
                     NombreProducto = p.NombreProducto,
