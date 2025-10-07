@@ -28,12 +28,12 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 ViewBag.Error = await response.Content.ReadAsStringAsync();
-                return View(new List<MVC.Models.DTOs.OrdenDeCompraDTO>());
+                return View(new List<OrdenDeCompraDTO>());
             }
 
             var json = await response.Content.ReadAsStringAsync();
 
-            var listaApi = JsonConvert.DeserializeObject<List<MVC.Models.DTOs.OrdenDeCompraDTO>>(json);
+            var listaApi = JsonConvert.DeserializeObject<List<OrdenDeCompraDTO>>(json);
 
             foreach (var orden in listaApi)
             {
