@@ -63,8 +63,8 @@ namespace MVC.Controllers
                         NombreProducto = p.Nombre,
                         PrecioUnitario = p.PrecioProducto,
                         CantidadProducto = 0,
-                        ProveedorId = orden.DistribuidorId,
-                        ProveedorNombre = orden.DistribuidorNombre
+                        DistribuidorId = orden.DistribuidorId,
+                        DistribuidorNombre = orden.DistribuidorNombre
                     }).ToList();
                 }
             }
@@ -156,7 +156,7 @@ namespace MVC.Controllers
             return RedirectToAction(nameof(listaOrdenesVentas));
         }
         // GET: OrdenDeVenta/Edit/5
-        public async Task<IActionResult> modificarOrdenCompra(int id)
+        public async Task<IActionResult> modificarOrdenventa(int id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}/{id}";
             var response = await _httpClient.GetAsync(url);
@@ -260,7 +260,7 @@ namespace MVC.Controllers
                 return RedirectToAction(nameof(listaOrdenesVentas));
 
             var json = await response.Content.ReadAsStringAsync();
-            var content = JsonConvert.DeserializeObject<DetalleOrdenCompraDTO>(json);
+            var content = JsonConvert.DeserializeObject<DetalleOrdenVentaDTO>(json);
             if (content == null)
                 return RedirectToAction(nameof(listaOrdenesVentas));
 
@@ -272,27 +272,27 @@ namespace MVC.Controllers
             var productosSeleccionados = content.Productos.Select(p =>
             {
                 var prodCatalogo = catalogoProductos.FirstOrDefault(x => x.Id == p.ProductoId);
-                return new OrdenDeCompraProductoDTO
-                {
-                    Id = p.Id,
-                    OrdenDeCompraId = p.OrdenDeCompraId,
+                return new MVC.Models.DTOs.OrdenDeVentaProductoDTO
+                {   Id = p.Id,
+                    OrdenVentaId = p.OrdenVentaId,
                     ProductoId = p.ProductoId,
-                    NombreProducto = p.NombreProducto,
                     CantidadProducto = p.CantidadProducto,
-                    PrecioUnitario = p.PrecioUnitario,
-                    ProveedorNombre = prodCatalogo?.ProveedorNombre ?? $"Proveedor {prodCatalogo?.ProveedorId ?? 0}"
+                    DistribuidorId = content.DistribuidorId,
+                    DistribuidorNombre = $"Distribuidor {content.DistribuidorId}",
+                    NombreProducto = prodCatalogo != null ? prodCatalogo.Nombre : $"Producto {p.ProductoId}",
+                    PrecioUnitario = prodCatalogo != null ? prodCatalogo.PrecioProducto : 0
                 };
             }).ToList();
 
-            var ordenParaVista = new OrdenDeCompraDTO
+            var ordenParaVista = new OrdenDeVentaDTO
             {
                 Id = content.Id,
-                FechaOrden = content.FechaOrden,
+                Fecha = content.Fecha,
                 Estado = content.Estado,
                 EmpleadoId = content.EmpleadoId,
                 NombreEmpleado = $"Empleado {content.EmpleadoId}",
-                ProveedorId = content.ProveedorId,
-                ProveedorNombre = $"Proveedor {content.ProveedorId}",
+                DistribuidorId = content.DistribuidorId,
+                DistribuidorNombre = $"Distribuidor {content.DistribuidorId}",
                 ProductosSeleccionados = productosSeleccionados
             };
 

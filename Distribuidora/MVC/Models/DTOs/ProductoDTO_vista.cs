@@ -1,4 +1,7 @@
-﻿namespace MVC.Models.DTOs
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using Microsoft.Extensions.Options;
+
+namespace MVC.Models.DTOs
 {
     public class ProductoDTOvista
     {
@@ -12,6 +15,11 @@
         // Propiedades de solo lectura para la vista
         public string ProveedorNombre { get; set; }
         public string CategoriaNombre { get; set; }
+
+        [ValidateNever]
+        public string NombreDistribuidor { get; set; }
+        [ValidateNever]
+        public int DistribuidorId { get; set; }
 
         // Plantear como poner foto
     }
