@@ -1,0 +1,93 @@
+﻿@model MVC.Models.DTOs.OrdenDeVentaDTO
+
+@{
+    ViewData["Title"] = "Modificar Venta";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Venta</title>
+
+    <!--=============== REMIXICONS ===============-->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css">
+</head>
+<body>
+    <main class="pedido">
+        <div class="section-header">
+            <h2>Modificar Venta</h2>
+        </div>
+
+        @using (Html.BeginForm("modificarVenta", "OrdenVenta", FormMethod.Post, new { id = "pedidoForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Id)
+            @Html.HiddenFor(m => m.ClienteId)
+            @Html.HiddenFor(m => m.EmpleadoId)
+            @Html.HiddenFor(m => m.DistribuidorId)
+
+            <table class="pedido__table" id="pedidoTable">
+                <thead>
+                    <tr>
+                        <th>ID Producto</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Total</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                 @*   @if (Model.ProductosSeleccionados != null && Model.ProductosSeleccionados.Any())
+                    {
+                        foreach (var prod in Model.ProductosSeleccionados) *@
+                        {
+                            <tr>
+                            @*     <td>@prod.ProductoId<input type="hidden" name="ProductosSeleccionados[@prod.ProductoId].ProductoId" value="@prod.ProductoId" /></td>
+                                <td>@prod.NombreProducto</td>
+                                <td><input type="number" name="ProductosSeleccionados[@prod.ProductoId].CantidadProducto" value="@prod.CantidadProducto" min="1" class="cantidad" /></td>
+                                <td><input type="number" name="ProductosSeleccionados[@prod.ProductoId].PrecioUnitario" value="@prod.PrecioUnitario" step="0.01" class="precio" /></td>
+                                <td class="subtotal">$@((prod.CantidadProducto * prod.PrecioUnitario).ToString("N2"))</td>
+                                <td><button type="button" class="btn btn-delete">Eliminar</button></td> *@
+                            </tr>
+                        }
+                    }
+                </tbody> 
+                <tfoot>
+                    <tr>
+                      @*  <td colspan="4" class="total-label">TOTAL:</td>
+                        <td class="total-value" id="totalGeneral">$@Model.ProductosSeleccionados.Sum(p => p.CantidadProducto * p.PrecioUnitario).ToString("N2")</td>
+                        <td></td> *@
+                    </tr>
+                </tfoot>
+            </table>
+
+            <div class="form-group">
+                <label for="estadoVenta">Estado de la venta:</label>
+              @*@Html.DropDownListFor(m => m.Estado, new List<SelectListItem>
+                {
+                    new SelectListItem { Text = "Pendiente", Value = "pendiente" },
+                        new SelectListItem { Text = "Enviado", Value = "enviado" },
+                        new SelectListItem { Text = "Entregado", Value = "entregado" }
+                        }, "Seleccione Estado", new { @class = "input-select", id = "estadoVenta" }) *@  
+        </div> 
+
+        <div class="actions">
+            <button type="button" class="btn" id="agregarFila">Agregar Producto</button>
+            <button type="submit" class="btn">Guardar Cambios</button>
+            <a asp-controller="OrdenVenta" asp-action="listaVentas" class="btn back">Volver</a>
+        </div>
+                }
+    </main>
+
+    @section Scripts {
+        <script> @*
+           const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos)); *@
+        </script>
+        <script src="~/js/Venta/modificarVenta.js"></script>
+    }
+</body>
+</html>
