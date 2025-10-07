@@ -336,6 +336,10 @@ namespace MVC.Controllers
             return View("listaEmpleado", empleado);
         }
 
-
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear(); // borra toda la sesión
+            return RedirectToAction("Login", "Empleados");
+        }
     }
 }

@@ -157,16 +157,16 @@ namespace CNegocio.Logica
                 EstadoId = c.EstadoId,
                 Persona = new PersonaDTO
                 {
-                    Id = c.Persona.Id,
-                    Nombre = c.Persona.Nombre,
-                    Apellido = c.Persona.Apellido,
-                    Tipo_DocId = c.Persona.Tipo_DocId,
-                    Nro_Doc = c.Persona.Nro_Doc,
-                    CiudadId = c.Persona.CiudadId,
-                    NombreCiudad = c.Persona.Nombre,
-                    Email = c.Persona.Email,
-                    Direccion = c.Persona.Direccion,
-                    Telefono = c.Persona.Telefono,
+                    Id = c.Persona?.Id ?? 0,
+                    Nombre = c.Persona?.Nombre ?? "",
+                    Apellido = c.Persona?.Apellido ?? "",
+                    Tipo_DocId = c.Persona?.Tipo_DocId ?? 0,
+                    Nro_Doc = c.Persona?.Nro_Doc ?? "",
+                    CiudadId = c.Persona?.CiudadId ?? 0,
+                    NombreCiudad = c.Persona?.Nombre ?? "",
+                    Email = c.Persona?.Email ?? "",
+                    Direccion = c.Persona?.Direccion ?? "",
+                    Telefono = c.Persona?.Telefono ?? "",
                 }
             }).ToList();
         }
