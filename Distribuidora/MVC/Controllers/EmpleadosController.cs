@@ -46,7 +46,6 @@ namespace MVC.Controllers
             }
 
             string empleadoUrl = $"{_settings.BaseUrl.TrimEnd('/')}/Empleados/dni/{datos.dni}";
-            Console.WriteLine(empleadoUrl); // o Debug.WriteLine
             var empleadoResponse = await _httpClient.GetAsync(empleadoUrl);
 
             if (!empleadoResponse.IsSuccessStatusCode)
