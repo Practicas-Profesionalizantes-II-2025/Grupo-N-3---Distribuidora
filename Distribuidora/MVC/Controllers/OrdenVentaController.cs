@@ -226,7 +226,7 @@ namespace MVC.Controllers
                 DistribuidorNombre = $"Distribuidor {ordenApi.DistribuidorId}",
                 ProductosSeleccionados = ordenApi.ProductosSeleccionados.Select(p => new OrdenDeVentaProductoDTO
                 {
-                    ProductoId = p.Id,
+                    ProductoId = p.ProductoId,
                     NombreProducto = p.NombreProducto,
                     PrecioUnitario = p.PrecioUnitario,
                     CantidadProducto = p.CantidadProducto,

@@ -82,22 +82,22 @@ namespace CNegocio.Logica
             if (id <= 0)
                 throw new ArgumentException("El ID de la orden debe ser mayor que cero.");
 
-            var ordenDeCompra = await _ordenDeVentaRepositorio.ObtenerOrdenDeVentaPorId(id);
-            if (ordenDeCompra == null)
+            var ordenDeVenta = await _ordenDeVentaRepositorio.ObtenerOrdenDeVentaPorId(id);
+            if (ordenDeVenta == null)
                 throw new ArgumentException($"No se encontró una orden con el ID {id}");
 
             return new OrdenDeVentaDTO
             {
-                Id = ordenDeCompra.Id,
-                Fecha = ordenDeCompra.Fecha,
-                EmpleadoId = ordenDeCompra.EmpleadoId,
-                ClienteId = ordenDeCompra.ClienteId,
-                Estado = ordenDeCompra.Estado,
-                DistribuidorId = ordenDeCompra.DistribuidorId,
-                ProductosSeleccionados = ordenDeCompra.Productos.Select(p => new OrdenDeVentaProductoDTO
+                Id = ordenDeVenta.Id,
+                Fecha = ordenDeVenta.Fecha,
+                EmpleadoId = ordenDeVenta.EmpleadoId,
+                ClienteId = ordenDeVenta.ClienteId,
+                Estado = ordenDeVenta.Estado,
+                DistribuidorId = ordenDeVenta.DistribuidorId,
+                ProductosSeleccionados = ordenDeVenta.Productos.Select(p => new OrdenDeVentaProductoDTO
                 {
                     Id = p.Id,
-                    OrdenDeVentaId = p.OrdenDeVentaId,
+                    OrdenDeVentaId = ordenDeVenta.Id,
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
                     NombreProducto = p.Producto.Nombre,
