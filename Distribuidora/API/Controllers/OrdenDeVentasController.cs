@@ -28,7 +28,8 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrdenDeVentaDTO>>> GetOrdenesDeVenta()
         {
-            return await _ordenDeVentaLogica.ObtenerOrdenesDeVenta();
+            var ordenes = await _ordenDeVentaLogica.ObtenerOrdenesDeVenta();
+            return Ok(ordenes);
         }
 
         // GET: api/OrdenDeVentas/5
