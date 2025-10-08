@@ -139,15 +139,20 @@ namespace CNegocio.Logica
                 DistribuidorId = ordenDeVentaDTO.DistribuidorId,
                 ClienteId = ordenDeVentaDTO.ClienteId,
                 Fecha = ordenDeVentaDTO.Fecha,
-                Estado = ordenDeVentaDTO.Estado = "Pendiente",
-                Productos = ordenDeVentaDTO.ProductosSeleccionados.Select(p => new OrdenDeVentaProducto
-                {
-                    ProductoId = p.ProductoId,
-                    CantidadProducto = p.CantidadProducto
-                }).ToList()
+                Estado = ordenDeVentaDTO.Estado = "Pendiente"
             };
 
             await _ordenDeVentaRepositorio.CrearOrdenDeVenta(orden);
+
+            var productos = ordenDeVentaDTO.ProductosSeleccionados.Select(p => new OrdenDeVentaProducto
+            {
+                OrdenDeVentaId = orden.Id, // Aquí ya tiene el Id generado
+                ProductoId = p.ProductoId,
+                CantidadProducto = p.CantidadProducto
+            }).ToList();
+
+            orden.Productos = productos;
+            _ordenDeVentaRepositorio.ActualizarOrdenDeVenta(orden);
         }
         public async Task ActualizarOrdenDeVenta(OrdenDeVentaDTO ordenDeVentaDTO)
         {
