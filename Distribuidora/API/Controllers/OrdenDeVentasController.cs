@@ -72,7 +72,8 @@ namespace API.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest(ex.Message);
+                // Esto te dará la excepción real
+                return StatusCode(500, ex.ToString());
             }
         }
 
