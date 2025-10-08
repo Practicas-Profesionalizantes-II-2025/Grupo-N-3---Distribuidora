@@ -22,7 +22,7 @@ namespace MVC.Controllers
         // GET: OrdenDeVentas
         public async Task<IActionResult> listaOrdenVentas()
         {
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}";
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenVentaGet}";
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
@@ -101,6 +101,8 @@ namespace MVC.Controllers
                 NombreEmpleado = empleadoNombre,
                 DistribuidorId = 1,
                 DistribuidorNombre = "Distribuidor 4",
+                ClienteId = 1,
+                ClienteNombre = "Cliente 1",
                 Estado = "Pendiente",
                 Fecha = DateTime.Now,
                 Productos = productos
@@ -131,6 +133,7 @@ namespace MVC.Controllers
             {
                 EmpleadoId = orden.EmpleadoId, // ahora seguro es el logueado
                 DistribuidorId = orden.DistribuidorId,
+                ClienteId = orden.ClienteId,
                 Fecha = DateTime.Now,
                 Estado = "Pendiente",
                 Productos = orden.ProductosSeleccionados.Select(p => new
@@ -143,7 +146,7 @@ namespace MVC.Controllers
             var jsonData = JsonConvert.SerializeObject(model);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaPost}";
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenVentaPost}";
             var response = await _httpClient.PostAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
@@ -158,7 +161,7 @@ namespace MVC.Controllers
         // GET: OrdenDeVenta/Edit/5
         public async Task<IActionResult> modificarOrdenventa(int id)
         {
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}/{id}";
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenVentaGet}/{id}";
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
@@ -225,7 +228,7 @@ namespace MVC.Controllers
             var jsonData = JsonConvert.SerializeObject(model);
             var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaPut}/{id}";
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenVentaPut}/{id}";
             var response = await _httpClient.PutAsync(url, content);
 
             if (!response.IsSuccessStatusCode)
@@ -241,7 +244,7 @@ namespace MVC.Controllers
         // DELETE: OrdenDeVenta/Delete/5
         public async Task<IActionResult> eliminarOrdenventa(int? id)
         {
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaDelete}/{id}";
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenVentaDelete}/{id}";
             var response = await _httpClient.DeleteAsync(url);
 
             if (!response.IsSuccessStatusCode)
@@ -254,7 +257,7 @@ namespace MVC.Controllers
         // GET: OrdenDeVenta/Detalle/5
         public async Task<IActionResult> detalleOrdenVenta(int id)
         {
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaGet}/{id}";
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenVentaGet}/{id}";
             var response = await _httpClient.GetAsync(url);
             if (!response.IsSuccessStatusCode)
                 return RedirectToAction(nameof(listaOrdenVentas));

@@ -5,8 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const productosContainer = document.getElementById("productosContainer");
     const totalGeneral = document.getElementById("totalGeneral");
     const agregarFilaBtn = document.getElementById("agregarFila");
-    const formOrden = document.getElementById("formOrden");
+    const formOrden = document.getElementById("formOrden"); // id del form de ventas
 
+    // Actualiza subtotales y total general
     function actualizarTotales() {
         let total = 0;
         tbody.querySelectorAll("tr").forEach(row => {
@@ -19,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
         totalGeneral.textContent = "$" + total.toFixed(2);
     }
 
+    // Genera inputs hidden antes de enviar el formulario
     function generarInputsHidden() {
         productosContainer.innerHTML = "";
         tbody.querySelectorAll("tr").forEach((row, index) => {
@@ -33,17 +35,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Agrega una fila nueva a la tabla
     function agregarFila() {
         const tr = document.createElement("tr");
 
         let options = '<option value="">--Seleccione--</option>';
-        if (productos && productos.length > 0) {
-            productos.forEach(p => {
-                options += `<option value="${p.Id}" data-precio="${p.PrecioProducto}">${p.Nombre}</option>`;
-            });
-        } else {
-            options += `<option disabled>No hay productos disponibles</option>`;
-        }
+        productos.forEach(p => {
+            options += `<option value="${p.Id}" data-precio="${p.PrecioUnitario}">${p.NombreProducto}</option>`;
+        });
 
         tr.innerHTML = `
             <td><select class="form-control productoSelect">${options}</select></td>
@@ -59,6 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const cantidadInput = tr.querySelector(".cantidadInput");
         const precioTd = tr.querySelector(".precioUnitario");
 
+        // Cambia el precio al seleccionar un producto
         select.addEventListener("change", () => {
             const precio = parseFloat(select.selectedOptions[0].dataset.precio || 0);
             precioTd.dataset.precio = precio;
@@ -74,7 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
+    // Botón para agregar filas manualmente
     agregarFilaBtn.addEventListener("click", agregarFila);
-    formOrden.addEventListener("submit", () => generarInputsHidden());
+
+    // Antes de enviar el formulario, generar inputs hidden
+    formOrden.addEventListener("submit", () => {
+        generarInputsHidden();
+    });
+
+    // Fila inicial al cargar la página
     agregarFila();
 });
