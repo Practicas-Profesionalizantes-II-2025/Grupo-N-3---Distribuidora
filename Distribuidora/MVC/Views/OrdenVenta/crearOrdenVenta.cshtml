@@ -27,9 +27,22 @@
 
         <!-- Datos generales -->
         <input type="hidden" asp-for="EmpleadoId" value="@Model.EmpleadoId" />
-        <input type="hidden" asp-for="ClienteId" value="@Model.ClienteId" />
         <input type="hidden" asp-for="Estado" value="@Model.Estado" />
         <input type="hidden" asp-for="Fecha" value="@Model.Fecha" />
+
+        <div class="form-group">
+            <label for="ClienteId">Cliente</label>
+            <select asp-for="ClienteId" class="form-control" asp-items="ViewBag.Clientes">
+                <option value="">-- Seleccione un cliente --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="DistribuidorId">Distribuidor</label>
+            <select asp-for="DistribuidorId" class="form-control" asp-items="ViewBag.Distribuidores">
+                <option value="">-- Seleccione un distribuidor --</option>
+            </select>
+        </div>
 
         <!-- Tabla de productos -->
         <table class="pedido__table" id="pedidoTable">

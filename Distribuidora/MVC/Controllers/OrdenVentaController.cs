@@ -22,37 +22,46 @@ namespace MVC.Controllers
         // GET: OrdenDeVentas
         public async Task<IActionResult> listaOrdenVentas()
         {
-            var url = $"{_settings.BaseUrl}/{_settings.OrdenVentaGet}";
-            var response = await _httpClient.GetAsync(url);
+            var urlOrdenes = $"{_settings.BaseUrl}/{_settings.OrdenVentaGet}";
+            var responseOrdenes = await _httpClient.GetAsync(urlOrdenes);
 
-            if (!response.IsSuccessStatusCode)
+            if (!responseOrdenes.IsSuccessStatusCode)
             {
-                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                ViewBag.Error = await responseOrdenes.Content.ReadAsStringAsync();
                 return View(new List<OrdenDeVentaDTO>());
             }
 
-            var json = await response.Content.ReadAsStringAsync();
-            var listaApi = JsonConvert.DeserializeObject<List<OrdenDeVentaDTO>>(json);
+            var jsonOrdenes = await responseOrdenes.Content.ReadAsStringAsync();
+            var listaOrdenes = JsonConvert.DeserializeObject<List<OrdenDeVentaDTO>>(jsonOrdenes);
 
-            if (listaApi == null || !listaApi.Any())
+            if (listaOrdenes == null || !listaOrdenes.Any())
                 return View(new List<OrdenDeVentaDTO>());
 
-            foreach (var orden in listaApi)
+            // Traer todos los empleados de la API
+            var urlEmpleados = $"{_settings.BaseUrl}/Empleados";
+            var jsonEmpleados = await _httpClient.GetStringAsync(urlEmpleados);
+            var empleados = JsonConvert.DeserializeObject<List<EmpleadoDTO>>(jsonEmpleados);
+
+            // Traer todos los clientes de la API
+            var urlClientes = $"{_settings.BaseUrl}/Clientes";
+            var jsonClientes = await _httpClient.GetStringAsync(urlClientes);
+            var clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(jsonClientes);
+
+            // Traer todos los distribuidores
+            var urlDistribuidores = $"{_settings.BaseUrl}/Distribuidor";
+            var jsonDistribuidores = await _httpClient.GetStringAsync(urlDistribuidores);
+            var distribuidores = JsonConvert.DeserializeObject<List<DistribuidorDTO>>(jsonDistribuidores);
+
+            foreach (var orden in listaOrdenes)
             {
-                // Obtener el empleado de forma individual para esta orden
-                var empleadoResponse = await _httpClient.GetAsync($"{_settings.BaseUrl}/Empleados/{orden.EmpleadoId}");
-                if (empleadoResponse.IsSuccessStatusCode)
-                {
-                    var empleado = await empleadoResponse.Content.ReadFromJsonAsync<EmpleadoDTO>();
-                    orden.NombreEmpleado = empleado != null
-                        ? $"{empleado.Persona.Nombre} {empleado.Persona.Apellido}"
-                        : $"Empleado {orden.EmpleadoId}";
-                }
-                else
-                {
-                    orden.NombreEmpleado = $"Empleado {orden.EmpleadoId}";
-                }
-                orden.DistribuidorNombre = $"Distribuidor {orden.DistribuidorId}";
+                var empleado = empleados.FirstOrDefault(e => e.Id == orden.EmpleadoId);
+                orden.NombreEmpleado = empleado != null? $"{empleado.Persona.Nombre} {empleado.Persona.Apellido}": $"Empleado {orden.EmpleadoId}";
+
+                var cliente = clientes.FirstOrDefault(c => c.Id == orden.ClienteId);
+                orden.ClienteNombre = cliente != null? $"{cliente.Persona.Nombre} {cliente.Persona.Apellido}": $"Cliente {orden.ClienteId}";
+
+                var distribuidor = distribuidores.FirstOrDefault(d => d.Id == orden.DistribuidorId);
+                orden.DistribuidorNombre = distribuidor != null? distribuidor.Nombre: $"Distribuidor {orden.DistribuidorId}";
 
                 // Mapear productos si no hay detalles
                 if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
@@ -68,8 +77,7 @@ namespace MVC.Controllers
                     }).ToList();
                 }
             }
-
-            return View(listaApi);
+            return View(listaOrdenes);
         }
 
         // GET: OrdenDeVenta/Create
@@ -81,28 +89,59 @@ namespace MVC.Controllers
 
             var empleadoNombre = HttpContext.Session.GetString("EmpleadoNombre") ?? "Empleado";
 
-            var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
+            // Traer productos
+            var urlProductos = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var responseProductos = await _httpClient.GetAsync(urlProductos);
+            if (!responseProductos.IsSuccessStatusCode)
             {
-                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                ViewBag.Error = await responseProductos.Content.ReadAsStringAsync();
                 return View(new OrdenDeVentaDTO());
             }
+            var jsonProductos = await responseProductos.Content.ReadAsStringAsync();
+            var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(jsonProductos,
+                new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
 
-            var json = await response.Content.ReadAsStringAsync();
-            var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json,
-            new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
+            // Traer clientes
+            var urlClientes = $"{_settings.BaseUrl}/{_settings.ClientesGet}";
+            var responseClientes = await _httpClient.GetAsync(urlClientes);
+            List<SelectListItem> clientesList = new List<SelectListItem>();
+            if (responseClientes.IsSuccessStatusCode)
+            {
+                var jsonClientes = await responseClientes.Content.ReadAsStringAsync();
+                var clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(jsonClientes);
 
+                clientesList = clientes.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = $"{c.Persona.Nombre} {c.Persona.Apellido}"
+                }).ToList();
+            }
 
+            // Traer distribuidores
+            var urlDistribuidores = $"{_settings.BaseUrl}/{_settings.DistribuidorGet}";
+            var responseDistribuidores = await _httpClient.GetAsync(urlDistribuidores);
+            List<SelectListItem> distribuidoresList = new List<SelectListItem>();
+            if (responseDistribuidores.IsSuccessStatusCode)
+            {
+                var jsonDistribuidores = await responseDistribuidores.Content.ReadAsStringAsync();
+                var distribuidores = JsonConvert.DeserializeObject<List<DistribuidorDTO>>(jsonDistribuidores);
+
+                distribuidoresList = distribuidores.Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Nombre
+                }).ToList();
+            }
+
+            // Pasar al ViewBag
+            ViewBag.Clientes = clientesList;
+            ViewBag.Distribuidores = distribuidoresList;
+
+            // Armar modelo
             var model = new OrdenDeVentaDTO
             {
                 EmpleadoId = empleadoId.Value,
                 NombreEmpleado = empleadoNombre,
-                DistribuidorId = 1,
-                DistribuidorNombre = "Distribuidor 4",
-                ClienteId = 1,
-                ClienteNombre = "Cliente 1",
                 Estado = "Pendiente",
                 Fecha = DateTime.Now,
                 Productos = productos
@@ -132,7 +171,7 @@ namespace MVC.Controllers
             var model = new
             {
                 EmpleadoId = orden.EmpleadoId, // ahora seguro es el logueado
-                DistribuidorId = orden.DistribuidorId = 1,
+                DistribuidorId = orden.DistribuidorId,
                 ClienteId = orden.ClienteId,
                 Fecha = DateTime.Now,
                 Estado = "Pendiente",
