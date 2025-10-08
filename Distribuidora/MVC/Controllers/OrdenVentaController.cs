@@ -174,7 +174,7 @@ namespace MVC.Controllers
 
             var model = new
             {
-                EmpleadoId = orden.EmpleadoId, // ahora seguro es el logueado
+                EmpleadoId = orden.EmpleadoId, 
                 DistribuidorId = orden.DistribuidorId,
                 ClienteId = orden.ClienteId,
                 Fecha = DateTime.Now,

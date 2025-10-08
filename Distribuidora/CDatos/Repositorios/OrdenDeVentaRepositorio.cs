@@ -97,7 +97,7 @@ namespace CDatos.Repositorios
         public async Task<List<OrdenDeVenta>> ObtenerOrdenesDeVentaPorDistribuidoraId(int distribuidoraId)
         {
             return await _context.OrdenDeVenta
-                .Where(c => c.ClienteId == distribuidoraId)
+                .Where(c => c.DistribuidorId == distribuidoraId)
                 .ToListAsync();
         }
     }

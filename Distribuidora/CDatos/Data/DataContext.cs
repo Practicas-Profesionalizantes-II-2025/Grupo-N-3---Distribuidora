@@ -32,24 +32,6 @@ namespace CDatos.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<OrdenDeVenta>()
-                  .HasOne(o => o.Empleado)
-                  .WithMany()
-                  .HasForeignKey(o => o.EmpleadoId)
-                  .OnDelete(DeleteBehavior.Restrict); // No cascada
-
-            modelBuilder.Entity<OrdenDeVenta>()
-                .HasOne(o => o.Cliente)
-                .WithMany()
-                .HasForeignKey(o => o.ClienteId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<OrdenDeVenta>()
-                .HasOne(o => o.Distribuidor)
-                .WithMany()
-                .HasForeignKey(o => o.DistribuidorId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             // Estados
             modelBuilder.Entity<Estado>().HasData(
                 new Estado { Id = 1, Descripcion = "Activo" },

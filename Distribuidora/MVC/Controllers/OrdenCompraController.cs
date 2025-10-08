@@ -44,9 +44,7 @@ namespace MVC.Controllers
                 if (empleadoResponse.IsSuccessStatusCode)
                 {
                     var empleado = await empleadoResponse.Content.ReadFromJsonAsync<EmpleadoDTO>();
-                    orden.NombreEmpleado = empleado != null
-                        ? $"{empleado.Persona.Nombre} {empleado.Persona.Apellido}"
-                        : $"Empleado {orden.EmpleadoId}";
+                    orden.NombreEmpleado = empleado != null? $"{empleado.Persona.Nombre} {empleado.Persona.Apellido}": $"Empleado {orden.EmpleadoId}";
                 }
                 else
                 {
