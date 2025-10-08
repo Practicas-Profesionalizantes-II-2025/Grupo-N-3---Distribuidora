@@ -26,6 +26,8 @@
                 <tr>
                     <th>ID Producto</th>
                     <th>Nombre</th>
+                    <th>Distribuidor</th>
+                    <th>Cliente</th>
                     <th>Cantidad</th>
                     <th>Precio Unitario</th>
                     <th>Total</th>
@@ -38,25 +40,27 @@
                     {
                         <tr>
                             <td>@p.ProductoId</td>
-                            <td>@p.NombreProducto</td>
+                            <td>@p.NombreProducto</td>>
+                            <td>@Model.DistribuidorNombre</td>
+                            <td>@Model.ClienteNombre</td>
                             <td>@p.CantidadProducto</td>
-                            <td>@p.PrecioUnitario.ToString("C")</td>
-                            <td>@(p.PrecioUnitario* p.CantidadProducto).ToString("C")</td>
+                            <td>@String.Format("{0:C}", p.PrecioUnitario)</td>
+                            <td>@String.Format("{0:C}", p.CantidadProducto * p.PrecioUnitario)</td>
                         </tr>
                     }
                 }
                 else
                 {
                     <tr>
-                        <td colspan="5">No hay productos en esta venta.</td>
+                        <td colspan="7">No hay productos en esta venta.</td>
                     </tr>
                 } 
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="4" class="total-label">TOTAL:</td>
+                    <td colspan="6" class="total-label">TOTAL:</td>
                     <td class="total-value">
-                        @Model.ProductosSeleccionados?.Sum(p => p.PrecioUnitario * p.CantidadProducto).ToString("C") ?? "$0.00"    
+                        @String.Format("{0:C}", Model.ProductosSeleccionados?.Sum(p => p.CantidadProducto * p.PrecioUnitario) ?? 0)
                     </td>
                 </tr>
             </tfoot>
