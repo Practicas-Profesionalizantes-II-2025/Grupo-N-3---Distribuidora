@@ -60,9 +60,9 @@ namespace CNegocio.Logica
                 ProveedorId = ordenDeCompra.ProveedorId,
                 ProductosSeleccionados = ordenDeCompra.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
-                    Id = p.Id,                           // ID del registro de la relación
-                    OrdenDeCompraId = ordenDeCompra.Id,  // ID de la orden
-                    ProductoId = p.ProductoId,           // ID del producto
+                    Id = p.Id,                        
+                    OrdenDeCompraId = ordenDeCompra.Id,  
+                    ProductoId = p.ProductoId,           
                     CantidadProducto = p.CantidadProducto,
                     NombreProducto = p.Producto.Nombre,
                     PrecioUnitario = p.Producto.PrecioProducto,

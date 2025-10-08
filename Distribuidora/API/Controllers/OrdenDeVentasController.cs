@@ -19,9 +19,9 @@ namespace API.Controllers
     {
         private readonly IOrdenDeVentaLogica _ordenDeVentaLogica;
 
-        public OrdenDeVentasController(IOrdenDeVentaLogica context)
+        public OrdenDeVentasController(IOrdenDeVentaLogica ordenDeVentaLogica)
         {
-            _ordenDeVentaLogica = context;
+            _ordenDeVentaLogica = ordenDeVentaLogica;
         }
 
         // GET: api/OrdenDeVentas
@@ -36,6 +36,11 @@ namespace API.Controllers
         public async Task<ActionResult<OrdenDeVentaDTO>> GetOrdenDeVentaPorId(int id)
         {
             var ordenDeVenta = await _ordenDeVentaLogica.ObtenerOrdenDeVentaPorId(id);
+
+            if (ordenDeVenta == null)
+            {
+                return NotFound();
+            }
 
             return ordenDeVenta;
         }

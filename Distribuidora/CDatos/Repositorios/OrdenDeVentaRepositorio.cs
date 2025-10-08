@@ -55,7 +55,7 @@ namespace CDatos.Repositorios
             existente.Fecha = ordenDeVenta.Fecha;
             existente.EmpleadoId = ordenDeVenta.EmpleadoId;
             existente.DistribuidorId = ordenDeVenta.DistribuidorId;
-            existente.Cliente = ordenDeVenta.Cliente;
+            existente.ClienteId = ordenDeVenta.ClienteId;
             existente.Estado = ordenDeVenta.Estado;
 
             existente.Productos.Clear();

@@ -73,7 +73,11 @@ namespace MVC.Controllers
                         PrecioUnitario = p.PrecioProducto,
                         CantidadProducto = 0,
                         DistribuidorId = orden.DistribuidorId,
-                        DistribuidorNombre = orden.DistribuidorNombre
+                        DistribuidorNombre = orden.DistribuidorNombre,
+                        ClienteId = orden.ClienteId,
+                        ClienteNombre = orden.ClienteNombre,
+                        EmpleadoId = orden.EmpleadoId,
+                        EmpleadoNombre = orden.NombreEmpleado,
                     }).ToList();
                 }
             }

@@ -10,7 +10,7 @@ namespace Shared.DTOs
     public class OrdenDeVentaProductoDTO
     {
         public int Id { get; set; }
-        public int OrdenVentaId { get; set; }
+        public int OrdenDeVentaId { get; set; }
         public int ProductoId { get; set; }
         [ValidateNever]
         public string NombreProducto { get; set; }

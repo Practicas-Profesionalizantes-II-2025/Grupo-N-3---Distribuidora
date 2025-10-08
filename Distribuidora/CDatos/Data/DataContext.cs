@@ -159,9 +159,9 @@ namespace CDatos.Data
 
             // Ordenes de Venta Producto
             modelBuilder.Entity<OrdenDeVentaProducto>().HasData(
-                new OrdenDeVentaProducto { Id = 1, OrdenVentaId = 1, ProductoId = 1, CantidadProducto = 1 },
-                new OrdenDeVentaProducto { Id = 2, OrdenVentaId = 1, ProductoId = 2, CantidadProducto = 2 },
-                new OrdenDeVentaProducto { Id = 3, OrdenVentaId = 2, ProductoId = 3, CantidadProducto = 5 }
+                new OrdenDeVentaProducto { Id = 1, OrdenDeVentaId = 1, ProductoId = 1, CantidadProducto = 1 },
+                new OrdenDeVentaProducto { Id = 2, OrdenDeVentaId = 1, ProductoId = 2, CantidadProducto = 2 },
+                new OrdenDeVentaProducto { Id = 3, OrdenDeVentaId = 2, ProductoId = 3, CantidadProducto = 5 }
             );
         }
     }

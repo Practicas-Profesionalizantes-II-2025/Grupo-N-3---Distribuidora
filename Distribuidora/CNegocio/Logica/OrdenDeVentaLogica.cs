@@ -18,8 +18,8 @@ namespace CNegocio.Logica
         private readonly IProductoRepositorio _productoRepositorio;
         public OrdenDeVentaLogica(IOrdenDeVentaRepositorio ordenDeVentaRepositorio, IProductoRepositorio productoRepositorio)
         {
-            _ordenDeVentaRepositorio = ordenDeVentaRepositorio;
-            _productoRepositorio = productoRepositorio;
+            _ordenDeVentaRepositorio = ordenDeVentaRepositorio ?? throw new ArgumentNullException(nameof(ordenDeVentaRepositorio));
+            _productoRepositorio = productoRepositorio ?? throw new ArgumentNullException(nameof(productoRepositorio));
         }
         #region obtener ordenes
         public async Task<List<OrdenDeVentaDTO>> ObtenerOrdenesDeVenta()
@@ -77,8 +77,6 @@ namespace CNegocio.Logica
                 ClienteId = o.ClienteId,
             }).ToList();
         }
-
-        //------------------------------------------------------------------------------------------------//
         public async Task<OrdenDeVentaDTO> ObtenerOrdenDeVentaPorId(int id)
         {
             if (id <= 0)
@@ -98,6 +96,8 @@ namespace CNegocio.Logica
                 DistribuidorId = ordenDeCompra.DistribuidorId,
                 ProductosSeleccionados = ordenDeCompra.Productos.Select(p => new OrdenDeVentaProductoDTO
                 {
+                    Id = p.Id,
+                    OrdenDeVentaId = p.OrdenDeVentaId,
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
                     NombreProducto = p.Producto.Nombre,
