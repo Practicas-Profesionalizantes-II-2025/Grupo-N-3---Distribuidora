@@ -420,16 +420,19 @@ namespace CDatos.Migrations
                     b.Property<int>("EmpleadoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EstadoId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("FacturaId")
-                        .HasColumnType("int");
+                    b.Property<string>("Estado")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Fecha")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("DistribuidorId");
+
+                    b.HasIndex("EmpleadoId");
 
                     b.ToTable("OrdenDeVenta");
 
@@ -440,8 +443,6 @@ namespace CDatos.Migrations
                             ClienteId = 1,
                             DistribuidorId = 1,
                             EmpleadoId = 1,
-                            EstadoId = 1,
-                            FacturaId = 1,
                             Fecha = new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
@@ -450,8 +451,6 @@ namespace CDatos.Migrations
                             ClienteId = 2,
                             DistribuidorId = 2,
                             EmpleadoId = 2,
-                            EstadoId = 2,
-                            FacturaId = 2,
                             Fecha = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
@@ -467,6 +466,9 @@ namespace CDatos.Migrations
                     b.Property<int>("CantidadProducto")
                         .HasColumnType("int");
 
+                    b.Property<int?>("OrdenDeVentaId")
+                        .HasColumnType("int");
+
                     b.Property<int>("OrdenVentaId")
                         .HasColumnType("int");
 
@@ -474,6 +476,10 @@ namespace CDatos.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("OrdenDeVentaId");
+
+                    b.HasIndex("ProductoId");
 
                     b.ToTable("OrdenDeVentaProducto");
 
@@ -921,7 +927,54 @@ namespace CDatos.Migrations
                     b.Navigation("Producto");
                 });
 
+            modelBuilder.Entity("Shared.Entities.OrdenDeVenta", b =>
+                {
+                    b.HasOne("Shared.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shared.Entities.Distribuidor", "Distribuidor")
+                        .WithMany()
+                        .HasForeignKey("DistribuidorId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Shared.Entities.Empleado", "Empleado")
+                        .WithMany()
+                        .HasForeignKey("EmpleadoId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Distribuidor");
+
+                    b.Navigation("Empleado");
+                });
+
+            modelBuilder.Entity("Shared.Entities.OrdenDeVentaProducto", b =>
+                {
+                    b.HasOne("Shared.Entities.OrdenDeVenta", null)
+                        .WithMany("Productos")
+                        .HasForeignKey("OrdenDeVentaId");
+
+                    b.HasOne("Shared.Entities.Producto", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+                });
+
             modelBuilder.Entity("Shared.Entities.OrdenDeCompra", b =>
+                {
+                    b.Navigation("Productos");
+                });
+
+            modelBuilder.Entity("Shared.Entities.OrdenDeVenta", b =>
                 {
                     b.Navigation("Productos");
                 });

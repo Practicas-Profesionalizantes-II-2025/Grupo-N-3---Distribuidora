@@ -33,7 +33,7 @@ namespace API.Controllers
 
         // GET: api/OrdenDeVentas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrdenDeVentaDTO>> GetOrdenDeVenta(int id)
+        public async Task<ActionResult<OrdenDeVentaDTO>> GetOrdenDeVentaPorId(int id)
         {
             var ordenDeVenta = await _ordenDeVentaLogica.ObtenerOrdenDeVentaPorId(id);
 

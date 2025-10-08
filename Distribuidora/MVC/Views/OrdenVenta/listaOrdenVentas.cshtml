@@ -83,7 +83,7 @@
                                 <a asp-controller="OrdenVenta" asp-action="modificarOrdenventa" asp-route-id="@venta.Id" class="btn-icon edit">
                                     <i class="ri-pencil-line"></i>
                                 </a>
-                                <form asp-controller="OrdenCompra" asp-action="eliminarOrdenVenta" method="post" style="display:inline;">
+                                <form asp-controller="OrdenVenta" asp-action="eliminarOrdenventa" method="post" style="display:inline;">
                                     <input type="hidden" name="id" value="@venta.Id" />
                                     <a href="#" class="btn-icon yellow-outline" title="Eliminar" onclick="confirmDelete(this)">
                                         <i class="ri-delete-bin-line"></i>
@@ -123,7 +123,7 @@
 
 @section Scripts {
         <script>
-            let rowToDelete = null;
+               let rowToDelete = null;
 
             function confirmDelete(button) {
                 rowToDelete = button.closest('tr');
@@ -132,7 +132,7 @@
 
             document.getElementById('confirmBtn').onclick = function () {
                 if (rowToDelete) {
-                    rowToDelete.remove();
+                    rowToDelete.querySelector('form').submit();
                     rowToDelete = null;
                 }
                 document.getElementById('deleteModal').style.display = 'none';
@@ -142,27 +142,6 @@
                 rowToDelete = null;
                 document.getElementById('deleteModal').style.display = 'none';
             }
-
-            document.addEventListener('DOMContentLoaded', () => {
-                const rows = document.querySelectorAll('.tabla-empleados tbody tr');
-                rows.forEach(row => {
-                    const estado = row.cells[5].textContent.trim().toLowerCase();
-                    const btnEdit = row.querySelector('.btn-icon.edit');
-                    const btnDelete = row.querySelector('.btn-icon.delete');
-
-                    if (estado === 'entregado' || estado === 'enviado') {
-                        btnEdit.style.pointerEvents = 'none';
-                        btnEdit.style.opacity = '0.5';
-                        btnDelete.style.pointerEvents = 'none';
-                        btnDelete.style.opacity = '0.5';
-                    } else if (estado === 'pendiente') {
-                        btnEdit.style.pointerEvents = 'auto';
-                        btnEdit.style.opacity = '1';
-                        btnDelete.style.pointerEvents = 'auto';
-                        btnDelete.style.opacity = '1';
-                    }
-                });
-            });
         </script>
 
         <!--=============== JS ===============-->

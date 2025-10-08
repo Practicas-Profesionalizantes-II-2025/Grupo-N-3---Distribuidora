@@ -132,7 +132,7 @@ namespace MVC.Controllers
             var model = new
             {
                 EmpleadoId = orden.EmpleadoId, // ahora seguro es el logueado
-                DistribuidorId = orden.DistribuidorId,
+                DistribuidorId = orden.DistribuidorId = 1,
                 ClienteId = orden.ClienteId,
                 Fecha = DateTime.Now,
                 Estado = "Pendiente",
