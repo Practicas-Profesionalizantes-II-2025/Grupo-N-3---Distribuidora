@@ -133,7 +133,7 @@ namespace MVC.Controllers
                 ProveedorId = orden.ProveedorId,
                 FechaOrden = DateTime.Now,
                 Estado = "Pendiente",
-                Productos = orden.ProductosSeleccionados.Select(p => new
+                ProductosSeleccionados = orden.ProductosSeleccionados.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto
