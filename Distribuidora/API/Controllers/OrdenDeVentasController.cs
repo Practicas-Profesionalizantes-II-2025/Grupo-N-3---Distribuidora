@@ -65,16 +65,8 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<OrdenDeVentaDTO>> PostOrdenDeVenta(OrdenDeVentaDTO ordenDeVenta)
         {
-            try
-            {
                 await _ordenDeVentaLogica.CrearOrdenDeVenta(ordenDeVenta);
                 return CreatedAtAction("GetOrdenDeVentaPorId", new { id = ordenDeVenta.Id }, ordenDeVenta);
-            }
-            catch (Exception ex)
-            {
-                // Esto te dará la excepción real
-                return StatusCode(500, ex.ToString());
-            }
         }
 
         // DELETE: api/OrdenDeVentas/5
