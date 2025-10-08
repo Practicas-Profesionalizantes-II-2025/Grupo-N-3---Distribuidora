@@ -10,10 +10,13 @@ namespace Shared.Entities
     {
         public int Id { get; set; }
         public DateTime Fecha { get; set; }
-        public int FacturaId { get; set; }
         public int EmpleadoId { get; set; }
+        public Empleado Empleado { get; set; }
         public int ClienteId { get; set; }
+        public Cliente Cliente { get; set; }   
         public int DistribuidorId { get; set; }
-        public int EstadoId { get; set; }
+        public Distribuidor Distribuidor { get; set; }
+        public List<OrdenDeVentaProducto> Productos { get; set; } = new();
+        public string? Estado { get; set; }
     }
 }

@@ -19,39 +19,66 @@ namespace CDatos.Repositorios
         }
         public async Task<List<OrdenDeVenta>> ObtenerOrdenesDeVenta()
         {
-            return await _context.OrdenDeVenta.ToListAsync();
+            return await _context.OrdenDeVenta
+            .Include(o => o.Productos)
+                .ThenInclude(op => op.Producto)
+            .Include(o => o.Empleado)
+            .Include(o => o.Distribuidor)
+            .Include(o => o.Cliente)
+            .ToListAsync();
         }
         public async Task<OrdenDeVenta> ObtenerOrdenDeVentaPorId(int id)
         {
-            return await _context.OrdenDeVenta.FindAsync(id);
+            return await _context.OrdenDeVenta
+                .Include(o => o.Productos)
+                    .ThenInclude(op => op.Producto)
+                .Include(o => o.Empleado)
+                .Include(o => o.Distribuidor)
+                .Include(o => o.Cliente)
+                .FirstOrDefaultAsync(o => o.Id == id);
         }
-        public async Task CrearOrdenDeVenta(OrdenDeVenta ordenDeVenta)
+        public async Task<OrdenDeVenta> CrearOrdenDeVenta(OrdenDeVenta ordenDeVenta)
         {
             _context.OrdenDeVenta.Add(ordenDeVenta);
             await _context.SaveChangesAsync();
+            return ordenDeVenta;
         }
-        public async Task ActualizarOrdenDeVenta(OrdenDeVenta ordenDeVenta)
+        public void ActualizarOrdenDeVenta(OrdenDeVenta ordenDeVenta)
         {
-            var ordenDeVentaExistente = _context.OrdenDeVenta.Find(ordenDeVenta.Id);
-            if (ordenDeVentaExistente == null)
-            {
-                throw new Exception("Orden de Venta no encontrada.");
-            }
-            ordenDeVentaExistente.FacturaId = ordenDeVenta.FacturaId;
-            ordenDeVentaExistente.DistribuidorId = ordenDeVenta.DistribuidorId;
-            ordenDeVentaExistente.ClienteId = ordenDeVenta.ClienteId;
-            ordenDeVentaExistente.EmpleadoId = ordenDeVenta.EmpleadoId;
-            ordenDeVentaExistente.Fecha = ordenDeVenta.Fecha;
+            var existente = _context.OrdenDeVenta
+                           .Include(o => o.Productos)
+                           .FirstOrDefault(o => o.Id == ordenDeVenta.Id);
 
-            await _context.SaveChangesAsync();
-        }
-        public async Task EliminarOrdenDeVentaAsync(int id)
-        {
-            var ordenDeVenta = await ObtenerOrdenDeVentaPorId(id);
-            if (ordenDeVenta != null)
+            if (existente == null)
+                throw new Exception("Orden de Venta no encontrada.");
+
+            existente.Fecha = ordenDeVenta.Fecha;
+            existente.EmpleadoId = ordenDeVenta.EmpleadoId;
+            existente.DistribuidorId = ordenDeVenta.DistribuidorId;
+            existente.Cliente = ordenDeVenta.Cliente;
+            existente.Estado = ordenDeVenta.Estado;
+
+            existente.Productos.Clear();
+
+            foreach (var p in ordenDeVenta.Productos)
             {
-                _context.OrdenDeVenta.Remove(ordenDeVenta);
-                await _context.SaveChangesAsync();
+                existente.Productos.Add(new OrdenDeVentaProducto
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto
+                });
+            }
+            _context.SaveChanges();
+        }
+        public void EliminarOrdenDeVenta(int id)
+        {
+            var orden = _context.OrdenDeVenta
+               .Include(o => o.Productos)
+               .FirstOrDefault(x => x.Id == id);
+            if (orden != null)
+            {
+                _context.OrdenDeVenta.Remove(orden);
+                _context.SaveChanges();
             }
         }
         // Obtener lista de Ordenes de venta segun el atributo de clave foranea (EmpleadoId, ClienteId, DistribuidorId)

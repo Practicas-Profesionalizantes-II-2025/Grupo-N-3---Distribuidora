@@ -162,14 +162,11 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO == null)
                 throw new ArgumentNullException(nameof(ordenDeCompraDTO));
 
-            // Traemos la orden existente
             var ordenExistente = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(ordenDeCompraDTO.Id);
             if (ordenExistente == null)
                 throw new Exception("Orden de Compra no encontrada.");
 
             bool cambioAEntregado = ordenExistente.Estado != "Entregado" && ordenDeCompraDTO.Estado == "Entregado";
-
-            // Mapeamos los nuevos datos
             var orden = new OrdenDeCompra
             {
                 Id = ordenDeCompraDTO.Id,
@@ -184,10 +181,8 @@ namespace CNegocio.Logica
                 }).ToList()
             };
 
-            // Actualizamos la orden en la base
             _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(orden);
 
-            // Si pasó a ENTREGADO → actualizamos el stock
             if (cambioAEntregado)
             {
                 foreach (var prod in orden.Productos)

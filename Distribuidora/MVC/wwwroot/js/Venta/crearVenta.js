@@ -1,65 +1,80 @@
-﻿// crearPedido.js
+﻿console.log("Productos desde API:", productos);
 
 document.addEventListener("DOMContentLoaded", () => {
-    const pedidoTable = document.getElementById("pedidoTable").getElementsByTagName("tbody")[0];
-    const totalGeneralEl = document.getElementById("totalGeneral");
+    const tbody = document.querySelector("#pedidoTable tbody");
+    const productosContainer = document.getElementById("productosContainer");
+    const totalGeneral = document.getElementById("totalGeneral");
     const agregarFilaBtn = document.getElementById("agregarFila");
+    const formOrden = document.getElementById("formOrden");
 
-    // Función para recalcular subtotal y total general
-    function recalcularTotal() {
-        let totalGeneral = 0;
-        const filas = pedidoTable.querySelectorAll("tr");
-
-        filas.forEach(fila => {
-            const cantidad = parseFloat(fila.querySelector(".cantidad").value) || 0;
-            const precio = parseFloat(fila.querySelector(".precio").value) || 0;
+    function actualizarTotales() {
+        let total = 0;
+        tbody.querySelectorAll("tr").forEach(row => {
+            const cantidad = parseFloat(row.querySelector(".cantidadInput").value || 0);
+            const precio = parseFloat(row.querySelector(".precioUnitario").dataset.precio || 0);
             const subtotal = cantidad * precio;
-            fila.querySelector(".subtotal").textContent = `$${subtotal.toLocaleString()}`;
-            totalGeneral += subtotal;
+            row.querySelector(".subtotal").textContent = "$" + subtotal.toFixed(2);
+            total += subtotal;
         });
-
-        totalGeneralEl.textContent = `$${totalGeneral.toLocaleString()}`;
+        totalGeneral.textContent = "$" + total.toFixed(2);
     }
 
-    // Función para crear una nueva fila
-    function crearFila(id = "", nombre = "", cantidad = 1, precio = 0) {
-        const fila = document.createElement("tr");
+    function generarInputsHidden() {
+        productosContainer.innerHTML = "";
+        tbody.querySelectorAll("tr").forEach((row, index) => {
+            const prodId = row.querySelector(".productoSelect").value;
+            const cantidad = row.querySelector(".cantidadInput").value;
 
-        fila.innerHTML = `
-      <td><input type="text" name="id[]" value="${id}"></td>
-      <td><input type="text" name="nombre[]" value="${nombre}"></td>
-      <td><input type="number" name="cantidad[]" value="${cantidad}" min="1" class="cantidad"></td>
-      <td><input type="number" name="precio[]" value="${precio}" step="0.01" class="precio"></td>
-      <td class="subtotal">$${(cantidad * precio).toLocaleString()}</td>
-      <td><button type="button" class="btn btn-delete">Eliminar</button></td>
-    `;
-
-        // Eventos para recalcular al cambiar cantidad o precio
-        fila.querySelector(".cantidad").addEventListener("input", recalcularTotal);
-        fila.querySelector(".precio").addEventListener("input", recalcularTotal);
-
-        // Evento para eliminar fila
-        fila.querySelector(".btn-delete").addEventListener("click", () => {
-            fila.remove();
-            recalcularTotal();
+            if (prodId && cantidad > 0) {
+                productosContainer.innerHTML +=
+                    `<input type="hidden" name="ProductosSeleccionados[${index}].ProductoId" value="${prodId}" />` +
+                    `<input type="hidden" name="ProductosSeleccionados[${index}].CantidadProducto" value="${cantidad}" />`;
+            }
         });
-
-        pedidoTable.appendChild(fila);
-        recalcularTotal();
     }
 
-    // Botón agregar fila
-    agregarFilaBtn.addEventListener("click", () => {
-        crearFila();
-    });
+    function agregarFila() {
+        const tr = document.createElement("tr");
 
-    // Evento submit del formulario
-    document.getElementById("pedidoForm").addEventListener("submit", (e) => {
-        e.preventDefault();
-        alert("Pedido guardado correctamente!");
-        // Aquí podrías enviar los datos al servidor con fetch/AJAX
-    });
+        let options = '<option value="">--Seleccione--</option>';
+        if (productos && productos.length > 0) {
+            productos.forEach(p => {
+                options += `<option value="${p.Id}" data-precio="${p.PrecioProducto}">${p.Nombre}</option>`;
+            });
+        } else {
+            options += `<option disabled>No hay productos disponibles</option>`;
+        }
 
-    // Opcional: agregar una fila inicial
-    crearFila();
+        tr.innerHTML = `
+            <td><select class="form-control productoSelect">${options}</select></td>
+            <td><input type="number" class="form-control cantidadInput" value="1" min="1"></td>
+            <td class="precioUnitario" data-precio="0">$0.00</td>
+            <td class="subtotal">$0.00</td>
+            <td><button type="button" class="btn btn-danger eliminarFila">X</button></td>
+        `;
+
+        tbody.appendChild(tr);
+
+        const select = tr.querySelector(".productoSelect");
+        const cantidadInput = tr.querySelector(".cantidadInput");
+        const precioTd = tr.querySelector(".precioUnitario");
+
+        select.addEventListener("change", () => {
+            const precio = parseFloat(select.selectedOptions[0].dataset.precio || 0);
+            precioTd.dataset.precio = precio;
+            precioTd.textContent = "$" + precio.toFixed(2);
+            actualizarTotales();
+        });
+
+        cantidadInput.addEventListener("input", actualizarTotales);
+
+        tr.querySelector(".eliminarFila").addEventListener("click", () => {
+            tr.remove();
+            actualizarTotales();
+        });
+    }
+
+    agregarFilaBtn.addEventListener("click", agregarFila);
+    formOrden.addEventListener("submit", () => generarInputsHidden());
+    agregarFila();
 });

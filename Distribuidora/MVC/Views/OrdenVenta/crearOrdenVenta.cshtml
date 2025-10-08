@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Crear Venta";
 }
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -21,15 +20,15 @@
             <h2>Crear Venta</h2>
         </div>
 
-        @using (Html.BeginForm("crearOrdenVenta", "OrdenVenta", FormMethod.Post, new { id = "formVenta" }))
+        @using (Html.BeginForm("crearOrdenVenta", "OrdenVenta", FormMethod.Post, new { id = "formOrden" }))
         {
             @Html.AntiForgeryToken()
 
-            <!-- Datos generales ocultos -->
+            <!-- Datos generales -->
             <input type="hidden" asp-for="EmpleadoId" value="@Model.EmpleadoId" />
             <input type="hidden" asp-for="ClienteId" value="@Model.ClienteId" />
-           <input type="hidden" asp-for="Estado" value="@Model.Estado" />
-            <input type="hidden" asp-for="Fecha" value="@Model.Fecha" /> 
+            <input type="hidden" asp-for="Estado" value="Pendiente" />
+            <input type="hidden" asp-for="Fecha" value="@DateTime.Now" />
 
             <!-- Tabla de productos -->
             <table class="pedido__table" id="pedidoTable">
@@ -43,34 +42,33 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Filas se agregarán dinámicamente desde JS -->
+                    <!-- Filas se agregan dinámicamente -->
                 </tbody>
                 <tfoot>
                     <tr>
                         <td colspan="4" class="total-label">TOTAL:</td>
                         <td class="total-value" id="totalGeneral" style="text-align:right;">$0.00</td>
-                        <td></td>
                     </tr>
                 </tfoot>
             </table>
 
-            <!-- Container para inputs hidden de productos seleccionados -->
+            <!-- Container para inputs hidden de los productos -->
             <div id="productosContainer"></div>
 
             <div class="actions">
                 <button type="button" class="btn" id="agregarFila">Agregar producto</button>
-                <button type="submit" class="btn">Confirmar Venta</button>
+                <button type="submit" class="btn yellow">Confirmar Venta</button>
                 <a asp-controller="OrdenVenta" asp-action="listaOrdenVentas" class="btn back">Volver</a>
             </div>
         }
+
     </main>
+</body>
+</html>
 
 @section Scripts {
-        <script>
-            // Pasamos la lista de productos al JS
-            const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos));
-        </script>
-        <script src="~/js/Compra/crearcompra.js"></script>
+    <script>
+        const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos));
+    </script>
+    <script src="~/js/Venta/crearventa.js"></script>
 }
-<</body>
-</html>

@@ -11,6 +11,7 @@ namespace Shared.Entities
         public int Id { get; set; }
         public int OrdenVentaId { get; set; }
         public int ProductoId { get; set; }
+        public Producto Producto { get; set; }
         public int CantidadProducto { get; set; }
     }
 }

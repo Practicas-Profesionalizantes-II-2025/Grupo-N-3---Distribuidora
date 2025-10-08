@@ -14,5 +14,7 @@ namespace Shared.DTOs
         public int EmpleadoId { get; set; }
         public int ClienteId { get; set; }
         public int DistribuidorId { get; set; }
+        public List<OrdenDeVentaProductoDTO> ProductosSeleccionados { get; set; } = new();
+        public string Estado { get; set; }
     }
 }

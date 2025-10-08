@@ -135,8 +135,8 @@ namespace CDatos.Data
 
             // Ordenes de Venta
             modelBuilder.Entity<OrdenDeVenta>().HasData(
-                new OrdenDeVenta { Id = 1, Fecha = new DateTime(2025, 8, 21), FacturaId = 1, EmpleadoId = 1, ClienteId = 1, DistribuidorId = 1, EstadoId = 1 },
-                new OrdenDeVenta { Id = 2, Fecha = new DateTime(2025, 8, 20), FacturaId = 2, EmpleadoId = 2, ClienteId = 2, DistribuidorId = 2, EstadoId = 2 }
+                new OrdenDeVenta { Id = 1, Fecha = new DateTime(2025, 8, 21), EmpleadoId = 1, ClienteId = 1, DistribuidorId = 1},
+                new OrdenDeVenta { Id = 2, Fecha = new DateTime(2025, 8, 20), EmpleadoId = 2, ClienteId = 2, DistribuidorId = 2}
             );
 
             // Ordenes de Venta Producto
