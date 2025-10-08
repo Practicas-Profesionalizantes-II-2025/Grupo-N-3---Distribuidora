@@ -214,10 +214,12 @@ namespace MVC.Controllers
                 Id = ordenApi.Id,
                 Fecha = ordenApi.Fecha,
                 EmpleadoId = ordenApi.EmpleadoId,
-                Estado = ordenApi.Estado,
                 NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}",
+                ClienteId = ordenApi.ClienteId,
+                ClienteNombre = $"Cliente {ordenApi.ClienteId}",
+                Estado = ordenApi.Estado,
                 DistribuidorId = ordenApi.DistribuidorId,
-                DistribuidorNombre = $"Proveedor {ordenApi.DistribuidorId}",
+                DistribuidorNombre = $"Distribuidor {ordenApi.DistribuidorId}",
                 ProductosSeleccionados = ordenApi.ProductosSeleccionados.Select(p => new OrdenDeVentaProductoDTO
                 {
                     ProductoId = p.Id,
@@ -248,7 +250,6 @@ namespace MVC.Controllers
                 return View(orden);
             }
 
-            // Mapear al objeto que la API espera
             var model = new
             {
                 Id = orden.Id,
@@ -256,6 +257,7 @@ namespace MVC.Controllers
                 Estado = orden.Estado,
                 EmpleadoId = orden.EmpleadoId,
                 DistribuidorId = orden.DistribuidorId,
+                ClienteId = orden.ClienteId,
                 Productos = orden.ProductosSeleccionados.Select(p => new
                 {
                     ProductoId = p.ProductoId,
@@ -314,13 +316,17 @@ namespace MVC.Controllers
             var productosSeleccionados = content.Productos.Select(p =>
             {
                 var prodCatalogo = catalogoProductos.FirstOrDefault(x => x.Id == p.ProductoId);
-                return new MVC.Models.DTOs.OrdenDeVentaProductoDTO
+                return new OrdenDeVentaProductoDTO
                 {   Id = p.Id,
                     OrdenVentaId = p.OrdenVentaId,
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
+                    EmpleadoId = content.EmpleadoId,
+                    EmpleadoNombre = $"Empleado {content.EmpleadoId}",
                     DistribuidorId = content.DistribuidorId,
                     DistribuidorNombre = $"Distribuidor {content.DistribuidorId}",
+                    ClienteId = content.ClienteId,
+                    ClienteNombre = $"Cliente {content.ClienteId}",
                     NombreProducto = prodCatalogo != null ? prodCatalogo.Nombre : $"Producto {p.ProductoId}",
                     PrecioUnitario = prodCatalogo != null ? prodCatalogo.PrecioProducto : 0
                 };
@@ -335,6 +341,8 @@ namespace MVC.Controllers
                 NombreEmpleado = $"Empleado {content.EmpleadoId}",
                 DistribuidorId = content.DistribuidorId,
                 DistribuidorNombre = $"Distribuidor {content.DistribuidorId}",
+                ClienteId = content.ClienteId,
+                ClienteNombre = $"Cliente {content.ClienteId}",
                 ProductosSeleccionados = productosSeleccionados
             };
 
