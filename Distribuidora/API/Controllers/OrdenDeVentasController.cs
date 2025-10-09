@@ -28,8 +28,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OrdenDeVentaDTO>>> GetOrdenesDeVenta()
         {
-            var ordenes = await _ordenDeVentaLogica.ObtenerOrdenesDeVenta();
-            return Ok(ordenes);
+            return await _ordenDeVentaLogica.ObtenerOrdenesDeVenta();
         }
 
         // GET: api/OrdenDeVentas/5
@@ -65,8 +64,16 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<OrdenDeVentaDTO>> PostOrdenDeVenta(OrdenDeVentaDTO ordenDeVenta)
         {
+            try
+            {
                 await _ordenDeVentaLogica.CrearOrdenDeVenta(ordenDeVenta);
                 return CreatedAtAction("GetOrdenDeVentaPorId", new { id = ordenDeVenta.Id }, ordenDeVenta);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         // DELETE: api/OrdenDeVentas/5

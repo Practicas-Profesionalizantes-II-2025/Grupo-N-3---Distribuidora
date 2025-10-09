@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CDatos.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20251008015144_InitialDb")]
+    [Migration("20251009024505_InitialDb")]
     partial class InitialDb
     {
         /// <inheritdoc />
@@ -426,7 +426,7 @@ namespace CDatos.Migrations
                     b.Property<string>("Estado")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("Fecha")
+                    b.Property<DateTime>("FechaOrden")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
@@ -446,7 +446,7 @@ namespace CDatos.Migrations
                             ClienteId = 1,
                             DistribuidorId = 1,
                             EmpleadoId = 1,
-                            Fecha = new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            FechaOrden = new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -454,7 +454,7 @@ namespace CDatos.Migrations
                             ClienteId = 2,
                             DistribuidorId = 2,
                             EmpleadoId = 2,
-                            Fecha = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            FechaOrden = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -469,10 +469,7 @@ namespace CDatos.Migrations
                     b.Property<int>("CantidadProducto")
                         .HasColumnType("int");
 
-                    b.Property<int?>("OrdenDeVentaId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("OrdenVentaId")
+                    b.Property<int>("OrdenDeVentaId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductoId")
@@ -491,21 +488,21 @@ namespace CDatos.Migrations
                         {
                             Id = 1,
                             CantidadProducto = 1,
-                            OrdenVentaId = 1,
+                            OrdenDeVentaId = 1,
                             ProductoId = 1
                         },
                         new
                         {
                             Id = 2,
                             CantidadProducto = 2,
-                            OrdenVentaId = 1,
+                            OrdenDeVentaId = 1,
                             ProductoId = 2
                         },
                         new
                         {
                             Id = 3,
                             CantidadProducto = 5,
-                            OrdenVentaId = 2,
+                            OrdenDeVentaId = 2,
                             ProductoId = 3
                         });
                 });
@@ -935,19 +932,19 @@ namespace CDatos.Migrations
                     b.HasOne("Shared.Entities.Cliente", "Cliente")
                         .WithMany()
                         .HasForeignKey("ClienteId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Shared.Entities.Distribuidor", "Distribuidor")
                         .WithMany()
                         .HasForeignKey("DistribuidorId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Shared.Entities.Empleado", "Empleado")
                         .WithMany()
                         .HasForeignKey("EmpleadoId")
-                        .OnDelete(DeleteBehavior.Restrict)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Cliente");
@@ -961,7 +958,9 @@ namespace CDatos.Migrations
                 {
                     b.HasOne("Shared.Entities.OrdenDeVenta", null)
                         .WithMany("Productos")
-                        .HasForeignKey("OrdenDeVentaId");
+                        .HasForeignKey("OrdenDeVentaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Shared.Entities.Producto", "Producto")
                         .WithMany()

@@ -147,7 +147,7 @@ namespace MVC.Controllers
                 EmpleadoId = empleadoId.Value,
                 NombreEmpleado = empleadoNombre,
                 Estado = "Pendiente",
-                Fecha = DateTime.Now,
+                FechaOrden = DateTime.Now,
                 Productos = productos
             };
 
@@ -174,10 +174,10 @@ namespace MVC.Controllers
 
             var model = new
             {
-                EmpleadoId = orden.EmpleadoId, 
+                EmpleadoId = orden.EmpleadoId, // ahora seguro es el logueado
                 DistribuidorId = orden.DistribuidorId,
                 ClienteId = orden.ClienteId,
-                Fecha = DateTime.Now,
+                FechaOrden = DateTime.Now,
                 Estado = "Pendiente",
                 ProductosSeleccionados = orden.ProductosSeleccionados.Select(p => new OrdenDeVentaProductoDTO
                 {
@@ -216,7 +216,7 @@ namespace MVC.Controllers
             var ordenMvc = new OrdenDeVentaDTO
             {
                 Id = ordenApi.Id,
-                Fecha = ordenApi.Fecha,
+                FechaOrden = ordenApi.FechaOrden,
                 EmpleadoId = ordenApi.EmpleadoId,
                 NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}",
                 ClienteId = ordenApi.ClienteId,
@@ -257,7 +257,7 @@ namespace MVC.Controllers
             var model = new
             {
                 Id = orden.Id,
-                Fecha = orden.Fecha,
+                Fecha = orden.FechaOrden,
                 Estado = orden.Estado,
                 EmpleadoId = orden.EmpleadoId,
                 DistribuidorId = orden.DistribuidorId,
@@ -322,7 +322,7 @@ namespace MVC.Controllers
                 var prodCatalogo = catalogoProductos.FirstOrDefault(x => x.Id == p.ProductoId);
                 return new OrdenDeVentaProductoDTO
                 {   Id = p.Id,
-                    OrdenVentaId = p.OrdenVentaId,
+                    OrdenDeVentaId = p.OrdenDeVentaId,
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
                     EmpleadoId = content.EmpleadoId,
@@ -339,7 +339,7 @@ namespace MVC.Controllers
             var ordenParaVista = new OrdenDeVentaDTO
             {
                 Id = content.Id,
-                Fecha = content.Fecha,
+                FechaOrden = content.FechaOrden,
                 Estado = content.Estado,
                 EmpleadoId = content.EmpleadoId,
                 NombreEmpleado = $"Empleado {content.EmpleadoId}",

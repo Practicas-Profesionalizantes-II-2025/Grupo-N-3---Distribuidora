@@ -32,6 +32,13 @@ namespace CDatos.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<OrdenDeVenta>()
+                .HasOne(o => o.Empleado)
+                .WithMany() // o WithMany(e => e.Ordenes)
+                .HasForeignKey(o => o.EmpleadoId)
+                .OnDelete(DeleteBehavior.NoAction);
             // Estados
             modelBuilder.Entity<Estado>().HasData(
                 new Estado { Id = 1, Descripcion = "Activo" },
@@ -135,8 +142,8 @@ namespace CDatos.Data
 
             // Ordenes de Venta
             modelBuilder.Entity<OrdenDeVenta>().HasData(
-                new OrdenDeVenta { Id = 1, Fecha = new DateTime(2025, 8, 21), EmpleadoId = 1, ClienteId = 1, DistribuidorId = 1},
-                new OrdenDeVenta { Id = 2, Fecha = new DateTime(2025, 8, 20), EmpleadoId = 2, ClienteId = 2, DistribuidorId = 2}
+                new OrdenDeVenta { Id = 1, EmpleadoId = 1, ClienteId = 1, DistribuidorId = 1, FechaOrden = new DateTime(2025, 8, 21) },
+                new OrdenDeVenta { Id = 2, EmpleadoId = 2, ClienteId = 2, DistribuidorId = 2, FechaOrden = new DateTime(2025, 8, 20), }
             );
 
             // Ordenes de Venta Producto

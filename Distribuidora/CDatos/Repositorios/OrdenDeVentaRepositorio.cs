@@ -20,12 +20,12 @@ namespace CDatos.Repositorios
         public async Task<List<OrdenDeVenta>> ObtenerOrdenesDeVenta()
         {
             return await _context.OrdenDeVenta
-            .Include(o => o.Productos)
-                .ThenInclude(op => op.Producto)
-            .Include(o => o.Empleado)
-            .Include(o => o.Distribuidor)
-            .Include(o => o.Cliente)
-            .ToListAsync();
+                .Include(o => o.Productos)
+                    .ThenInclude(op => op.Producto)
+                .Include(o => o.Empleado)
+                .Include(o => o.Distribuidor)
+                .Include(o => o.Cliente)
+                .ToListAsync();
         }
         public async Task<OrdenDeVenta> ObtenerOrdenDeVentaPorId(int id)
         {
@@ -52,7 +52,7 @@ namespace CDatos.Repositorios
             if (existente == null)
                 throw new Exception("Orden de Venta no encontrada.");
 
-            existente.Fecha = ordenDeVenta.Fecha;
+            existente.FechaOrden = ordenDeVenta.FechaOrden;
             existente.EmpleadoId = ordenDeVenta.EmpleadoId;
             existente.DistribuidorId = ordenDeVenta.DistribuidorId;
             existente.ClienteId = ordenDeVenta.ClienteId;

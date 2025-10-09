@@ -5,7 +5,7 @@ namespace MVC.Models.DTOs
     public class OrdenDeVentaDTO
     {
         public int Id { get; set; }
-        public DateTime Fecha { get; set; }
+        public DateTime FechaOrden { get; set; }
         public string Estado { get; set; }
 
         //View Model

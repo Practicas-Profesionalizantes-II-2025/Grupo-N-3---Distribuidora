@@ -28,7 +28,7 @@
         <!-- Datos generales -->
         <input type="hidden" asp-for="EmpleadoId" value="@Model.EmpleadoId" />
         <input type="hidden" asp-for="Estado" value="@Model.Estado" />
-        <input type="hidden" asp-for="Fecha" value="@Model.Fecha" />
+            <input type="hidden" asp-for="FechaOrden" value="@Model.FechaOrden" />
 
         <div class="form-group">
             <label for="ClienteId">Cliente</label>
@@ -83,5 +83,5 @@
     <script>
         const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos));
     </script>
-    <script src="~/js/Compra/crearcompra.js"></script>
+    <script src="~/js/Venta/crearVenta.js"></script>
 }

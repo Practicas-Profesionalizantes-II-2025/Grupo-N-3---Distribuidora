@@ -28,11 +28,11 @@ namespace CNegocio.Logica
             return ordenes.Select(o => new OrdenDeVentaDTO
             {
                 Id = o.Id,
-                Fecha = o.Fecha,
+                FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                ClienteId = o.ClienteId,
                 Estado = o.Estado,
                 DistribuidorId = o.DistribuidorId,
+                ClienteId = o.ClienteId,
                 ProductosSeleccionados = o.Productos.Select(p => new OrdenDeVentaProductoDTO
                 {
                     ProductoId = p.ProductoId,
@@ -40,41 +40,6 @@ namespace CNegocio.Logica
                     NombreProducto = p.Producto.Nombre,
                     PrecioUnitario = p.Producto.PrecioProducto,
                 }).ToList()
-            }).ToList();
-        }
-
-        //  Obtener lista a travez de claves foraneas
-        public async Task<List<OrdenDeVentaDTO>> ObtenerOrdenesDeVentaPorEmpleadoId(int empleadoId)
-        {
-            var ordenesDeVenta = await _ordenDeVentaRepositorio.ObtenerOrdenesDeVentaPorEmpleadoId(empleadoId);
-            return ordenesDeVenta.Select(o => new OrdenDeVentaDTO
-            {
-                Id = o.Id,
-                Fecha = o.Fecha,
-                EmpleadoId = o.EmpleadoId,
-                ClienteId = o.ClienteId,
-            }).ToList();
-        }
-        public async Task<List<OrdenDeVentaDTO>> ObtenerOrdenesDeVentaPorClienteId(int clienteId)
-        {
-            var ordenesDeVenta = await _ordenDeVentaRepositorio.ObtenerOrdenesDeVentaPorClienteId(clienteId);
-            return ordenesDeVenta.Select(o => new OrdenDeVentaDTO
-            {
-                Id = o.Id,
-                Fecha = o.Fecha,
-                EmpleadoId = o.EmpleadoId,
-                ClienteId = o.ClienteId,
-            }).ToList();
-        }
-        public async Task<List<OrdenDeVentaDTO>> ObtenerOrdenesDeVentaPorDistribuidoraId(int distribuidorId)
-        {
-            var ordenesDeVenta = await _ordenDeVentaRepositorio.ObtenerOrdenesDeVentaPorDistribuidoraId(distribuidorId);
-            return ordenesDeVenta.Select(o => new OrdenDeVentaDTO
-            {
-                Id = o.Id,
-                Fecha = o.Fecha,
-                EmpleadoId = o.EmpleadoId,
-                ClienteId = o.ClienteId,
             }).ToList();
         }
         public async Task<OrdenDeVentaDTO> ObtenerOrdenDeVentaPorId(int id)
@@ -89,11 +54,11 @@ namespace CNegocio.Logica
             return new OrdenDeVentaDTO
             {
                 Id = ordenDeVenta.Id,
-                Fecha = ordenDeVenta.Fecha,
+                FechaOrden = ordenDeVenta.FechaOrden,
                 EmpleadoId = ordenDeVenta.EmpleadoId,
-                ClienteId = ordenDeVenta.ClienteId,
                 Estado = ordenDeVenta.Estado,
                 DistribuidorId = ordenDeVenta.DistribuidorId,
+                ClienteId = ordenDeVenta.ClienteId,
                 ProductosSeleccionados = ordenDeVenta.Productos.Select(p => new OrdenDeVentaProductoDTO
                 {
                     Id = p.Id,
@@ -105,6 +70,42 @@ namespace CNegocio.Logica
                 }).ToList()
             };
         }
+
+        //  Obtener lista a travez de claves foraneas
+        public async Task<List<OrdenDeVentaDTO>> ObtenerOrdenesDeVentaPorEmpleadoId(int empleadoId)
+        {
+            var ordenesDeVenta = await _ordenDeVentaRepositorio.ObtenerOrdenesDeVentaPorEmpleadoId(empleadoId);
+            return ordenesDeVenta.Select(o => new OrdenDeVentaDTO
+            {
+                Id = o.Id,
+                FechaOrden = o.FechaOrden,
+                EmpleadoId = o.EmpleadoId,
+                ClienteId = o.ClienteId,
+            }).ToList();
+        }
+        public async Task<List<OrdenDeVentaDTO>> ObtenerOrdenesDeVentaPorClienteId(int clienteId)
+        {
+            var ordenesDeVenta = await _ordenDeVentaRepositorio.ObtenerOrdenesDeVentaPorClienteId(clienteId);
+            return ordenesDeVenta.Select(o => new OrdenDeVentaDTO
+            {
+                Id = o.Id,
+                FechaOrden = o.FechaOrden,
+                EmpleadoId = o.EmpleadoId,
+                ClienteId = o.ClienteId,
+            }).ToList();
+        }
+        public async Task<List<OrdenDeVentaDTO>> ObtenerOrdenesDeVentaPorDistribuidoraId(int distribuidorId)
+        {
+            var ordenesDeVenta = await _ordenDeVentaRepositorio.ObtenerOrdenesDeVentaPorDistribuidoraId(distribuidorId);
+            return ordenesDeVenta.Select(o => new OrdenDeVentaDTO
+            {
+                Id = o.Id,
+                FechaOrden = o.FechaOrden,
+                EmpleadoId = o.EmpleadoId,
+                ClienteId = o.ClienteId,
+            }).ToList();
+        }
+        
         #endregion obtener ordenes
         public async Task CrearOrdenDeVenta(OrdenDeVentaDTO ordenDeVentaDTO)
         {
@@ -117,8 +118,8 @@ namespace CNegocio.Logica
             if (ordenDeVentaDTO.DistribuidorId <= 0)
                 throw new ArgumentException("El ID del proveedor debe ser mayor que cero.", nameof(ordenDeVentaDTO.DistribuidorId));
 
-            if (ordenDeVentaDTO.Fecha == default)
-                throw new ArgumentException("La fecha de la orden no es válida.", nameof(ordenDeVentaDTO.Fecha));
+            if (ordenDeVentaDTO.FechaOrden == default)
+                throw new ArgumentException("La fecha de la orden no es válida.", nameof(ordenDeVentaDTO.FechaOrden));
             List<string> camposErroneos = new List<string>();
 
             if (ordenDeVentaDTO.EmpleadoId <= 0)
@@ -127,7 +128,7 @@ namespace CNegocio.Logica
             if (ordenDeVentaDTO.DistribuidorId <= 0)
                 camposErroneos.Add("DistribuidorId");
 
-            if (ordenDeVentaDTO.Fecha == default)
+            if (ordenDeVentaDTO.FechaOrden == default)
                 camposErroneos.Add("FechaOrden");
 
             if (camposErroneos.Count > 0)
@@ -138,21 +139,16 @@ namespace CNegocio.Logica
                 EmpleadoId = ordenDeVentaDTO.EmpleadoId,
                 DistribuidorId = ordenDeVentaDTO.DistribuidorId,
                 ClienteId = ordenDeVentaDTO.ClienteId,
-                Fecha = ordenDeVentaDTO.Fecha,
-                Estado = ordenDeVentaDTO.Estado = "Pendiente"
+                FechaOrden = ordenDeVentaDTO.FechaOrden,
+                Estado = ordenDeVentaDTO.Estado = "Pendiente",
+                Productos = ordenDeVentaDTO.ProductosSeleccionados.Select(p => new OrdenDeVentaProducto
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto
+                }).ToList()
             };
 
             await _ordenDeVentaRepositorio.CrearOrdenDeVenta(orden);
-
-            var productos = ordenDeVentaDTO.ProductosSeleccionados.Select(p => new OrdenDeVentaProducto
-            {
-                OrdenDeVentaId = orden.Id, // Aquí ya tiene el Id generado
-                ProductoId = p.ProductoId,
-                CantidadProducto = p.CantidadProducto
-            }).ToList();
-
-            orden.Productos = productos;
-            _ordenDeVentaRepositorio.ActualizarOrdenDeVenta(orden);
         }
         public async Task ActualizarOrdenDeVenta(OrdenDeVentaDTO ordenDeVentaDTO)
         {
@@ -164,14 +160,12 @@ namespace CNegocio.Logica
                 throw new Exception("Orden de Compra no encontrada.");
 
             bool cambioAEntregado = ordenExistente.Estado != "Entregado" && ordenDeVentaDTO.Estado == "Entregado";
-
             var orden = new OrdenDeVenta
             {
                 Id = ordenDeVentaDTO.Id,
                 EmpleadoId = ordenDeVentaDTO.EmpleadoId,
                 DistribuidorId = ordenDeVentaDTO.DistribuidorId,
-                Fecha = ordenDeVentaDTO.Fecha,
-                ClienteId = ordenDeVentaDTO.ClienteId,
+                FechaOrden = ordenDeVentaDTO.FechaOrden,
                 Estado = ordenDeVentaDTO.Estado,
                 Productos = ordenDeVentaDTO.ProductosSeleccionados.Select(p => new OrdenDeVentaProducto
                 {
@@ -189,7 +183,7 @@ namespace CNegocio.Logica
                     var producto = await _productoRepositorio.ObtenerProductoPorId(prod.ProductoId);
                     if (producto != null)
                     {
-                        producto.Stock += prod.CantidadProducto;
+                        producto.Stock -= prod.CantidadProducto;
                         await _productoRepositorio.ActualizarProducto(producto);
                     }
                 }

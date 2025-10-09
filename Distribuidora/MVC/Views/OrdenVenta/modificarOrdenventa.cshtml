@@ -24,7 +24,7 @@
         @using (Html.BeginForm("modificarVenta", "OrdenVenta", FormMethod.Post, new { id = "pedidoForm" }))
         {
             <input type="hidden" name="Id" value="@Model.Id" />
-            <input type="hidden" name="FechaOrden" value="@Model.Fecha.ToString("yyyy-MM-ddTHH:mm:ss")" />
+            <input type="hidden" name="FechaOrden" value="@Model.FechaOrden.ToString("yyyy-MM-ddTHH:mm:ss")" />
             <input type="hidden" name="EmpleadoId" value="@Model.EmpleadoId" />
             <input type="hidden" name="ProveedorId" value="@Model.DistribuidorId" />
             <input type="hidden" name="ClienteId" value="@Model.ClienteId" />

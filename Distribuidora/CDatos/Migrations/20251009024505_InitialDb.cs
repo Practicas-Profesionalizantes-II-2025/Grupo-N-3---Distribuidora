@@ -226,10 +226,10 @@ namespace CDatos.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EmpleadoId = table.Column<int>(type: "int", nullable: false),
                     ClienteId = table.Column<int>(type: "int", nullable: false),
                     DistribuidorId = table.Column<int>(type: "int", nullable: false),
+                    FechaOrden = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Estado = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
@@ -240,19 +240,18 @@ namespace CDatos.Migrations
                         column: x => x.ClienteId,
                         principalTable: "Cliente",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrdenDeVenta_Distribuidor_DistribuidorId",
                         column: x => x.DistribuidorId,
                         principalTable: "Distribuidor",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrdenDeVenta_Empleado_EmpleadoId",
                         column: x => x.EmpleadoId,
                         principalTable: "Empleado",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -288,10 +287,9 @@ namespace CDatos.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    OrdenVentaId = table.Column<int>(type: "int", nullable: false),
+                    OrdenDeVentaId = table.Column<int>(type: "int", nullable: false),
                     ProductoId = table.Column<int>(type: "int", nullable: false),
-                    CantidadProducto = table.Column<int>(type: "int", nullable: false),
-                    OrdenDeVentaId = table.Column<int>(type: "int", nullable: true)
+                    CantidadProducto = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -300,7 +298,8 @@ namespace CDatos.Migrations
                         name: "FK_OrdenDeVentaProducto_OrdenDeVenta_OrdenDeVentaId",
                         column: x => x.OrdenDeVentaId,
                         principalTable: "OrdenDeVenta",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrdenDeVentaProducto_Productos_ProductoId",
                         column: x => x.ProductoId,
@@ -430,16 +429,6 @@ namespace CDatos.Migrations
                 });
 
             migrationBuilder.InsertData(
-                table: "OrdenDeVentaProducto",
-                columns: new[] { "Id", "CantidadProducto", "OrdenDeVentaId", "OrdenVentaId", "ProductoId" },
-                values: new object[,]
-                {
-                    { 1, 1, null, 1, 1 },
-                    { 2, 2, null, 1, 2 },
-                    { 3, 5, null, 2, 3 }
-                });
-
-            migrationBuilder.InsertData(
                 table: "OrdenDeCompra",
                 columns: new[] { "Id", "EmpleadoId", "Estado", "FechaOrden", "ProveedorId" },
                 values: new object[,]
@@ -450,7 +439,7 @@ namespace CDatos.Migrations
 
             migrationBuilder.InsertData(
                 table: "OrdenDeVenta",
-                columns: new[] { "Id", "ClienteId", "DistribuidorId", "EmpleadoId", "Estado", "Fecha" },
+                columns: new[] { "Id", "ClienteId", "DistribuidorId", "EmpleadoId", "Estado", "FechaOrden" },
                 values: new object[,]
                 {
                     { 1, 1, 1, 1, null, new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified) },
@@ -465,6 +454,16 @@ namespace CDatos.Migrations
                     { 1, 2, 1, 1 },
                     { 2, 1, 1, 2 },
                     { 3, 10, 2, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OrdenDeVentaProducto",
+                columns: new[] { "Id", "CantidadProducto", "OrdenDeVentaId", "ProductoId" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, 1 },
+                    { 2, 2, 1, 2 },
+                    { 3, 5, 2, 3 }
                 });
 
             migrationBuilder.CreateIndex(

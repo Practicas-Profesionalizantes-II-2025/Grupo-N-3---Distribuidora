@@ -3,7 +3,7 @@
     public class OrdenDeVenta
     {
         public int Id { get; set; }
-        public DateTime Fecha { get; set; }
+        public DateTime FechaOrden { get; set; }
         public int EmpleadoId { get; set; }
         public Empleado Empleado { get; set; }
         public int ClienteId { get; set; }
