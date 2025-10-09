@@ -28,7 +28,7 @@
 
             <!-- Formulario para crear categoría -->
             <form asp-action="crearCategoria" method="post" class="form">
-                <input type="text" name="Nombre" placeholder="Nombre categoría" value="@Model?.Nombre">
+                <input type="text" name="Nombre" placeholder="Nombre categoría" value="@Model?.Nombre" required>
 
                 <!-- Botones -->
                 <div class="form-buttons-wrapper">

@@ -31,23 +31,23 @@
 
             <div class="form">
                 <!-- Nombre y apellido -->
-                <input asp-for="Persona.Nombre" placeholder="Nombre" />
-                <input asp-for="Persona.Apellido" placeholder="Apellido" />
+                    <input asp-for="Persona.Nombre" placeholder="Nombre" required />
+                    <input asp-for="Persona.Apellido" placeholder="Apellido" required />
 
                 <!-- Tipo y número de documento -->
                 <input asp-for="Persona.Nro_Doc" placeholder="Número de documento" readonly />
 
                 <!-- Campo Teléfono -->
-                <input asp-for="Persona.Telefono" placeholder="Número de teléfono" />
+                    <input asp-for="Persona.Telefono" placeholder="Número de teléfono" required />
 
                 <!-- Dirección -->
-                <input asp-for="Persona.Direccion" placeholder="Dirección" />
+                    <input asp-for="Persona.Direccion" placeholder="Dirección" required />
 
                 <!-- Ciudad -->
-                <input asp-for="Persona.CiudadId" placeholder="Ciudad" />
+                    <input asp-for="Persona.CiudadId" placeholder="Ciudad" required />
 
                 <!-- Email -->
-                <input asp-for="Persona.Email" placeholder="Email" />
+                    <input asp-for="Persona.Email" placeholder="Email" required />
 
                  
                 <!-- Cargo  <input asp-for="CargoId" placeholder="Cargo" /> -->

@@ -22,30 +22,30 @@
         <form asp-action="crearCliente" method="post">
             <div class="form">
                 <!-- Nombre y Apellido -->
-                <input type="text" asp-for="Persona.Nombre" placeholder="Nombre" class="input-text" />
-                <input type="text" asp-for="Persona.Apellido" placeholder="Apellido" class="input-text" />
+                    <input type="text" asp-for="Persona.Nombre" placeholder="Nombre" class="input-text" required />
+                    <input type="text" asp-for="Persona.Apellido" placeholder="Apellido" class="input-text" required />
 
                 <!-- Tipo y Número de Documento -->
-                <select asp-for="Persona.Tipo_DocId" asp-items="@(new SelectList(Model.Persona.TiposDocumentos, "Id", "NombreTipoDocumento"))" class="form-control">
+                <select asp-for="Persona.Tipo_DocId" asp-items="@(new SelectList(Model.Persona.TiposDocumentos, "Id", "NombreTipoDocumento"))" class="form-control" required>
                     <option value="">Seleccione tipo de documento</option>
                 </select>
 
                 <!-- Número de Documento -->
-                <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de documento" class="input-text" />
+                    <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de documento" class="input-text" required />
 
                 <!-- Teléfono -->
-                <input id="telefono" type="tel" asp-for="Persona.Telefono" placeholder="Número de teléfono" class="input-text" />
+                    <input id="telefono" type="tel" asp-for="Persona.Telefono" placeholder="Número de teléfono" class="input-text" required />
 
                 <!-- Dirección -->
-                <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" />
+                    <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" required />
 
                 <!-- Ciudad -->
-                <select asp-for="Persona.CiudadId" asp-items="@(new SelectList(Model.Persona.Ciudades, "Id", "Nombre"))" class="form-control">
+                    <select asp-for="Persona.CiudadId" asp-items="@(new SelectList(Model.Persona.Ciudades, "Id", "Nombre"))" class="form-control" required>
                     <option value="">Seleccione ciudad</option>
                 </select>
 
                 <!-- Email -->
-                <input type="email" asp-for="Persona.Email" placeholder="Email" class="input-text" />
+                    <input type="email" asp-for="Persona.Email" placeholder="Email" class="input-text" required />
 
                 <!-- Estado (hidden, no editable) -->
                 <input type="hidden" asp-for="EstadoId" value="1" />

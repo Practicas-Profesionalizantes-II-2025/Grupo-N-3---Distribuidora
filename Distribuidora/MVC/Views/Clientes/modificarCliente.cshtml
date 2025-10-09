@@ -28,12 +28,12 @@
                 <input type="hidden" asp-for="Persona.Id" />
                 <input type="hidden" asp-for="EstadoId" />
                 <!-- Nombre y Apellido -->
-                <input type="text" asp-for="Persona.Nombre" placeholder="Nombre" class="input-text" />
-                <input type="text" asp-for="Persona.Apellido" placeholder="Apellido" class="input-text" />
+                    <input type="text" asp-for="Persona.Nombre" placeholder="Nombre" class="input-text" required />
+                    <input type="text" asp-for="Persona.Apellido" placeholder="Apellido" class="input-text" required />
 
                 <!-- Tipo y Número de Documento -->
                 <select asp-for="Persona.Tipo_DocId"
-                        asp-items="@(new SelectList(Model.Persona.TiposDocumentos, "Id", "NombreTipoDocumento", Model.Persona.Tipo_DocId))">
+                            asp-items="@(new SelectList(Model.Persona.TiposDocumentos, "Id", "NombreTipoDocumento", Model.Persona.Tipo_DocId))" required>
                 </select>
 
 
@@ -41,17 +41,17 @@
                 <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de documento" class="input-text" readonly />
 
                 <!-- Teléfono -->
-                <input type="tel" asp-for="Persona.Telefono" placeholder="Número de teléfono" class="input-text" />
+                    <input type="tel" asp-for="Persona.Telefono" placeholder="Número de teléfono" class="input-text" required />
 
                 <!-- Dirección -->
-                <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" />
+                    <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" required />
 
                 <!-- Ciudad -->
                 <select asp-for="Persona.CiudadId"
-                        asp-items="@(new SelectList(Model.Persona.Ciudades, "Id", "Nombre", Model.Persona.CiudadId))">
+                            asp-items="@(new SelectList(Model.Persona.Ciudades, "Id", "Nombre", Model.Persona.CiudadId))" required>
                 </select>
                 <!-- Email -->
-                <input type="email" asp-for="Persona.Email" placeholder="Email" class="input-text" />
+                    <input type="email" asp-for="Persona.Email" placeholder="Email" class="input-text" required />
 
                 <!-- Estado (hidden, no editable) -->
                 <input type="hidden" asp-for="EstadoId" value="1" />
