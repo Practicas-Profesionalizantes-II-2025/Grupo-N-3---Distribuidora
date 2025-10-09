@@ -24,15 +24,15 @@
             </div>
 
             <!-- Formulario para crear empleados -->
-            <form asp-action="AccioncrearProducto" method="post" class="form">
-                <input type="text" name="Nombre" value="" id="" placeholder="Nombre producto">
-                <input type="text" name="Stock" value="" id="" placeholder="Stock">
-                <input type="text" name="PrecioProducto" value="" id="" placeholder="Precio costo">
+            <form asp-action="AccioncrearProducto" method="post" class="form" required>
+                <input type="text" name="Nombre" value="" id="" placeholder="Nombre producto" required>
+                <input type="text" name="Stock" value="" id="" placeholder="Stock" required>
+                <input type="text" name="PrecioProducto" value="" id="" placeholder="Precio costo" required>
 @*                 <input type="text" name="" value="" id="" placeholder="Precio venta"> *@
-                <label>Categorias</label>
-                <select name="CategoriaId" asp-items="@(new SelectList(Model.Categorias, "Id", "Nombre"))" class="form-control"></select>
-                <label>Proveedor</label>
-                <select name="ProveedorId" asp-items="@(new SelectList(Model.Proveedores, "Id", "Nombre"))" class="form-control"></select>
+                <select name="CategoriaId" asp-items="@(new SelectList(Model.Categorias, "Id", "Nombre"))" class="form-control" required></select>
+
+                <select name="ProveedorId" asp-items="@(new SelectList(Model.Proveedores, "Id", "Nombre"))" class="form-control" required></select>
+                
                 <!-- contenedor exclusivo para centrar -->
                 <div class="form-buttons-wrapper">
                     <div class="form-buttons">

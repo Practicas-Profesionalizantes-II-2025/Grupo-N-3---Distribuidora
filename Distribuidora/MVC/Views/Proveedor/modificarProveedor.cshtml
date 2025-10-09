@@ -28,19 +28,19 @@
                     <input type="hidden" asp-for="Id" />
 
                     <!-- Nombre -->
-                    <input type="text" asp-for="Nombre" placeholder="Nombre" class="input-text" />
+                    <input type="text" asp-for="Nombre" placeholder="Nombre" class="input-text" required />
                     <span asp-validation-for="Nombre" class="text-danger"></span>
 
                     <!-- Teléfono -->
-                    <input type="text" asp-for="Telefono" placeholder="Teléfono" class="input-text" />
+                    <input type="text" asp-for="Telefono" placeholder="Teléfono" class="input-text" required />
                     <span asp-validation-for="Telefono" class="text-danger"></span>
 
                     <!-- Dirección -->
-                    <input type="text" asp-for="Direccion" placeholder="Dirección" class="input-text" />
+                    <input type="text" asp-for="Direccion" placeholder="Dirección" class="input-text" required />
                     <span asp-validation-for="Direccion" class="text-danger"></span>
                     
                     <!-- Email -->
-                    <input type="text" asp-for="Email" placeholder="Email" class="input-text" />
+                    <input type="text" asp-for="Email" placeholder="Email" class="input-text" required />
                     <span asp-validation-for="Email" class="text-danger"></span>
 
 
