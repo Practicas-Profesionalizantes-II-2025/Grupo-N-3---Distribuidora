@@ -218,7 +218,7 @@ namespace MVC.Controllers
                 Estado = orden.Estado,
                 EmpleadoId = orden.EmpleadoId,
                 ProveedorId = orden.ProveedorId,
-                Productos = orden.ProductosSeleccionados.Select(p => new
+                ProductosSeleccionados = orden.ProductosSeleccionados.Select(p => new
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
