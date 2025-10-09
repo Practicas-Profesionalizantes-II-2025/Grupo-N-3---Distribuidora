@@ -251,7 +251,12 @@ namespace MVC.Controllers
             if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
             {
                 ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
-                return View(orden);
+
+                ViewBag.Estados = new SelectList(
+                    new List<string> { "Pendiente", "Realizado", "Entregado" },
+                    orden.Estado);
+                    
+               return View(orden);
             }
 
             var model = new
@@ -262,7 +267,7 @@ namespace MVC.Controllers
                 EmpleadoId = orden.EmpleadoId,
                 DistribuidorId = orden.DistribuidorId,
                 ClienteId = orden.ClienteId,
-                Productos = orden.ProductosSeleccionados.Select(p => new
+                ProductosSeleccionados = orden.ProductosSeleccionados.Select(p => new
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
@@ -279,6 +284,7 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
+                Console.WriteLine(error);
                 ModelState.AddModelError("", $"Error actualizando la orden: {error}");
                 return View(orden);
             }

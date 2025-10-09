@@ -26,7 +26,7 @@
             <input type="hidden" name="Id" value="@Model.Id" />
             <input type="hidden" name="FechaOrden" value="@Model.FechaOrden.ToString("yyyy-MM-ddTHH:mm:ss")" />
             <input type="hidden" name="EmpleadoId" value="@Model.EmpleadoId" />
-            <input type="hidden" name="ProveedorId" value="@Model.DistribuidorId" />
+            <input type="hidden" name="DistribuidorId" value="@Model.DistribuidorId" />
             <input type="hidden" name="ClienteId" value="@Model.ClienteId" />
             
             <div class="form-group">
@@ -75,7 +75,7 @@
             <button type="submit" class="btn">Guardar Cambios</button>
                 <a asp-action="listaOrdenVentas" class="btn back">Volver</a>
         </div>
-                }
+        }
     </main>
     <!--=============== JS ===============-->
     <script src="~/js/Venta/modificarVenta.js"></script>
