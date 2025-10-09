@@ -19,37 +19,39 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Proveedor>> ObtenerProveedores()
         {
-            return await _context.Proveedores.ToListAsync();
+            return await _context.Proveedor.ToListAsync();
         }
         public async Task<Proveedor> ObtenerProveedorPorId(int id)
         {
-            return await _context.Proveedores.FindAsync(id);
+            return await _context.Proveedor.FindAsync(id);
         }
-        public async Task CrearProveedor(Proveedor proveedor)
+        public async Task<Proveedor> CrearProveedor(Proveedor proveedor)
         {
-            _context.Proveedores.Add(proveedor);
+            _context.Proveedor.Add(proveedor);
             await _context.SaveChangesAsync();
+            return proveedor;
         }
-        public async Task ActualizarProveedor(Proveedor proveedor)
+        public void ActualizarProveedor(Proveedor proveedor)
         {
-            var proveedorExistente = _context.Proveedores.Find(proveedor.Id);
+            var proveedorExistente = _context.Proveedor.Find(proveedor.Id);
             if (proveedorExistente == null)
             {
                 throw new Exception("Proveedor no encontrado.");
             }
+            proveedorExistente.Nombre = proveedor.Nombre;
             proveedorExistente.Telefono = proveedor.Telefono;
             proveedorExistente.Direccion = proveedor.Direccion;
             proveedorExistente.Email = proveedor.Email;
 
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
         }
-        public async Task EliminarProveedor(int id)
+        public void EliminarProveedor(int id)
         {
-            var proveedor = await ObtenerProveedorPorId(id);
-            if (proveedor != null)
+            var Proveedor = _context.Proveedor.FirstOrDefault(x => x.Id == id);
+            if (Proveedor != null)
             {
-                _context.Proveedores.Remove(proveedor);
-                await _context.SaveChangesAsync();
+                _context.Proveedor.Remove(Proveedor);
+                _context.SaveChanges();
             }
         }
     }

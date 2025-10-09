@@ -1,5 +1,5 @@
-﻿@{
-}
+﻿@model MVC.Models.DTOs.ProductoCrearModel
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,12 +10,12 @@
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/site.css">
 
-    <title>Pagina Inicio - Empleados</title>
+    <title>Pagina Inicio - Producto</title>
 </head>
 <body>
- 
+
     <main>
         <div class="content">
             <!-- Header de la sección -->
@@ -24,18 +24,29 @@
             </div>
 
             <!-- Formulario para crear empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre producto">
-                <input type="text" placeholder="Proveedor">
-                <input type="text" placeholder="Categoría">
-                <input type="text" placeholder="Unidades">
-                <input type="text" placeholder="Precio venta">
-                <button class="btn yellow">Guardar</button>
-            </div>
+            <form asp-action="AccioncrearProducto" method="post" class="form" required>
+                <input type="text" name="Nombre" value="" id="" placeholder="Nombre producto" required>
+                <input type="text" name="Stock" value="" id="" placeholder="Stock" required>
+                <input type="text" name="PrecioProducto" value="" id="" placeholder="Precio costo" required>
+@*                 <input type="text" name="" value="" id="" placeholder="Precio venta"> *@
+                <select name="CategoriaId" asp-items="@(new SelectList(Model.Categorias, "Id", "Nombre"))" class="form-control" required></select>
+
+                <select name="ProveedorId" asp-items="@(new SelectList(Model.Proveedores, "Id", "Nombre"))" class="form-control" required></select>
+                
+                <!-- contenedor exclusivo para centrar -->
+                <div class="form-buttons-wrapper">
+                    <div class="form-buttons">
+                        <button type="submit" class="btn yellow">Guardar</button>
+                        <a asp-action="listaProductos" class="btn back">Volver</a>
+                    </div>
+                </div>
+            </form>
+
+
 
         </div>
     </main>
-
-    <script href="../js/main.js"></script>
+    <!--=============== JS ===============-->
+    <script src="~/js/site.js"></script>
 </body>
 </html>

@@ -1,0 +1,50 @@
+﻿@model MVC.Models.DTOs.DatosInicioSesionDTO
+@{
+    Layout = null;
+    ViewData["Title"] = "Login";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--=============== REMIXICONS ===============-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+    <link rel="stylesheet" href="~/css/site.css">
+
+    <title>@ViewData["Title"]</title>
+</head>
+<body>
+    <div class="login">
+        <img src="~/img/login-bg.jpg" alt="image" class="login__bg" id="login_img">
+
+        <!-- Formulario MVC -->
+        <form asp-controller="Empleados" asp-action="LoginAccion" method="post" class="login__form">
+
+            <h1 class="login__title">Iniciar sesión</h1>
+
+            <div class="login__inputs">
+                <div class="login__box">
+                    <input type="text" name="dni" placeholder="DNI" required class="login__input" />
+                    <i class="ri-mail-fill"></i>
+                </div>
+
+                <div class="login__box">
+                    <input type="password" name="Contrasenia" placeholder="Contraseña" required class="login__input" />
+                    <i class="ri-lock-2-fill"></i>
+                </div>
+            </div>
+
+            <button type="submit" class="login__button">Entrar</button>
+
+            @if (ViewBag.Error != null)
+            {
+                <p style="color:red;">@ViewBag.Error</p>
+            }
+        </form>
+
+    </div>
+</body>
+</html>

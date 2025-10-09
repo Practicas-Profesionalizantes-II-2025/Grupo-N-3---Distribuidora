@@ -1,0 +1,86 @@
+﻿@model MVC.Models.DTOs.ClienteDTO
+@using Microsoft.AspNetCore.Mvc.Rendering
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!--=============== REMIXICONS ===============-->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+    <link rel="stylesheet" href="~/css/site.css">
+
+    <title>Modificar cliente</title>
+</head>
+<body>
+<main>
+    <div class="content">
+        <!-- Header de la sección -->
+        <div class="section-header">
+            <h2>Modificar cliente</h2>
+        </div>
+
+        <!-- Formulario -->
+        <form asp-action="modificarCliente" method="post">
+            <div class="form">
+                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Persona.Id" />
+                <input type="hidden" asp-for="EstadoId" />
+                <!-- Nombre y Apellido -->
+                    <input type="text" asp-for="Persona.Nombre" placeholder="Nombre" class="input-text" required />
+                    <input type="text" asp-for="Persona.Apellido" placeholder="Apellido" class="input-text" required />
+
+                <!-- Tipo y Número de Documento -->
+                <select asp-for="Persona.Tipo_DocId"
+                            asp-items="@(new SelectList(Model.Persona.TiposDocumentos, "Id", "NombreTipoDocumento", Model.Persona.Tipo_DocId))" required>
+                </select>
+
+
+                <!-- Número de Documento (solo lectura) -->
+                <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de documento" class="input-text" readonly />
+
+                <!-- Teléfono -->
+                    <input type="tel" asp-for="Persona.Telefono" placeholder="Número de teléfono" class="input-text" required />
+
+                <!-- Dirección -->
+                    <input type="text" asp-for="Persona.Direccion" placeholder="Dirección" class="input-text" required />
+
+                <!-- Ciudad -->
+                <select asp-for="Persona.CiudadId"
+                            asp-items="@(new SelectList(Model.Persona.Ciudades, "Id", "Nombre", Model.Persona.CiudadId))" required>
+                </select>
+                <!-- Email -->
+                    <input type="email" asp-for="Persona.Email" placeholder="Email" class="input-text" required />
+
+                <!-- Estado (hidden, no editable) -->
+                <input type="hidden" asp-for="EstadoId" value="1" />
+
+            </div>
+
+            <!-- Botones -->
+            <div class="form-buttons-wrapper">
+                <div class="form-buttons">
+                    <button type="submit" class="btn yellow">Guardar</button>
+                    <a asp-action="listaClientes" asp-controller="Clientes" class="btn back">Volver</a>
+                </div>
+            </div>
+
+            <!-- Mostrar errores de validación -->
+            <div class="validation-summary">
+                @foreach (var key in ViewData.ModelState.Keys)
+                {
+                    var errors = ViewData.ModelState[key].Errors;
+                    foreach (var error in errors)
+                    {
+                        <div class="text-danger">@error.ErrorMessage</div>
+                    }
+                }
+            </div>
+        </form>
+    </div>
+</main>
+    <!--=============== JS ===============-->
+    <script src="~/js/site.js"></script>
+</body>
+</html> 

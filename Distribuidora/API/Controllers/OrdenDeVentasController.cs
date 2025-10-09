@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CDatos.Data;
+using CNegocio.Logica;
+using CNegocio.Logica.ILogica;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CDatos.Data;
-using Shared.Entities;
-using CNegocio.Logica.ILogica;
 using Shared.DTOs;
+using Shared.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -18,9 +19,9 @@ namespace API.Controllers
     {
         private readonly IOrdenDeVentaLogica _ordenDeVentaLogica;
 
-        public OrdenDeVentasController(DataContext context)
+        public OrdenDeVentasController(IOrdenDeVentaLogica ordenDeVentaLogica)
         {
-            this._ordenDeVentaLogica = _ordenDeVentaLogica;
+            _ordenDeVentaLogica = ordenDeVentaLogica;
         }
 
         // GET: api/OrdenDeVentas
@@ -32,9 +33,14 @@ namespace API.Controllers
 
         // GET: api/OrdenDeVentas/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<OrdenDeVentaDTO>> GetOrdenDeVenta(int id)
+        public async Task<ActionResult<OrdenDeVentaDTO>> GetOrdenDeVentaPorId(int id)
         {
             var ordenDeVenta = await _ordenDeVentaLogica.ObtenerOrdenDeVentaPorId(id);
+
+            if (ordenDeVenta == null)
+            {
+                return NotFound();
+            }
 
             return ordenDeVenta;
         }
@@ -44,7 +50,11 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutOrdenDeVenta(int id, OrdenDeVentaDTO ordenDeVenta)
         {
-            _ordenDeVentaLogica.ActualizarOrdenDeVenta(ordenDeVenta);
+            if (id != ordenDeVenta.Id)
+            {
+                return BadRequest();
+            }
+            await _ordenDeVentaLogica.ActualizarOrdenDeVenta(ordenDeVenta);
 
             return NoContent();
         }
@@ -54,16 +64,23 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<OrdenDeVentaDTO>> PostOrdenDeVenta(OrdenDeVentaDTO ordenDeVenta)
         {
-            _ordenDeVentaLogica.CrearOrdenDeVenta(ordenDeVenta);
-
-            return CreatedAtAction("GetOrdenDeVenta", new { id = ordenDeVenta.Id }, ordenDeVenta);
+            try
+            {
+                await _ordenDeVentaLogica.CrearOrdenDeVenta(ordenDeVenta);
+                return CreatedAtAction("GetOrdenDeVentaPorId", new { id = ordenDeVenta.Id }, ordenDeVenta);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         // DELETE: api/OrdenDeVentas/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrdenDeVenta(int id)
         {
-            _ordenDeVentaLogica.EliminarOrdenDeVenta(id);
+            await _ordenDeVentaLogica.EliminarOrdenDeVenta(id);
 
             return NoContent();
         }

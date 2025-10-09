@@ -18,14 +18,14 @@ namespace API.Controllers
     {
         private readonly IPersonaLogica _IPersonaLogica;
 
-        public PersonasController(IPersonaLogica _IPersonaLogica)
+        public PersonasController(IPersonaLogica IPersonaLogica)
         {
-            this._IPersonaLogica = _IPersonaLogica;
+            _IPersonaLogica = IPersonaLogica;
         }
 
         // GET: api/Personas
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PersonaDTO>>> GetPersonas()
+        public async Task<ActionResult<IEnumerable<PersonaDTO>>> PersonasGet()
         {
             return await _IPersonaLogica.ObtenerPersonas();
         }
@@ -46,9 +46,13 @@ namespace API.Controllers
         // PUT: api/Personas/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutPersona(int id, PersonaDTO persona)
+        public async Task<IActionResult> PersonaPut(int id, PersonaDTO persona)
         {
-            _IPersonaLogica.ActualizarPersona(persona);
+
+            if (id != persona.Id)
+                return BadRequest("El ID de la URL no coincide con el de la persona.");
+
+            await _IPersonaLogica.ActualizarPersona(persona);
 
             return NoContent();
         }
@@ -56,18 +60,19 @@ namespace API.Controllers
         // POST: api/Personas
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Persona>> PostPersona(PersonaDTO persona)
+        public async Task<ActionResult<Persona>> PersonaPost(PersonaDTO persona)
         {
-            _IPersonaLogica.CrearPersona(persona);
+            var personaCreada = await _IPersonaLogica.CrearPersona(persona);
 
-            return CreatedAtAction("GetPersona", new { id = persona.Id }, persona);
+            // Retornar persona con todos sus datos
+            return CreatedAtAction(nameof(GetPersona), new { id = personaCreada.Id }, personaCreada);
         }
 
         // DELETE: api/Personas/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeletePersona(int id)
+        public async Task<IActionResult> PersonaDelete(int id)
         {
-            _IPersonaLogica.EliminarPersona(id);
+            await _IPersonaLogica.EliminarPersona(id);
 
             return NoContent();
         }

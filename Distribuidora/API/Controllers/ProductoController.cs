@@ -20,29 +20,37 @@ namespace API.Controllers
 
         public ProductoController(IProductoLogica context)
         {
-            this._IProductoLogicaa = _IProductoLogicaa;
+            _IProductoLogicaa = context;
         }
 
-        // GET: api/Productoes
+        // GET: api/Producto
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ProductoDTO>>> GetProductos()
+        public async Task<ActionResult<IEnumerable<ProductoDTO>>> ProductoGet()
         {
             return await _IProductoLogicaa.ObtenerProductos();
         }
 
-        // GET: api/Productoes/5
+        // GET: api/Producto/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductoDTO>> GetProducto(int id)
+        public async Task<ActionResult<ProductoDTO>> ProductoGet(int id)
         {
             var producto = await _IProductoLogicaa.ObtenerProductoPorId(id);
 
             return producto;
         }
 
-        // PUT: api/Productoes/5
+        // GET: api/Producto/nombre/nombreProdcuto
+        [HttpGet("nombre/{nombre}")]
+        public async Task<ActionResult<IEnumerable<ProductoDTO>>> ProductoGetPorNombre(string nombre)
+        {
+            var producto = await _IProductoLogicaa.ObtenerProductosPorNombre(nombre);
+            return producto;
+        }
+
+        // PUT: api/Producto/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutProducto(int id, ProductoDTO producto)
+        public async Task<IActionResult> ProductoPut(int id, ProductoDTO producto)
         {
             if (id != producto.Id)
             {
@@ -54,21 +62,21 @@ namespace API.Controllers
             return NoContent();
         }
 
-        // POST: api/Productoes
+        // POST: api/Producto
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Producto>> PostProducto(ProductoDTO producto)
+        public async Task<ActionResult<Producto>> ProductoPost(ProductoDTO producto)
         {
             _IProductoLogicaa.CrearProducto(producto);
 
-            return CreatedAtAction("GetProducto", new { id = producto.Id }, producto);
+            return CreatedAtAction("ProductoGet", new { id = producto.Id }, producto);
         }
 
-        // DELETE: api/Productoes/5
+        // DELETE: api/Producto/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteProducto(int id)
+        public async Task<IActionResult> ProductoDelete(int id)
         {
-            _IProductoLogicaa.EliminarProducto(id);
+            await _IProductoLogicaa.EliminarProducto(id);
 
             return NoContent();
         }

@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CDatos.Data;
+using CNegocio.Logica;
+using CNegocio.Logica.ILogica;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CDatos.Data;
-using Shared.Entities;
-using CNegocio.Logica.ILogica;
 using Shared.DTOs;
+using Shared.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -16,24 +17,26 @@ namespace API.Controllers
     [ApiController]
     public class ClientesController : ControllerBase
     {
-        private readonly IClienteLogica _IClienteLogica;
-        public ClientesController(IClienteLogica _IClienteLogica)
+        private readonly IClienteLogica _clienteLogica;
+        private readonly IPersonaLogica _personaLogica;
+        public ClientesController(IClienteLogica clienteLogica, IPersonaLogica personaLogica)
         {
-            this._IClienteLogica = _IClienteLogica;
+            _clienteLogica = clienteLogica;
+            _personaLogica = personaLogica;
         }
 
         // GET: api/Clientes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetClientes()
+        public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetCliente()
         {
-            return await _IClienteLogica.ObtenerClientes();
+            return await _clienteLogica.ObtenerClientes();
         }
 
         // GET: api/Clientes/5
         [HttpGet("{id}")]
         public async Task<ActionResult<ClienteDTO>> GetCliente(int id)
         {
-            var cliente = await _IClienteLogica.ObtenerClientePorId(id);
+            var cliente = await _clienteLogica.ObtenerClientePorId(id);
 
             if (cliente == null)
             {
@@ -42,6 +45,18 @@ namespace API.Controllers
 
             return cliente;
         }
+
+        // GET: api/Cliente/dni/
+        [HttpGet("dni/{dni}")]
+        public async Task<ActionResult<IEnumerable<ClienteDTO>>> GetClientesPorDni(string dni)
+        {
+            var clientes = await _clienteLogica.ObtenerClientesPorDni(dni);
+            if (clientes == null || !clientes.Any())
+                return NotFound($"No hay clientes con DNI {dni}.");
+
+            return Ok(clientes);
+        }
+
 
         // PUT: api/Clientes/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
@@ -52,7 +67,7 @@ namespace API.Controllers
             {
                 return BadRequest();
             }
-            _IClienteLogica.ActualizarCliente(cliente);
+            await _clienteLogica.ActualizarCliente(cliente);
 
             return NoContent();
         }
@@ -62,16 +77,25 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<ClienteDTO>> PostCliente(ClienteDTO cliente)
         {
-            _IClienteLogica.CrearCliente(cliente);
+            var personaCreada = await _personaLogica.CrearPersona(cliente.Persona);
 
-            return CreatedAtAction("GetCliente", new { id = cliente.Id }, cliente);
+            var clienteDto = new ClienteDTO
+            {
+                PersonaId = personaCreada.Id,
+                EstadoId = cliente.EstadoId,
+                Persona = personaCreada
+            };
+
+            var nuevoCliente = await _clienteLogica.CrearCliente(clienteDto);
+
+            return CreatedAtAction(nameof(GetCliente), new { id = nuevoCliente.Id }, nuevoCliente);
         }
 
         // DELETE: api/Clientes/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCliente(int id)
         {
-            _IClienteLogica.EliminarCliente(id);
+            await _clienteLogica.EliminarCliente(id);
 
             return NoContent();
         }

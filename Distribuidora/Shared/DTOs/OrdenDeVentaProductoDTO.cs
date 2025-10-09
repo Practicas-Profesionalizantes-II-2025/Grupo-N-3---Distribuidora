@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +10,12 @@ namespace Shared.DTOs
     public class OrdenDeVentaProductoDTO
     {
         public int Id { get; set; }
-        public int OrdenVentaId { get; set; }
+        public int OrdenDeVentaId { get; set; }
         public int ProductoId { get; set; }
+        [ValidateNever]
+        public string NombreProducto { get; set; }
         public int CantidadProducto { get; set; }
+        [ValidateNever]
+        public float PrecioUnitario { get; set; }
     }
 }

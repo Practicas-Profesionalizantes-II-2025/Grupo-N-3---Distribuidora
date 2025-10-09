@@ -1,4 +1,5 @@
-﻿using CDatos.Repositorios.IRepositorios;
+﻿using CDatos.Repositorios;
+using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
 using System;
@@ -12,26 +13,46 @@ namespace CNegocio.Logica
     public class PersonaLogica : IPersonaLogica
     {
         private readonly IPersonaRepositorio _personaRepositorio;
-        public PersonaLogica(IPersonaRepositorio personaRepositorio)
+        private readonly ICiudadRepositorio _ciudadRepositorio;
+        public PersonaLogica(IPersonaRepositorio personaRepositorio, ICiudadRepositorio ciudadRepositorio)
         {
             _personaRepositorio = personaRepositorio;
+            _ciudadRepositorio = ciudadRepositorio;
         }
         public async Task<List<PersonaDTO>> ObtenerPersonas()
         {
             var personas = await _personaRepositorio.ObtenerPersonas();
-            return personas.Select(p => new PersonaDTO
+            var personasDTO = new List<PersonaDTO>();
+
+            foreach (var p in personas)
             {
-                Id = p.Id,
-                Nombre = p.Nombre,
-                Apellido = p.Apellido,
-                Tipo_DocId = p.Tipo_DocId,
-                Nro_Doc = p.Nro_Doc,
-                CiudadId = p.CiudadId,
-                Email = p.Email,
-                Direccion = p.Direccion,
-                Telefono = p.Telefono,
-                EstadoId = p.EstadoId
-            }).ToList();
+                string nombreCiudad = string.Empty;
+
+                if (p.CiudadId > 0)
+                {
+                    var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(p.CiudadId);
+                    if (ciudad != null)
+                    {
+                        nombreCiudad = ciudad.Nombre;
+                    }
+                }
+
+                personasDTO.Add(new PersonaDTO
+                {
+                    Id = p.Id,
+                    Nombre = p.Nombre,
+                    Apellido = p.Apellido,
+                    Tipo_DocId = p.Tipo_DocId,
+                    Nro_Doc = p.Nro_Doc,
+                    CiudadId = p.CiudadId,
+                    NombreCiudad = nombreCiudad,
+                    Email = p.Email,
+                    Direccion = p.Direccion,
+                    Telefono = p.Telefono,
+                });
+            }
+
+            return personasDTO;
         }
         public async Task<PersonaDTO> ObtenerPersonaPorId(int id)
         {
@@ -53,12 +74,11 @@ namespace CNegocio.Logica
                 Email = persona.Email,
                 Direccion = persona.Direccion,
                 Telefono = persona.Telefono,
-                EstadoId = persona.EstadoId
             };
         }
-        public async Task CrearPersona(PersonaDTO personaDTO)
+        public async Task<PersonaDTO> CrearPersona(PersonaDTO personaDTO)
         {
-            List<string> camposErroneos = ValidarPersona(personaDTO, esNueva: false);
+            List<string> camposErroneos = ValidarPersona(personaDTO, esNueva: true);
 
             if (camposErroneos.Count > 0)
                 throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
@@ -73,9 +93,22 @@ namespace CNegocio.Logica
                 Email = personaDTO.Email,
                 Direccion = personaDTO.Direccion,
                 Telefono = personaDTO.Telefono,
-                EstadoId = personaDTO.EstadoId
             };
+
             await _personaRepositorio.CrearPersona(persona);
+
+            return new PersonaDTO
+            {
+                Id = persona.Id,
+                Nombre = persona.Nombre,
+                Apellido = persona.Apellido,
+                Tipo_DocId = persona.Tipo_DocId,
+                Nro_Doc = persona.Nro_Doc,
+                CiudadId = persona.CiudadId,
+                Email = persona.Email,
+                Direccion = persona.Direccion,
+                Telefono = persona.Telefono,
+            };
         }
         public async Task ActualizarPersona(PersonaDTO personaDTO)
         {
@@ -95,7 +128,6 @@ namespace CNegocio.Logica
                 Email = personaDTO.Email,
                 Direccion = personaDTO.Direccion,
                 Telefono = personaDTO.Telefono,
-                EstadoId = personaDTO.EstadoId
             };
             await _personaRepositorio.ActualizarPersona(persona);
         }
@@ -123,7 +155,6 @@ namespace CNegocio.Logica
                 Email = p.Email,
                 Direccion = p.Direccion,
                 Telefono = p.Telefono,
-                EstadoId = p.EstadoId
             }).ToList();
         }
 
@@ -159,15 +190,12 @@ namespace CNegocio.Logica
             if (string.IsNullOrWhiteSpace(persona.Telefono) || !IsValidTelefono(persona.Telefono))
                 errores.Add("Telefono");
 
-            if (persona.EstadoId <= 0)
-                errores.Add("EstadoId");
-
             return errores;
         }
 
         private bool ContainsInvalidCharacter(string text)
         {
-            char[] caracteres = { '!', '"', '#', '$', '%', '/', '(', ')', '=', '.', ',' };
+            char[] caracteres = { '!', '"', '#', '$', '%', '/', '(', ')', '=', ',' };
             return caracteres.Any(c => text.Contains(c));
         }
 

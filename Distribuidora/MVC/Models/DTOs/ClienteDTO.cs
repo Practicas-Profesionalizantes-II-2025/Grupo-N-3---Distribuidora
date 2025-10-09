@@ -1,9 +1,12 @@
-﻿namespace MVC.Models.DTOs
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding;
+
+namespace MVC.Models.DTOs
 {
     public class ClienteDTO
     {
         public int Id { get; set; }
         public int PersonaId { get; set; }
-        public int EstadoId { get; set; }
+        public PersonaDTO Persona { get; set; }
+        public int EstadoId { get; set; } = 1;
     }
 }

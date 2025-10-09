@@ -19,9 +19,9 @@ namespace API.Controllers
     {
         private readonly ISectorLogica _ISectorLogica;
 
-        public SectorsController(ISectorLogica _ISectorLogica)
+        public SectorsController(ISectorLogica ISectorLogica)
         {
-            this._ISectorLogica = _ISectorLogica;
+            _ISectorLogica = ISectorLogica;
         }
 
         // GET: api/Sectors

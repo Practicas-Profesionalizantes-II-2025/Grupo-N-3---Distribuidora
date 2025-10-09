@@ -19,20 +19,20 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Sector>> ObtenerSectores()
         {
-            return await _context.Sectores.ToListAsync();
+            return await _context.Sector.ToListAsync();
         }
         public async Task<Sector> ObtenerSectorPorId(int id)
         {
-            return await _context.Sectores.FindAsync(id);
+            return await _context.Sector.FindAsync(id);
         }
         public async Task CrearSector(Sector sector)
         {
-            _context.Sectores.Add(sector);
+            _context.Sector.Add(sector);
             await _context.SaveChangesAsync();
         }
         public async Task ActualizarSector(Sector sector)
         {
-            var sectorExistente = _context.Sectores.Find(sector.Id);
+            var sectorExistente = _context.Sector.Find(sector.Id);
             if (sectorExistente == null)
             {
                 throw new Exception("Sector no encontrada.");
@@ -47,13 +47,13 @@ namespace CDatos.Repositorios
             var sector = await ObtenerSectorPorId(id);
             if (sector != null)
             {
-                _context.Sectores.Remove(sector);
+                _context.Sector.Remove(sector);
                 await _context.SaveChangesAsync();
             }
         }
         public async Task<List<Sector>> ObtenerSectoresPorNombre(string nombre)
         {
-            return await _context.Sectores.Where(s => s.Nombre.Contains(nombre)).ToListAsync();
+            return await _context.Sector.Where(s => s.Nombre.Contains(nombre)).ToListAsync();
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,7 +11,9 @@ namespace Shared.DTOs
     {
         public int Id { get; set; }
         public int EmpleadoId { get; set; }
-        public int DistribuidorId { get; set; }
+        public int ProveedorId { get; set; }
         public DateTime FechaOrden { get; set; }
+        public List<OrdenDeCompraProductoDTO> ProductosSeleccionados { get; set; } = new();
+        public string Estado { get; set; }
     }
 }

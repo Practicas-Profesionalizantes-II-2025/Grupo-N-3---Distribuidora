@@ -1,0 +1,119 @@
+﻿<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- REMIXICONS -->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../css/site.css">
+
+    <title>Página Inicio - Empleados</title>
+</head>
+<body>
+    <!--=============== HEADER ===============-->
+    <header class="header">
+        <nav class="nav container">
+            <!--=============== NAV MENU ===============-->
+            <div class="nav__menu" id="nav-menu">
+                <ul class="nav__list">
+                    <!-- <li><a href="#" class="nav__link">Home</a></li>
+
+                    <li><a href="#" class="nav__link">Company</a></li> -->
+                    <!--=============== Empleados ===============-->
+                    <li class="dropdown__item">
+                        <a href="listaEmpleados.html" class="nav__link">
+                            Empleados
+                        </a>
+                    </li>
+
+                    <!--=============== Clientes ===============-->
+
+                    <li class="dropdown__item">
+                        <a href="listaClientes.html" class="nav__link">
+                            Clientes
+                        </a>
+                    </li>
+
+                    <!--=============== Productos ===============-->
+
+                    <li class="dropdown__item">
+                        <a href="listaProductos.html" class="nav__link">
+                            Productos
+                        </a>
+                    </li>
+
+                    <!--=============== Stock ===============-->
+
+                    <li class="dropdown__item">
+                        <a href="stock.html" class="nav__link">
+                            Stock
+                        </a>
+                    </li>
+
+                    <!--=============== Proveedores ===============-->
+
+                    <li class="dropdown__item">
+                        <a href="listaProveedores.html" class="nav__link">
+                            Proveedores
+                        </a>
+                    </li>
+
+                    <!--=============== Distribuidores ===============-->
+
+                    <li class="dropdown__item">
+                        <a href="listaDistribuidores.html" class="nav__link">
+                            Distribuidores
+                        </a>
+                    </li>
+
+                    <!--=============== Compras ===============-->
+
+                    <li class="dropdown__item">
+                        <a href="listaOrdenCompras.html" class="nav__link">
+                            Compras
+                        </a>
+                    </li>
+
+                    <!--=============== Ventas ===============-->
+
+                    <li class="dropdown__item">
+                        <a href="listaVentas.html" class="nav__link">
+                            Ventas
+                        </a>
+                    </li>
+
+                    <!--=============== Usuario / Cerrar Sesión ===============-->
+                    <li class="dropdown__item user-dropdown">
+                        <div class="nav__link">
+                            <i class="ri-user-line"></i> <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                        </div>
+                        <ul class="dropdown__menu">
+                            <li>
+                                <a href="../loggin.html" class="dropdown__link">
+                                    <i class="ri-logout-box-line"></i> Salir
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <!--=============== JS ===============-->
+    <script>
+        const navMenu = document.getElementById("nav-menu"),
+              navToggle = document.getElementById("nav-toggle");
+
+        navToggle.addEventListener("click", () => {
+          navMenu.classList.toggle("show-menu");
+          navToggle.classList.toggle("show-icon");
+        });
+    </script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

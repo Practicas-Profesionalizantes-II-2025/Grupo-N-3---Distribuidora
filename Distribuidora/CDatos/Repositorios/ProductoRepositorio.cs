@@ -38,20 +38,14 @@ namespace CDatos.Repositorios
         public async Task EliminarProducto(int id)
         {
             var producto = await ObtenerProductoPorId(id);
-            if (producto != null)
+            if (producto == null)
             {
-                var productoExistente = _context.Productos.Find(producto.Id);
-                if (productoExistente == null)
-                {
-                    throw new Exception("Producto no encontrado.");
-                }
-                productoExistente.PrecioProducto = producto.PrecioProducto;
-                productoExistente.Stock = producto.Stock;
-                productoExistente.ProveedorId = producto.ProveedorId;
-                productoExistente.Nombre = producto.Nombre;
-
-                await _context.SaveChangesAsync();
+                throw new Exception("Producto no encontrado.");
             }
+
+            _context.Productos.Remove(producto);
+
+            await _context.SaveChangesAsync();
         }
         public async Task<List<Producto>> ObtenerProductosPorProveedorId(int proveedorId)
         {

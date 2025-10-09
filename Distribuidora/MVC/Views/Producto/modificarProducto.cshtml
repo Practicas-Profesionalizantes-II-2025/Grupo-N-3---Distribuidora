@@ -1,8 +1,7 @@
-﻿@{
-}
+﻿@model MVC.Models.DTOs.ProductoEditarModel
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +9,11 @@
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="~/css/site.css">
 
-    <title>Pagina Inicio - Empleados</title>
+    <title>Modificar producto</title>
 </head>
 <body>
-
     <main>
         <div class="content">
             <!-- Header de la sección -->
@@ -23,25 +21,41 @@
                 <h2>Modificar producto</h2>
             </div>
 
-            <!-- Filtro de búsqueda -->
-            <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID o Nombre" id="searchInput">
-                <button class="btn yellow">Buscar</button>
-            </div>
+            <!-- Formulario para crear o modificar productos -->
+            <form asp-action="AccionModificarProducto" method="post" class="form">
+                <input type="hidden" asp-for="Id" /> @* para hacer el put necesitamos el id asi que lo oculatmos *@
+                <label>Nombre</label>
+                <input type="text" name="Nombre" placeholder="@Model.Nombre" value="@Model.Nombre" id="nombreApellido" required>
+                <label>Precio</label>
+                <input type="text" name="PrecioProducto" placeholder="@Model.PrecioProducto" value="@Model.PrecioProducto" id="nombreApellido" required>
+                <label>Stock</label>
+                <input type="number" name="Stock" placeholder="@Model.Stock" value="@Model.Stock" id="Stock" required>
+                <label>Categoria</label>
+                <select asp-for="CategoriaId"
+                        asp-items="@(new SelectList(Model.Categorias, "Id", "Nombre", Model.CategoriaId))"
+                        class="form-control" required>
+                </select>
+                <label>Proveedor</label>
+                <select asp-for="ProveedorId"
+                        asp-items="@(new SelectList(Model.Proveedores, "Id", "Nombre", Model.ProveedorId))"
+                        class="form-control" required>
+                </select>
 
-            <!-- Formulario para crear o modificar empleados -->
-            <div class="form">
-                <input type="text" placeholder="Nombre producto" id="nombreApellido">
-                <input type="text" placeholder="Proveedor" id="telefono">
-                <input type="text" placeholder="Categoría" id="direccion">
-                <input type="text" placeholder="Cantidad" id="codigoPostal">
-                <input type="text" placeholder="Precio venta" id="ciudad">
-                <button class="btn yellow">Guardar</button>
-            </div>
+
+
+                <!-- contenedor exclusivo para centrar -->
+                <div class="form-buttons-wrapper">
+                    <div class="form-buttons">
+                        <button type="submit" class="btn yellow">Guardar</button>
+                        <a asp-action="listaProductos" class="btn back">Volver</a>
+                    </div>
+                </div>  
+            </form>
         </div>
+
+
     </main>
-
-
-    <script href="../js/main.js"></script>
+    <!--=============== JS ===============-->
+    <script src="~/js/site.js"></script>
 </body>
 </html>

@@ -19,20 +19,21 @@ namespace CDatos.Repositorios
         }
         public async Task<List<OrdenDeVentaProducto>> ObtenerOrdenesDeVentaProductos()
         {
-            return await _context.OrdenesDeVentaProducto.ToListAsync();
+            return await _context.OrdenDeVentaProducto.ToListAsync();
         }
         public async Task<OrdenDeVentaProducto> ObtenerOrdenDeVentaProductoPorId(int id)
         {
-            return await _context.OrdenesDeVentaProducto.FindAsync(id);
+            return await _context.OrdenDeVentaProducto.FindAsync(id);
         }
-        public async Task CrearOrdenDeVentaProducto(OrdenDeVentaProducto ordenDeVentaProducto)
+        public async Task<OrdenDeVentaProducto> CrearOrdenDeVentaProducto(OrdenDeVentaProducto ordenDeVentaProducto)
         {
-            _context.OrdenesDeVentaProducto.Add(ordenDeVentaProducto);
+            _context.OrdenDeVentaProducto.Add(ordenDeVentaProducto);
             await _context.SaveChangesAsync();
+            return ordenDeVentaProducto;
         }
-        public async Task ActualizarOrdenDeVentaProducto(OrdenDeVentaProducto ordenDeVentaProducto)
+        public void ActualizarOrdenDeVentaProducto(OrdenDeVentaProducto ordenDeVentaProducto)
         {
-            var ordenDeVentaProductoExistente = _context.OrdenesDeVentaProducto.Find(ordenDeVentaProducto.Id);
+            var ordenDeVentaProductoExistente = _context.OrdenDeVentaProducto.Find(ordenDeVentaProducto.Id);
             if (ordenDeVentaProductoExistente == null)
             {
                 throw new Exception("Orden de Venta-Producto no encontrada.");
@@ -40,21 +41,21 @@ namespace CDatos.Repositorios
             ordenDeVentaProductoExistente.ProductoId = ordenDeVentaProducto.ProductoId;
             ordenDeVentaProductoExistente.CantidadProducto = ordenDeVentaProducto.CantidadProducto;
 
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
         }
-        public async Task EliminarOrdenDeVentaProducto(int id)
+        public void EliminarOrdenDeVentaProducto(int id)
         {
-            var ordenDeVentaProducto = await ObtenerOrdenDeVentaProductoPorId(id);
+            var ordenDeVentaProducto = _context.OrdenDeVentaProducto.FirstOrDefault(x => x.Id == id);
             if (ordenDeVentaProducto != null)
             {
-                _context.OrdenesDeVentaProducto.Remove(ordenDeVentaProducto);
-                await _context.SaveChangesAsync();
+                _context.OrdenDeVentaProducto.Remove(ordenDeVentaProducto);
+                _context.SaveChangesAsync();
             }
         }
         public async Task<List<OrdenDeVentaProducto>> ObtenerOrdenesDeVentaProductosPorOrdenDeVentaId(int ordenDeVentaId)
         {
-            return await _context.OrdenesDeVentaProducto
-                .Where(ovp => ovp.OrdenVentaId == ordenDeVentaId)
+            return await _context.OrdenDeVentaProducto
+                .Where(ovp => ovp.OrdenDeVentaId == ordenDeVentaId)
                 .ToListAsync();
         }
     }

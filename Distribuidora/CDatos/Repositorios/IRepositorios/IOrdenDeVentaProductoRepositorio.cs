@@ -12,9 +12,9 @@ namespace CDatos.Repositorios.IRepositorios
     {
         Task<List<OrdenDeVentaProducto>> ObtenerOrdenesDeVentaProductos();
         Task<OrdenDeVentaProducto> ObtenerOrdenDeVentaProductoPorId(int id);
-        Task CrearOrdenDeVentaProducto(OrdenDeVentaProducto ordenDeVentaProducto);
-        Task ActualizarOrdenDeVentaProducto(OrdenDeVentaProducto ordenDeVentaProducto);
-        Task EliminarOrdenDeVentaProducto(int id);
+        Task<OrdenDeVentaProducto> CrearOrdenDeVentaProducto(OrdenDeVentaProducto ordenDeVentaProducto);
+        void ActualizarOrdenDeVentaProducto(OrdenDeVentaProducto ordenDeVentaProducto);
+        void EliminarOrdenDeVentaProducto(int id);
         Task<List<OrdenDeVentaProducto>> ObtenerOrdenesDeVentaProductosPorOrdenDeVentaId(int ordenDeVentaId);
     }
 }

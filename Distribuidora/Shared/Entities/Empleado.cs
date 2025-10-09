@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Shared.DTOs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,10 +10,11 @@ namespace Shared.Entities
     public class Empleado
     {
         public int Id { get; set; }
-        public int SectorId { get; set; }
         public int PersonaId { get; set; }
-        public string Foto { get; set; } //Ver tema foto string ubicación de foto, ruta
+        public Persona Persona { get; set; }
+        //public string Foto { get; set; } //Ver tema foto string ubicación de foto, ruta
         public int EstadoId { get; set; }
-
+        public string Contrasenia { get; set; }
+        public bool Admin { get; set; }
     }
 }

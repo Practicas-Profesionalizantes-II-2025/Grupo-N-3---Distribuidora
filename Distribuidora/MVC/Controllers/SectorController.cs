@@ -1,157 +1,110 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using MVC.Data;
-using MVC.Models.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
+using MVC.Models.DTOs;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace MVC.Controllers
 {
     public class SectorController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public SectorController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
+        public SectorController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
         // GET: Sector
-        public async Task<IActionResult> SectorIndex()
+        public async Task<IActionResult> listaSectores()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.SectorGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_sectores = JsonConvert.DeserializeObject<List<SectorDTO>>(json);
+
+            return View(lista_sectores);
+        }
+
+        // GET: Sector/Create
+        public IActionResult crearSector()
         {
             return View();
         }
 
-        //// GET: Sector/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Sector/Create
+        [HttpPost]
+        public async Task<IActionResult> crearSector([Bind("Id,Nombre,EstadoId")] SectorDTO sector)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(sector);
+            }
 
-        //    var sector = await _context.Sector
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (sector == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.SectorPost}";
+            var jsonData = JsonConvert.SerializeObject(sector);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //    return View(sector);
-        //}
+            var response = await _httpClient.PostAsync(url, content);
 
-        //// GET: Sector/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //// POST: Sector/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            return RedirectToAction("listaSectores");
+        }
+
+        // GET: Sector/Delete
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var url = $"{_settings.BaseUrl}/{_settings.SectorDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error al eliminar el sector");
+
+            // Volver a obtener la lista actualizada
+            var url2 = $"{_settings.BaseUrl}/{_settings.SectorGet}";
+            var response2 = await _httpClient.GetAsync(url2);
+
+            if (!response2.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response2.Content.ReadAsStringAsync();
+            var lista_sectores = JsonConvert.DeserializeObject<List<SectorDTO>>(json);
+
+            return View("listaSectores", lista_sectores);
+        }
+
+        //// PUT: Sector/Edit/5 (opcional)
         //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Nombre,EstadoId")] Sector sector)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(sector);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(sector);
-        //}
-
-        //// GET: Sector/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var sector = await _context.Sector.FindAsync(id);
-        //    if (sector == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(sector);
-        //}
-
-        //// POST: Sector/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,EstadoId")] Sector sector)
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,EstadoId")] SectorDTO sector)
         //{
         //    if (id != sector.Id)
-        //    {
         //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(sector);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!SectorExists(sector.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(sector);
-        //}
-
-        //// GET: Sector/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var sector = await _context.Sector
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (sector == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(sector);
-        //}
-
-        //// POST: Sector/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var sector = await _context.Sector.FindAsync(id);
-        //    if (sector != null)
-        //    {
-        //        _context.Sector.Remove(sector);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool SectorExists(int id)
-        //{
-        //    return _context.Sector.Any(e => e.Id == id);
+        //
+        //    if (!ModelState.IsValid)
+        //        return View(sector);
+        //
+        //    var url = $"{_settings.BaseUrl}/{_settings.SectorPut}/{id}";
+        //    var jsonData = JsonConvert.SerializeObject(sector);
+        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        //
+        //    var response = await _httpClient.PutAsync(url, content);
+        //
+        //    if (!response.IsSuccessStatusCode)
+        //        return View("Error");
+        //
+        //    return RedirectToAction("listaSectores");
         //}
     }
 }

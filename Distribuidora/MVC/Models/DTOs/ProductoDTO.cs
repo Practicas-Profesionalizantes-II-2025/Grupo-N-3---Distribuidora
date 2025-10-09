@@ -1,4 +1,6 @@
-﻿namespace MVC.Models.DTOs
+﻿using Microsoft.AspNetCore.Mvc.ModelBinding.Validation;
+
+namespace MVC.Models.DTOs
 {
     public class ProductoDTO
     {
@@ -6,9 +8,9 @@
         public string Nombre { get; set; }
         public int ProveedorId { get; set; }
         public int CategoriaId { get; set; }
-        public int UnidadesProducto { get; set; }
         public float PrecioProducto { get; set; }
-        public int Stock = 0;
-        // Plantear como poner foto
+        public int Stock { get; set; }
+        [ValidateNever]
+        public string ProveedorNombre { get; set; }
     }
 }

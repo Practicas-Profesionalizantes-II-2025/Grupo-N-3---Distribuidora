@@ -1,157 +1,247 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using MVC.Data;
-using MVC.Models.Entities;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
+using MVC.Models.DTOs;
+using Newtonsoft.Json;
+using System.Collections.Immutable;
+using System.Text;
+using Ciudad = MVC.Models.Entities.Ciudad;
+using Estado = MVC.Models.Entities.Estado;
 
 namespace MVC.Controllers
 {
-    public class ClienteController : Controller
+    public class ClientesController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public ClienteController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
-
-        // GET: Cliente
-        public async Task<IActionResult> IndexClien()
+        public ClientesController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
         {
-            return View();
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
         }
 
-        //// GET: Cliente/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Clientes
+        public async Task<IActionResult> listaClientes()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}";
+            var response = await _httpClient.GetAsync(url);
 
-        //    var cliente = await _context.Cliente
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (cliente == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new List<ClienteDTO>());
+            }
 
-        //    return View(cliente);
-        //}
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
+            
+            // Obtener proveedores y categorías para mostrar nombres
+            var ulrCiudad = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
+            var urlDoc = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
+            var CiudadJson = await _httpClient.GetStringAsync(ulrCiudad);
+            var DocJson = await _httpClient.GetStringAsync(urlDoc);
 
-        //// GET: Cliente/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            var Ciudad = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+            var Doc = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+            
+            List<ClienteDTO> cliente = new List<ClienteDTO>();
 
-        //// POST: Cliente/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,PersonaId,EstadoId")] Cliente cliente)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(cliente);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(cliente);
-        //}
+            foreach (var p in lista_clientes)
+            {
+                p.Persona.NombreCiudad = Ciudad.FirstOrDefault(x => x.Id == p.Persona.CiudadId)?.Nombre ?? "N/A";
+                p.Persona.Tipo_DocNombre = Doc.FirstOrDefault(x => x.Id == p.Persona.Tipo_DocId)?.NombreTipoDocumento ?? "N/A";
 
-        //// GET: Cliente/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+                p.Persona.Ciudades = Ciudad;
+                p.Persona.TiposDocumentos = Doc;
 
-        //    var cliente = await _context.Cliente.FindAsync(id);
-        //    if (cliente == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(cliente);
-        //}
+            }
 
-        //// POST: Cliente/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,PersonaId,EstadoId")] Cliente cliente)
-        //{
-        //    if (id != cliente.Id)
-        //    {
-        //        return NotFound();
-        //    }
+            return View(lista_clientes);
+        }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(cliente);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!ClienteExists(cliente.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(cliente);
-        //}
+        // GET: Crear Cliente
+        public async Task<IActionResult> crearCliente()
+        {
+            var ciudadesJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+            var ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(ciudadesJson);
 
-        //// GET: Cliente/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            // Obtener tipos de documentos desde la API
+            var tiposDocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+            var tiposDoc = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(tiposDocJson);
 
-        //    var cliente = await _context.Cliente
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (cliente == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var cliente = new ClienteDTO
+            {
+                Persona = new PersonaDTO
+                {
+                    Ciudades = ciudades,
+                    TiposDocumentos = tiposDoc
 
-        //    return View(cliente);
-        //}
+                }
+            };
+            return View(cliente);
+        }
 
-        //// POST: Cliente/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var cliente = await _context.Cliente.FindAsync(id);
-        //    if (cliente != null)
-        //    {
-        //        _context.Cliente.Remove(cliente);
-        //    }
+        // POST: Crear Cliente
+        [HttpPost]
+        public async Task<IActionResult> crearCliente(ClienteDTO cliente)
+        {
+            try
+            {
+                if (cliente.Persona == null)
+                    cliente.Persona = new PersonaDTO();
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+                // Cargar dropdowns siempre antes de validar ModelState
+                var CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+                var DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
 
-        //private bool ClienteExists(int id)
-        //{
-        //    return _context.Cliente.Any(e => e.Id == id);
-        //}
+                cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+                cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+
+                // Forzamos estado de Persona en Alta
+                cliente.Persona.EstadoId = 1;
+
+                // Validación del ModelState
+                if (!ModelState.IsValid)
+                {
+                    return View(cliente);
+                }
+
+                // Serializamos y enviamos a la API
+                var clienteJson = JsonConvert.SerializeObject(cliente);
+                var clienteContent = new StringContent(clienteJson, Encoding.UTF8, "application/json");
+
+                var clienteResponse = await _httpClient.PostAsync($"{_settings.BaseUrl}/{_settings.ClientesPost}", clienteContent);
+
+                if (!clienteResponse.IsSuccessStatusCode)
+                {
+                    var error = await clienteResponse.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, $"Error creando cliente: {error}");
+                    return View(cliente);
+                }
+
+                return RedirectToAction(nameof(listaClientes));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
+                return View(cliente);
+            }
+        }
+
+
+        // GET: Modificar cliente
+        public async Task<IActionResult> modificarCliente(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
+
+            var urlCiudad = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
+            var responseUrlCiudad = await _httpClient.GetAsync(urlCiudad);
+
+            var urlDocumentos = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
+            var responseUrlDocumentos = await _httpClient.GetAsync(urlDocumentos);
+            if (!response.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError(string.Empty, "No se pudo cargar el cliente");
+                return RedirectToAction(nameof(listaClientes));
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var clientes = JsonConvert.DeserializeObject<ClienteDTO>(json);
+
+            var jsonCiudad = await responseUrlCiudad.Content.ReadAsStringAsync();
+            var jsonDocumentos = await responseUrlDocumentos.Content.ReadAsStringAsync();
+
+            var ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(jsonCiudad);
+            var Documentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(jsonDocumentos);
+
+            ClienteDTO modelo = new ClienteDTO
+            {
+                Id = clientes.Id,
+                PersonaId = clientes.PersonaId,
+                Persona = new PersonaDTO
+                {
+                    Id = clientes.Persona.Id,
+                    Nombre = clientes.Persona.Nombre,
+                    Apellido = clientes.Persona.Apellido,
+                    Tipo_DocId = clientes.Persona.Tipo_DocId,
+                    Nro_Doc = clientes.Persona.Nro_Doc,
+                    CiudadId = clientes.Persona.CiudadId,
+                    Email = clientes.Persona.Email,
+                    Direccion = clientes.Persona.Direccion,
+                    Telefono = clientes.Persona.Telefono,
+                    EstadoId = clientes.Persona.EstadoId,
+                    Ciudades = ciudades,
+                    TiposDocumentos = Documentos
+                },
+            };
+            return View(modelo);
+        }
+
+        // POST: Modificar cliente
+        [HttpPost]
+        public async Task<IActionResult> modificarCliente(ClienteDTO cliente)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return View(cliente);
+            }
+
+            try
+            { 
+                cliente.EstadoId = 1;
+                cliente.Persona.EstadoId = 1;
+                cliente.Persona.Tipo_DocId = cliente.Persona.Tipo_DocId == 0 ? 1 : cliente.Persona.Tipo_DocId;
+
+                var personaJson = JsonConvert.SerializeObject(cliente.Persona);
+                var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
+                var personaResponse = await _httpClient.PutAsync($"{_settings.BaseUrl}/{_settings.PersonaPut}/{cliente.Persona.Id}",personaContent);
+
+                if (!personaResponse.IsSuccessStatusCode)
+                {
+                    var error = await personaResponse.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, $"Error actualizando persona: {error}");
+                    return View(cliente);
+                }
+
+                var clienteJson = JsonConvert.SerializeObject(cliente);
+                var clienteContent = new StringContent(clienteJson, Encoding.UTF8, "application/json");
+                var clienteResponse = await _httpClient.PutAsync($"{_settings.BaseUrl}/{_settings.ClientesPut}/{cliente.Id}",clienteContent);
+
+                if (!clienteResponse.IsSuccessStatusCode)
+                {
+                    var error = await clienteResponse.Content.ReadAsStringAsync();
+                    ModelState.AddModelError(string.Empty, $"Error actualizando cliente: {error}");
+                    return View(cliente);
+                }
+
+                return RedirectToAction(nameof(listaClientes));
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
+                return View(cliente);
+            }
+        }
+
+        // DELETE: Cliente/Delete/5
+        [HttpPost]
+        public async Task<IActionResult> eliminarCliente(int? id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ClientesDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaClientes));
+
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
+
+            var listaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ClientesGet}");
+            var cliente = JsonConvert.DeserializeObject<List<ClienteDTO>>(listaJson);
+            return View("listaClientes", cliente);
+        }
     }
 }

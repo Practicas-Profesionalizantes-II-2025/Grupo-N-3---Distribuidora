@@ -1,4 +1,5 @@
-﻿using CDatos.Repositorios.IRepositorios;
+﻿using CDatos.Repositorios;
+using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
 using Shared.Entities;
@@ -13,7 +14,6 @@ namespace CNegocio.Logica
     public class ProveedorLogica : IProveedorLogica
     {
         private readonly IProveedorRepositorio _proveedorRepositorio;
-
         public ProveedorLogica(IProveedorRepositorio proveedorRepositorio)
         {
             _proveedorRepositorio = proveedorRepositorio;
@@ -31,15 +31,14 @@ namespace CNegocio.Logica
                 Email = p.Email
             }).ToList();
         }
-
         public async Task<ProveedorDTO> ObtenerProveedorPorId(int id)
         {
             if (id <= 0)
-                throw new ArgumentException("El Id del proveedor debe ser mayor a cero.");
+                throw new ArgumentException("El ID del proveedor debe ser mayor que cero.");
 
             var proveedor = await _proveedorRepositorio.ObtenerProveedorPorId(id);
             if (proveedor == null)
-                return null;
+                throw new ArgumentException($"No se encontró un proveedor con el ID {id}");
 
             return new ProveedorDTO
             {
@@ -50,15 +49,16 @@ namespace CNegocio.Logica
                 Email = proveedor.Email
             };
         }
-
-        public async Task CrearProveedor(ProveedorDTO proveedorDTO)
+        public async Task<ProveedorDTO> CrearProveedor(ProveedorDTO proveedorDTO)
         {
-            ValidarProveedorDTO(proveedorDTO, esNuevo: true);
+            List<string> camposErroneos = new List<string>();
+            if (string.IsNullOrEmpty(proveedorDTO.Nombre) || !IsValidName(proveedorDTO.Nombre))
+                camposErroneos.Add("Nombre");
 
-            // Evitar duplicados por Email
-            var existentes = await _proveedorRepositorio.ObtenerProveedores();
-            if (existentes.Any(p => p.Email.Equals(proveedorDTO.Email, StringComparison.OrdinalIgnoreCase)))
-                throw new InvalidOperationException("Ya existe un proveedor con el mismo email.");
+            if (camposErroneos.Count > 0)
+            {
+                throw new ArgumentException("Los siguientes campos son inválidos: ", string.Join(", ", camposErroneos));
+            }
 
             var proveedor = new Proveedor
             {
@@ -68,9 +68,12 @@ namespace CNegocio.Logica
                 Email = proveedorDTO.Email
             };
 
-            await _proveedorRepositorio.CrearProveedor(proveedor);
-        }
+            var nuevoProveedor = await _proveedorRepositorio.CrearProveedor(proveedor);
 
+            proveedorDTO.Id = nuevoProveedor.Id;
+
+            return proveedorDTO;
+        }
         public async Task ActualizarProveedor(ProveedorDTO proveedorDTO)
         {
             if (proveedorDTO.Id <= 0)
@@ -90,10 +93,8 @@ namespace CNegocio.Logica
                 Telefono = proveedorDTO.Telefono,
                 Email = proveedorDTO.Email
             };
-
-            await _proveedorRepositorio.ActualizarProveedor(proveedor);
+            _proveedorRepositorio.ActualizarProveedor(proveedor);
         }
-
         public async Task EliminarProveedor(int id)
         {
             if (id <= 0)
@@ -103,31 +104,43 @@ namespace CNegocio.Logica
             if (existente == null)
                 throw new InvalidOperationException("No se encontró el proveedor a eliminar.");
 
-            await _proveedorRepositorio.EliminarProveedor(id);
+            _proveedorRepositorio.EliminarProveedor(id);
         }
-
-        private void ValidarProveedorDTO(ProveedorDTO dto, bool esNuevo)
+        #region Validaciones
+        private void ValidarProveedorDTO(ProveedorDTO proveedorDTO, bool esNuevo)
         {
-            if (dto == null)
-                throw new ArgumentNullException(nameof(dto), "El proveedor no puede ser nulo.");
 
-            if (string.IsNullOrWhiteSpace(dto.Nombre))
+            if (proveedorDTO == null)
+                throw new ArgumentNullException(nameof(proveedorDTO), "El proveedor no puede ser nulo.");
+
+            if (string.IsNullOrWhiteSpace(proveedorDTO.Nombre))
                 throw new ArgumentException("El nombre del proveedor es obligatorio.");
 
-            if (string.IsNullOrWhiteSpace(dto.Direccion))
+            if (string.IsNullOrWhiteSpace(proveedorDTO.Direccion))
                 throw new ArgumentException("La dirección del proveedor es obligatoria.");
 
-            if (string.IsNullOrWhiteSpace(dto.Telefono))
+            if (string.IsNullOrWhiteSpace(proveedorDTO.Telefono))
                 throw new ArgumentException("El teléfono del proveedor es obligatorio.");
 
-            if (!Regex.IsMatch(dto.Telefono, @"^\+?\d{7,15}$"))
+            if (!Regex.IsMatch(proveedorDTO.Telefono, @"^\+?\d{7,15}$"))
                 throw new ArgumentException("El teléfono no tiene un formato válido.");
 
-            if (string.IsNullOrWhiteSpace(dto.Email))
+            if (string.IsNullOrWhiteSpace(proveedorDTO.Email))
                 throw new ArgumentException("El email del proveedor es obligatorio.");
 
-            if (!Regex.IsMatch(dto.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
+            if (!Regex.IsMatch(proveedorDTO.Email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$"))
                 throw new ArgumentException("El email del proveedor no tiene un formato válido.");
         }
+
+        private bool ContainsInvalidCharacter(string text)
+        {
+            char[] caracteres = { '!', '"', '#', '$', '%', '/', '(', ')', '=', '.', ',' };
+            return caracteres.Any(c => text.Contains(c));
+        }
+        private bool IsValidName(string nombre)
+        {
+            return nombre.Length < 15 && !ContainsInvalidCharacter(nombre);
+        }
     }
+        #endregion Validaciones
 }

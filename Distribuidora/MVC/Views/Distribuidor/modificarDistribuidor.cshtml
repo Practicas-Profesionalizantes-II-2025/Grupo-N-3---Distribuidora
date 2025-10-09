@@ -1,8 +1,7 @@
-﻿@{
-}
+﻿@model MVC.Models.DTOs.DistribuidorDTO
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +9,11 @@
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="~/css/site.css">
 
-    <title>Pagina Inicio - Empleados</title>
+    <title>Modificar distribuidor</title>
 </head>
 <body>
-
     <main>
         <div class="content">
             <!-- Header de la sección -->
@@ -23,27 +21,43 @@
                 <h2>Modificar distribuidor</h2>
             </div>
 
-            <!-- Filtro de búsqueda -->
-            <div class="search-filter">
-                <input type="text" placeholder="Buscar por ID, CUIL/CUIT o Nombre" id="searchInput">
-                <button class="btn yellow" id="buscarProveedor">Buscar</button>
-            </div>
+            <!-- Formulario -->
+            <form asp-action="modificarDistribuidor" asp-controller="Distribuidor" method="post">
+                <div class="form">
+                    <!-- ID oculto -->
+                    <input type="hidden" asp-for="Id" />
 
-            <!-- Formulario para modificar proveedores -->
-            <div class="form">
-                <input type="text" placeholder="Nombre" id="nombre">
-                <input type="text" placeholder="CUIL/CUIT" id="cuil" disabled> <!-- campo bloqueado -->
-                <input type="text" placeholder="Teléfono" id="telefono">
-                <input type="text" placeholder="Dirección" id="direccion">
-                <input type="text" placeholder="Ciudad" id="ciudad">
-                <input type="text" placeholder="Provincia" id="provincia">
-                <input type="text" placeholder="Código Postal" id="codigoPostal">
-                <button class="btn yellow" id="guardarProveedor">Guardar</button>
-            </div>
+                    <!-- Nombre -->
+                    <input type="text" asp-for="Nombre" placeholder="Nombre" class="input-text" required />
+                    <span asp-validation-for="Nombre" class="text-danger"></span>
+
+                    <!-- CUIL/CUIT (bloqueado) -->
+                    <input type="text" asp-for="CuilCuit" placeholder="CUIL/CUIT" class="input-text" readonly />
+                    <span asp-validation-for="CuilCuit" class="text-danger"></span>
+
+                    <!-- Teléfono -->
+                    <input type="text" asp-for="Telefono" placeholder="Teléfono" class="input-text" required />
+                    <span asp-validation-for="Telefono" class="text-danger"></span>
+
+                    <!-- Dirección -->
+                    <input type="text" asp-for="Direccion" placeholder="Dirección" class="input-text" required />
+                    <span asp-validation-for="Direccion" class="text-danger"></span>
+
+                    <!-- Ciudad -->
+                    <input asp-for="CiudadId" placeholder="Ciudad" required />
+
+                    <!-- Botones -->
+                    <div class="form-buttons-wrapper">
+                        <div class="form-buttons">
+                            <button type="submit" class="btn yellow">Guardar</button>
+                            <a asp-controller="Distribuidor" asp-action="listaDistribuidores" class="btn back">Volver</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </main>
-
-
-    <script href="../js/main.js"></script>
+    <!--=============== JS ===============-->
+    <script src="~/js/site.js"></script>
 </body>
 </html>
