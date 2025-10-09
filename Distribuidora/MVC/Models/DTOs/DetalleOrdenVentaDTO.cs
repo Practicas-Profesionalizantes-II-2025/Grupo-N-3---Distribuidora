@@ -8,6 +8,6 @@
         public int DistribuidorId { get; set; }
         public int ClienteId { get; set; }
         public DateTime FechaOrden { get; set; }
-        public List<OrdenDeVentaProductoDTO> Productos { get; set; } = new();
+        public List<OrdenDeVentaProductoDTO> ProductosSeleccionados { get; set; } = new();
     }
 }

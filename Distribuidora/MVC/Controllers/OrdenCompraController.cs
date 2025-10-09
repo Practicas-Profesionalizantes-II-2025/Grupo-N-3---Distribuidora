@@ -156,7 +156,6 @@ namespace MVC.Controllers
             return RedirectToAction(nameof(listaOrdenCompras));
         }
 
-
         // GET: OrdenDeCompra/Edit/5
         public async Task<IActionResult> modificarOrdenCompra(int id)
         {
@@ -195,7 +194,6 @@ namespace MVC.Controllers
 
             return View(ordenMvc);
         }
-
 
         // POST: OrdenDeCompra/Edit/5
         [HttpPost]
@@ -273,7 +271,7 @@ namespace MVC.Controllers
             var jsonProductos = await responseProductos.Content.ReadAsStringAsync();
             var catalogoProductos = JsonConvert.DeserializeObject<List<ProductoDTOvista>>(jsonProductos);
 
-            var productosSeleccionados = content.Productos.Select(p =>
+            var productosSeleccionados = content.ProductosSeleccionados.Select(p =>
             {
                 var prodCatalogo = catalogoProductos.FirstOrDefault(x => x.Id == p.ProductoId);
                 return new OrdenDeCompraProductoDTO

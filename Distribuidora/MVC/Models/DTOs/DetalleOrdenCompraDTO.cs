@@ -7,6 +7,6 @@
         public int EmpleadoId { get; set; }
         public int ProveedorId { get; set; }
         public DateTime FechaOrden { get; set; }
-        public List<OrdenDeCompraProductoDTO> Productos { get; set; } = new();
+        public List<OrdenDeCompraProductoDTO> ProductosSeleccionados { get; set; } = new();
     }
 }

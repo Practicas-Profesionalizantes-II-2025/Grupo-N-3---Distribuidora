@@ -250,13 +250,8 @@ namespace MVC.Controllers
 
             if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
             {
-                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
-
-                ViewBag.Estados = new SelectList(
-                    new List<string> { "Pendiente", "Realizado", "Entregado" },
-                    orden.Estado);
-                    
-               return View(orden);
+                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");                    
+                return View(orden);
             }
 
             var model = new
@@ -318,27 +313,48 @@ namespace MVC.Controllers
             if (content == null)
                 return RedirectToAction(nameof(listaOrdenVentas));
 
-            var urlProductos = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
-            var responseProductos = await _httpClient.GetAsync(urlProductos);
-            var jsonProductos = await responseProductos.Content.ReadAsStringAsync();
-            var catalogoProductos = JsonConvert.DeserializeObject<List<ProductoDTOvista>>(jsonProductos);
+            var urlEmpleados = $"{_settings.BaseUrl}/Empleados";
+            var empleados = JsonConvert.DeserializeObject<List<EmpleadoDTO>>(
+                await _httpClient.GetStringAsync(urlEmpleados));
 
-            var productosSeleccionados = content.Productos.Select(p =>
+            var urlClientes = $"{_settings.BaseUrl}/Clientes";
+            var clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(
+                await _httpClient.GetStringAsync(urlClientes));
+
+            var urlDistribuidores = $"{_settings.BaseUrl}/Distribuidor";
+            var distribuidores = JsonConvert.DeserializeObject<List<DistribuidorDTO>>(
+                await _httpClient.GetStringAsync(urlDistribuidores));
+
+            var urlProductos = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var catalogoProductos = JsonConvert.DeserializeObject<List<ProductoDTOvista>>(
+                await _httpClient.GetStringAsync(urlProductos));
+
+            var empleado = empleados.FirstOrDefault(e => e.Id == content.EmpleadoId);
+            var empleadoNombre = empleado != null? $"{empleado.Persona.Nombre} {empleado.Persona.Apellido}": $"Empleado {content.EmpleadoId}";
+
+            var cliente = clientes.FirstOrDefault(c => c.Id == content.ClienteId);
+            var clienteNombre = cliente != null? $"{cliente.Persona.Nombre} {cliente.Persona.Apellido}": $"Cliente {content.ClienteId}";
+
+            var distribuidor = distribuidores.FirstOrDefault(d => d.Id == content.DistribuidorId);
+            var distribuidorNombre = distribuidor != null? distribuidor.Nombre: $"Distribuidor {content.DistribuidorId}";
+
+            var productosSeleccionados = content.ProductosSeleccionados.Select(p =>
             {
                 var prodCatalogo = catalogoProductos.FirstOrDefault(x => x.Id == p.ProductoId);
                 return new OrdenDeVentaProductoDTO
-                {   Id = p.Id,
+                {
+                    Id = p.Id,
                     OrdenDeVentaId = p.OrdenDeVentaId,
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
+                    NombreProducto = prodCatalogo?.Nombre ?? $"Producto {p.ProductoId}",
+                    PrecioUnitario = prodCatalogo?.PrecioProducto ?? 0,
                     EmpleadoId = content.EmpleadoId,
-                    EmpleadoNombre = $"Empleado {content.EmpleadoId}",
+                    EmpleadoNombre = empleadoNombre,
                     DistribuidorId = content.DistribuidorId,
-                    DistribuidorNombre = $"Distribuidor {content.DistribuidorId}",
+                    DistribuidorNombre = distribuidorNombre,
                     ClienteId = content.ClienteId,
-                    ClienteNombre = $"Cliente {content.ClienteId}",
-                    NombreProducto = prodCatalogo != null ? prodCatalogo.Nombre : $"Producto {p.ProductoId}",
-                    PrecioUnitario = prodCatalogo != null ? prodCatalogo.PrecioProducto : 0
+                    ClienteNombre = clienteNombre
                 };
             }).ToList();
 
@@ -348,11 +364,11 @@ namespace MVC.Controllers
                 FechaOrden = content.FechaOrden,
                 Estado = content.Estado,
                 EmpleadoId = content.EmpleadoId,
-                NombreEmpleado = $"Empleado {content.EmpleadoId}",
+                NombreEmpleado = empleadoNombre,
                 DistribuidorId = content.DistribuidorId,
-                DistribuidorNombre = $"Distribuidor {content.DistribuidorId}",
+                DistribuidorNombre = distribuidorNombre,
                 ClienteId = content.ClienteId,
-                ClienteNombre = $"Cliente {content.ClienteId}",
+                ClienteNombre = clienteNombre,
                 ProductosSeleccionados = productosSeleccionados
             };
 

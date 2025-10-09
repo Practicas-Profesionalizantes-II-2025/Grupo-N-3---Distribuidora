@@ -40,7 +40,7 @@
                     {
                         <tr>
                             <td>@p.ProductoId</td>
-                            <td>@p.NombreProducto</td>>
+                            <td>@p.NombreProducto</td>
                             <td>@Model.DistribuidorNombre</td>
                             <td>@Model.ClienteNombre</td>
                             <td>@p.CantidadProducto</td>
@@ -67,12 +67,11 @@
         </table>
 
         <div class="actions">
-            <a asp-controller="OrdenVenta" asp-action="listaOrdenVentas" class="btn back">Volver</a>
+            <a asp-action="listaOrdenVentas" asp-controller="OrdenVenta" class="btn back">Volver</a>
         </div>
     </main>
 
-@section Scripts {
-        <script src="~/js/site.js"></script>
-}
+    <!--=============== JS ===============-->
+    <script src="~/js/site.js"></script>
 </body>
 </html>

@@ -165,6 +165,7 @@ namespace CNegocio.Logica
                 Id = ordenDeVentaDTO.Id,
                 EmpleadoId = ordenDeVentaDTO.EmpleadoId,
                 DistribuidorId = ordenDeVentaDTO.DistribuidorId,
+                ClienteId = ordenDeVentaDTO.ClienteId,
                 FechaOrden = ordenDeVentaDTO.FechaOrden,
                 Estado = ordenDeVentaDTO.Estado,
                 Productos = ordenDeVentaDTO.ProductosSeleccionados.Select(p => new OrdenDeVentaProducto
