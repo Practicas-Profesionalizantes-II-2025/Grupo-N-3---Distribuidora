@@ -21,7 +21,7 @@
             <h2>Modificar Venta</h2>
         </div>
 
-        @using (Html.BeginForm("modificarVenta", "OrdenVenta", FormMethod.Post, new { id = "pedidoForm" }))
+        @using (Html.BeginForm("modificarOrdenventa", "OrdenVenta", FormMethod.Post, new { id = "pedidoForm" }))
         {
             <input type="hidden" name="Id" value="@Model.Id" />
             <input type="hidden" name="FechaOrden" value="@Model.FechaOrden.ToString("yyyy-MM-ddTHH:mm:ss")" />
@@ -73,12 +73,12 @@
         <div class="actions">
             <button type="button" class="btn" id="agregarFila">Agregar Producto</button>
             <button type="submit" class="btn">Guardar Cambios</button>
-                <a asp-controller="OrdenVenta" asp-action="listaOrdenVentas" class="btn back">Volver</a>
+                <a asp-action="listaOrdenVentas" class="btn back">Volver</a>
         </div>
                 }
     </main>
     <!--=============== JS ===============-->
-    <script src="~/js/Compra/modificarcompra.js"></script>
+    <script src="~/js/Venta/modificarVenta.js"></script>
     }
 </body>
 </html>

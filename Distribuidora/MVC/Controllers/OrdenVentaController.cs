@@ -257,7 +257,7 @@ namespace MVC.Controllers
             var model = new
             {
                 Id = orden.Id,
-                Fecha = orden.FechaOrden,
+                FechaOrden = orden.FechaOrden,
                 Estado = orden.Estado,
                 EmpleadoId = orden.EmpleadoId,
                 DistribuidorId = orden.DistribuidorId,
