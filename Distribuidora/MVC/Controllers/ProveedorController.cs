@@ -57,10 +57,25 @@ namespace MVC.Controllers
             var response = await _httpClient.PostAsync(url, content);
 
             if (response.IsSuccessStatusCode)
+            {
+                TempData["MensajeExito"] = "Proveedor creado correctamente.";
                 return RedirectToAction(nameof(listaProveedores));
+            }
+            var contenido = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var errorObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(contenido);
+                if (errorObj != null && errorObj.ContainsKey("mensaje"))
+                    ModelState.AddModelError(string.Empty, errorObj["mensaje"]);
+                else
+                    ModelState.AddModelError(string.Empty, contenido);
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, contenido);
+            }
 
-            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
-            return RedirectToAction("listaProveedores");
+            return View(proveedor);
         }
 /*        // GET: Proveedores/EliminarProveedor
         [HttpGet]

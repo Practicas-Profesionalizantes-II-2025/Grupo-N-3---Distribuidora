@@ -51,28 +51,30 @@ namespace CNegocio.Logica
         }
         public async Task<ProveedorDTO> CrearProveedor(ProveedorDTO proveedorDTO)
         {
-            List<string> camposErroneos = new List<string>();
-            if (string.IsNullOrEmpty(proveedorDTO.Nombre) || !IsValidName(proveedorDTO.Nombre))
-                camposErroneos.Add("Nombre");
-
-            if (camposErroneos.Count > 0)
+            try
             {
-                throw new ArgumentException("Los siguientes campos son inválidos: ", string.Join(", ", camposErroneos));
+                ValidarProveedorDTO(proveedorDTO, true);
+                var proveedor = new Proveedor
+                {
+                    Nombre = proveedorDTO.Nombre,
+                    Direccion = proveedorDTO.Direccion,
+                    Telefono = proveedorDTO.Telefono,
+                    Email = proveedorDTO.Email
+                };
+
+                var nuevoProveedor = await _proveedorRepositorio.CrearProveedor(proveedor);
+
+                proveedorDTO.Id = nuevoProveedor.Id;
+
+                return proveedorDTO;
+            }
+            catch (ArgumentException ex)
+            {
+
+                    throw new ArgumentException(ex.Message); 
             }
 
-            var proveedor = new Proveedor
-            {
-                Nombre = proveedorDTO.Nombre,
-                Direccion = proveedorDTO.Direccion,
-                Telefono = proveedorDTO.Telefono,
-                Email = proveedorDTO.Email
-            };
-
-            var nuevoProveedor = await _proveedorRepositorio.CrearProveedor(proveedor);
-
-            proveedorDTO.Id = nuevoProveedor.Id;
-
-            return proveedorDTO;
+            
         }
         public async Task ActualizarProveedor(ProveedorDTO proveedorDTO)
         {

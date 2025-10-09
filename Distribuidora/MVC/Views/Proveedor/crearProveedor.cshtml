@@ -27,6 +27,16 @@
                 <h2>Crear proveedor</h2>
             </div>
 
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <p>@error.ErrorMessage</p>
+                    }
+                </div>
+            }
+
             <!-- Formulario para crear proveedor -->
             <form asp-controller="Proveedor" asp-action="crearProveedor" method="post" class="form">
                 <input type="text" asp-for="Nombre" placeholder="Nombre" required />

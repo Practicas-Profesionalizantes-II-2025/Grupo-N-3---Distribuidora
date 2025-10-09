@@ -54,9 +54,16 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<ProveedorDTO>> PostProveedor(ProveedorDTO proveedor)
         {
-            var proveedorCreado = await _proveedorLogica.CrearProveedor(proveedor);
+            try
+            {
+                var proveedorCreado = await _proveedorLogica.CrearProveedor(proveedor);
 
-            return CreatedAtAction(nameof(GetProveedor), new { id = proveedorCreado.Id }, proveedorCreado);
+                return CreatedAtAction(nameof(GetProveedor), new { id = proveedorCreado.Id }, proveedorCreado);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message }); // ⬅️ mensaje de validación
+            }
         }
 
         // DELETE: api/Proveedor/5
