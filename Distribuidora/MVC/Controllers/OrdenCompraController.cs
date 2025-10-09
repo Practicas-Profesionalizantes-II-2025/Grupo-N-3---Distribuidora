@@ -34,24 +34,53 @@ namespace MVC.Controllers
             var json = await response.Content.ReadAsStringAsync();
             var listaApi = JsonConvert.DeserializeObject<List<OrdenDeCompraDTO>>(json);
 
-            var listaMvc = listaApi.Select(o => new OrdenDeCompraDTO
-            {
-                Id = o.Id,
-                FechaOrden = o.FechaOrden,
-                EmpleadoId = o.EmpleadoId,
-                NombreEmpleado = $"Empleado {o.EmpleadoId}",
-                ProveedorId = o.ProveedorId,
-                ProveedorNombre = $"Proveedor {o.ProveedorId}",
-                Estado = o.Estado,
-                ProductosSeleccionados = o.ProductosSeleccionados,
-            }).ToList();
+            if (listaApi == null || !listaApi.Any())
+                return View(new List<OrdenDeCompraDTO>());
 
-            return View(listaMvc);
+            foreach (var orden in listaApi)
+            {
+                // Obtener el empleado de forma individual para esta orden
+                var empleadoResponse = await _httpClient.GetAsync($"{_settings.BaseUrl}/Empleados/{orden.EmpleadoId}");
+                if (empleadoResponse.IsSuccessStatusCode)
+                {
+                    var empleado = await empleadoResponse.Content.ReadFromJsonAsync<EmpleadoDTO>();
+                    orden.NombreEmpleado = empleado != null? $"{empleado.Persona.Nombre} {empleado.Persona.Apellido}": $"Empleado {orden.EmpleadoId}";
+                }
+                else
+                {
+                    orden.NombreEmpleado = $"Empleado {orden.EmpleadoId}";
+                }
+
+                // Nombre del proveedor
+                orden.ProveedorNombre = $"Proveedor {orden.ProveedorId}";
+
+                // Mapear productos si no hay detalles
+                if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+                {
+                    orden.ProductosSeleccionados = orden.Productos.Select(p => new OrdenDeCompraProductoDTO
+                    {
+                        ProductoId = p.Id,
+                        NombreProducto = p.Nombre,
+                        PrecioUnitario = p.PrecioProducto,
+                        CantidadProducto = 0,
+                        ProveedorId = orden.ProveedorId,
+                        ProveedorNombre = orden.ProveedorNombre
+                    }).ToList();
+                }
+            }
+
+            return View(listaApi);
         }
 
         // GET: Crear OrdenDeCompra
         public async Task<IActionResult> crearOrdenCompra()
         {
+            var empleadoId = HttpContext.Session.GetInt32("EmpleadoId");
+            if (empleadoId == null || empleadoId == 0)
+                return RedirectToAction("Login", "Empleados");
+
+            var empleadoNombre = HttpContext.Session.GetString("EmpleadoNombre") ?? "Empleado";
+
             var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
             var response = await _httpClient.GetAsync(url);
 
@@ -65,13 +94,13 @@ namespace MVC.Controllers
             var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json,
             new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
 
-
+            
             var model = new OrdenDeCompraDTO
             {
-                EmpleadoId = 1, // Cambiarlo por el empleado que inicie sesion
+                EmpleadoId = empleadoId.Value, // Cambiarlo por el empleado que inicie sesion
+                NombreEmpleado = empleadoNombre,
                 ProveedorId = 1,
                 ProveedorNombre = "Proveedor 4",
-                NombreEmpleado = "Juan Pérez",
                 Estado = "Pendiente",
                 FechaOrden = DateTime.Now,
                 Productos = productos
@@ -90,13 +119,21 @@ namespace MVC.Controllers
                 return View(orden);
             }
 
+            orden.EmpleadoId = HttpContext.Session.GetInt32("EmpleadoId") ?? 0;
+
+            if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+            {
+                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
+                return View(orden);
+            }
+
             var model = new
             {
-                EmpleadoId = orden.EmpleadoId,
+                EmpleadoId = orden.EmpleadoId, // ahora seguro es el logueado
                 ProveedorId = orden.ProveedorId,
                 FechaOrden = DateTime.Now,
                 Estado = "Pendiente",
-                Productos = orden.ProductosSeleccionados.Select(p => new
+                ProductosSeleccionados = orden.ProductosSeleccionados.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto
@@ -119,7 +156,6 @@ namespace MVC.Controllers
             return RedirectToAction(nameof(listaOrdenCompras));
         }
 
-
         // GET: OrdenDeCompra/Edit/5
         public async Task<IActionResult> modificarOrdenCompra(int id)
         {
@@ -130,7 +166,7 @@ namespace MVC.Controllers
                 return RedirectToAction(nameof(listaOrdenCompras));
 
             var json = await response.Content.ReadAsStringAsync();
-            var ordenApi = JsonConvert.DeserializeObject<Shared.DTOs.OrdenDeCompraDTO>(json);
+            var ordenApi = JsonConvert.DeserializeObject<OrdenDeCompraDTO>(json);
 
             var ordenMvc = new OrdenDeCompraDTO
             {
@@ -141,7 +177,7 @@ namespace MVC.Controllers
                 NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}",
                 ProveedorId = ordenApi.ProveedorId,
                 ProveedorNombre = $"Proveedor {ordenApi.ProveedorId}",
-                ProductosSeleccionados = ordenApi.Productos.Select(p => new OrdenDeCompraProductoDTO
+                ProductosSeleccionados = ordenApi.ProductosSeleccionados.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
                     NombreProducto = p.NombreProducto,
@@ -158,7 +194,6 @@ namespace MVC.Controllers
 
             return View(ordenMvc);
         }
-
 
         // POST: OrdenDeCompra/Edit/5
         [HttpPost]
@@ -181,7 +216,7 @@ namespace MVC.Controllers
                 Estado = orden.Estado,
                 EmpleadoId = orden.EmpleadoId,
                 ProveedorId = orden.ProveedorId,
-                Productos = orden.ProductosSeleccionados.Select(p => new
+                ProductosSeleccionados = orden.ProductosSeleccionados.Select(p => new
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
@@ -236,7 +271,7 @@ namespace MVC.Controllers
             var jsonProductos = await responseProductos.Content.ReadAsStringAsync();
             var catalogoProductos = JsonConvert.DeserializeObject<List<ProductoDTOvista>>(jsonProductos);
 
-            var productosSeleccionados = content.Productos.Select(p =>
+            var productosSeleccionados = content.ProductosSeleccionados.Select(p =>
             {
                 var prodCatalogo = catalogoProductos.FirstOrDefault(x => x.Id == p.ProductoId);
                 return new OrdenDeCompraProductoDTO

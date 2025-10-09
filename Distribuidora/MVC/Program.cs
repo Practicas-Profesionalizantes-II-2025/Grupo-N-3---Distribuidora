@@ -1,10 +1,6 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using MVC.ConfigAPI;
-using NuGet.Configuration;
+﻿using MVC.ConfigAPI;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 // Configuración de ApiSettings
 builder.Services.Configure<ApiSettings>(
@@ -20,6 +16,15 @@ builder.Services.AddHttpClient("API", client =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+// 🔹 Habilitar sesión
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30); // tiempo de expiración
+    options.Cookie.HttpOnly = true;
+    options.Cookie.IsEssential = true;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,11 +39,13 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+// 🔹 Agregar middleware de sesión
+app.UseSession();
+
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Empleados}/{action=Login}/{id?}");
-
 
 app.Run();

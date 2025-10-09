@@ -32,6 +32,13 @@ namespace CDatos.Data
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<OrdenDeVenta>()
+                .HasOne(o => o.Empleado)
+                .WithMany() // o WithMany(e => e.Ordenes)
+                .HasForeignKey(o => o.EmpleadoId)
+                .OnDelete(DeleteBehavior.NoAction);
             // Estados
             modelBuilder.Entity<Estado>().HasData(
                 new Estado { Id = 1, Descripcion = "Activo" },
@@ -135,15 +142,15 @@ namespace CDatos.Data
 
             // Ordenes de Venta
             modelBuilder.Entity<OrdenDeVenta>().HasData(
-                new OrdenDeVenta { Id = 1, Fecha = new DateTime(2025, 8, 21), FacturaId = 1, EmpleadoId = 1, ClienteId = 1, DistribuidorId = 1, EstadoId = 1 },
-                new OrdenDeVenta { Id = 2, Fecha = new DateTime(2025, 8, 20), FacturaId = 2, EmpleadoId = 2, ClienteId = 2, DistribuidorId = 2, EstadoId = 2 }
+                new OrdenDeVenta { Id = 1, EmpleadoId = 1, ClienteId = 1, DistribuidorId = 1, FechaOrden = new DateTime(2025, 8, 21) },
+                new OrdenDeVenta { Id = 2, EmpleadoId = 2, ClienteId = 2, DistribuidorId = 2, FechaOrden = new DateTime(2025, 8, 20), }
             );
 
             // Ordenes de Venta Producto
             modelBuilder.Entity<OrdenDeVentaProducto>().HasData(
-                new OrdenDeVentaProducto { Id = 1, OrdenVentaId = 1, ProductoId = 1, CantidadProducto = 1 },
-                new OrdenDeVentaProducto { Id = 2, OrdenVentaId = 1, ProductoId = 2, CantidadProducto = 2 },
-                new OrdenDeVentaProducto { Id = 3, OrdenVentaId = 2, ProductoId = 3, CantidadProducto = 5 }
+                new OrdenDeVentaProducto { Id = 1, OrdenDeVentaId = 1, ProductoId = 1, CantidadProducto = 1 },
+                new OrdenDeVentaProducto { Id = 2, OrdenDeVentaId = 1, ProductoId = 2, CantidadProducto = 2 },
+                new OrdenDeVentaProducto { Id = 3, OrdenDeVentaId = 2, ProductoId = 3, CantidadProducto = 5 }
             );
         }
     }

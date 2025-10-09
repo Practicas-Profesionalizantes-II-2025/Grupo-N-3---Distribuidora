@@ -1,23 +1,24 @@
-﻿@model MVC.Models.DTOs.OrdenDeCompraDTO
+﻿@model MVC.Models.DTOs.OrdenDeVentaDTO
+
+@{
+    ViewData["Title"] = "Detalle Venta";
+}
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalle de pedido</title>
+    <title>Detalle Venta</title>
 
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="~/css/site.css">
 </head>
 <body>
-    <!--=============== DETALLE PEDIDO ===============-->
-    <main class="pedido">
-        <!-- Header de la sección -->
+    <main class="pedido container full-width">
         <div class="section-header">
-            <h2>Detalle pedido #@Model.Id</h2>
-            <p>Estado: <strong>@Model.Estado</strong></p> <!-- muestra el estado -->
+            <h2>Detalle Venta</h2>
         </div>
 
         <table class="pedido__table">
@@ -25,37 +26,39 @@
                 <tr>
                     <th>ID Producto</th>
                     <th>Nombre</th>
-                    <th>Proveedor</th>
+                    <th>Distribuidor</th>
+                    <th>Cliente</th>
                     <th>Cantidad</th>
                     <th>Precio Unitario</th>
                     <th>Total</th>
                 </tr>
             </thead>
             <tbody>
-                @if (Model.ProductosSeleccionados != null && Model.ProductosSeleccionados.Any())
+             @if (Model.ProductosSeleccionados != null && Model.ProductosSeleccionados.Any())
                 {
-                    foreach (var prod in Model.ProductosSeleccionados)
+                    foreach (var p in Model.ProductosSeleccionados)
                     {
                         <tr>
-                            <td>@prod.ProductoId</td>
-                            <td>@prod.NombreProducto</td>
-                            <td>@prod.ProveedorNombre</td>
-                            <td>@prod.CantidadProducto</td>
-                            <td>@String.Format("{0:C}", prod.PrecioUnitario)</td>
-                            <td>@String.Format("{0:C}", prod.CantidadProducto * prod.PrecioUnitario)</td>
+                            <td>@p.ProductoId</td>
+                            <td>@p.NombreProducto</td>
+                            <td>@Model.DistribuidorNombre</td>
+                            <td>@Model.ClienteNombre</td>
+                            <td>@p.CantidadProducto</td>
+                            <td>@String.Format("{0:C}", p.PrecioUnitario)</td>
+                            <td>@String.Format("{0:C}", p.CantidadProducto * p.PrecioUnitario)</td>
                         </tr>
                     }
                 }
                 else
                 {
                     <tr>
-                        <td colspan="6">No hay productos en esta orden</td>
+                        <td colspan="7">No hay productos en esta venta.</td>
                     </tr>
-                }
+                } 
             </tbody>
             <tfoot>
                 <tr>
-                    <td colspan="5" class="total-label">TOTAL:</td>
+                    <td colspan="6" class="total-label">TOTAL:</td>
                     <td class="total-value">
                         @String.Format("{0:C}", Model.ProductosSeleccionados?.Sum(p => p.CantidadProducto * p.PrecioUnitario) ?? 0)
                     </td>
@@ -64,7 +67,7 @@
         </table>
 
         <div class="actions">
-            <a asp-action="listaOrdenCompras" asp-controller="OrdenCompra" class="btn back">Volver</a>
+            <a asp-action="listaOrdenVentas" asp-controller="OrdenVenta" class="btn back">Volver</a>
         </div>
     </main>
 

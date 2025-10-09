@@ -71,39 +71,6 @@ namespace CDatos.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrdenDeVenta",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Fecha = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    FacturaId = table.Column<int>(type: "int", nullable: false),
-                    EmpleadoId = table.Column<int>(type: "int", nullable: false),
-                    ClienteId = table.Column<int>(type: "int", nullable: false),
-                    DistribuidorId = table.Column<int>(type: "int", nullable: false),
-                    EstadoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrdenDeVenta", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "OrdenDeVentaProducto",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    OrdenVentaId = table.Column<int>(type: "int", nullable: false),
-                    ProductoId = table.Column<int>(type: "int", nullable: false),
-                    CantidadProducto = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_OrdenDeVentaProducto", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Persona",
                 columns: table => new
                 {
@@ -254,6 +221,40 @@ namespace CDatos.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "OrdenDeVenta",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    EmpleadoId = table.Column<int>(type: "int", nullable: false),
+                    ClienteId = table.Column<int>(type: "int", nullable: false),
+                    DistribuidorId = table.Column<int>(type: "int", nullable: false),
+                    FechaOrden = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Estado = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrdenDeVenta", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrdenDeVenta_Cliente_ClienteId",
+                        column: x => x.ClienteId,
+                        principalTable: "Cliente",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrdenDeVenta_Distribuidor_DistribuidorId",
+                        column: x => x.DistribuidorId,
+                        principalTable: "Distribuidor",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrdenDeVenta_Empleado_EmpleadoId",
+                        column: x => x.EmpleadoId,
+                        principalTable: "Empleado",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrdenDeCompraProducto",
                 columns: table => new
                 {
@@ -274,6 +275,33 @@ namespace CDatos.Migrations
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_OrdenDeCompraProducto_Productos_ProductoId",
+                        column: x => x.ProductoId,
+                        principalTable: "Productos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "OrdenDeVentaProducto",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    OrdenDeVentaId = table.Column<int>(type: "int", nullable: false),
+                    ProductoId = table.Column<int>(type: "int", nullable: false),
+                    CantidadProducto = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_OrdenDeVentaProducto", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_OrdenDeVentaProducto_OrdenDeVenta_OrdenDeVentaId",
+                        column: x => x.OrdenDeVentaId,
+                        principalTable: "OrdenDeVenta",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_OrdenDeVentaProducto_Productos_ProductoId",
                         column: x => x.ProductoId,
                         principalTable: "Productos",
                         principalColumn: "Id",
@@ -315,25 +343,6 @@ namespace CDatos.Migrations
                 {
                     { 1, "Activo" },
                     { 2, "Inactivo" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "OrdenDeVenta",
-                columns: new[] { "Id", "ClienteId", "DistribuidorId", "EmpleadoId", "EstadoId", "FacturaId", "Fecha" },
-                values: new object[,]
-                {
-                    { 1, 1, 1, 1, 1, 1, new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified) },
-                    { 2, 2, 2, 2, 2, 2, new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) }
-                });
-
-            migrationBuilder.InsertData(
-                table: "OrdenDeVentaProducto",
-                columns: new[] { "Id", "CantidadProducto", "OrdenVentaId", "ProductoId" },
-                values: new object[,]
-                {
-                    { 1, 1, 1, 1 },
-                    { 2, 2, 1, 2 },
-                    { 3, 5, 2, 3 }
                 });
 
             migrationBuilder.InsertData(
@@ -429,6 +438,15 @@ namespace CDatos.Migrations
                 });
 
             migrationBuilder.InsertData(
+                table: "OrdenDeVenta",
+                columns: new[] { "Id", "ClienteId", "DistribuidorId", "EmpleadoId", "Estado", "FechaOrden" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, 1, null, new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified) },
+                    { 2, 2, 2, 2, null, new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified) }
+                });
+
+            migrationBuilder.InsertData(
                 table: "OrdenDeCompraProducto",
                 columns: new[] { "Id", "CantidadProducto", "OrdenDeCompraId", "ProductoId" },
                 values: new object[,]
@@ -436,6 +454,16 @@ namespace CDatos.Migrations
                     { 1, 2, 1, 1 },
                     { 2, 1, 1, 2 },
                     { 3, 10, 2, 3 }
+                });
+
+            migrationBuilder.InsertData(
+                table: "OrdenDeVentaProducto",
+                columns: new[] { "Id", "CantidadProducto", "OrdenDeVentaId", "ProductoId" },
+                values: new object[,]
+                {
+                    { 1, 1, 1, 1 },
+                    { 2, 2, 1, 2 },
+                    { 3, 5, 2, 3 }
                 });
 
             migrationBuilder.CreateIndex(
@@ -467,6 +495,31 @@ namespace CDatos.Migrations
                 name: "IX_OrdenDeCompraProducto_ProductoId",
                 table: "OrdenDeCompraProducto",
                 column: "ProductoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdenDeVenta_ClienteId",
+                table: "OrdenDeVenta",
+                column: "ClienteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdenDeVenta_DistribuidorId",
+                table: "OrdenDeVenta",
+                column: "DistribuidorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdenDeVenta_EmpleadoId",
+                table: "OrdenDeVenta",
+                column: "EmpleadoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdenDeVentaProducto_OrdenDeVentaId",
+                table: "OrdenDeVentaProducto",
+                column: "OrdenDeVentaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdenDeVentaProducto_ProductoId",
+                table: "OrdenDeVentaProducto",
+                column: "ProductoId");
         }
 
         /// <inheritdoc />
@@ -479,19 +532,10 @@ namespace CDatos.Migrations
                 name: "Ciudad");
 
             migrationBuilder.DropTable(
-                name: "Cliente");
-
-            migrationBuilder.DropTable(
-                name: "Distribuidor");
-
-            migrationBuilder.DropTable(
                 name: "Estados");
 
             migrationBuilder.DropTable(
                 name: "OrdenDeCompraProducto");
-
-            migrationBuilder.DropTable(
-                name: "OrdenDeVenta");
 
             migrationBuilder.DropTable(
                 name: "OrdenDeVentaProducto");
@@ -506,13 +550,22 @@ namespace CDatos.Migrations
                 name: "OrdenDeCompra");
 
             migrationBuilder.DropTable(
+                name: "OrdenDeVenta");
+
+            migrationBuilder.DropTable(
                 name: "Productos");
 
             migrationBuilder.DropTable(
-                name: "Empleado");
+                name: "Proveedor");
 
             migrationBuilder.DropTable(
-                name: "Proveedor");
+                name: "Cliente");
+
+            migrationBuilder.DropTable(
+                name: "Distribuidor");
+
+            migrationBuilder.DropTable(
+                name: "Empleado");
 
             migrationBuilder.DropTable(
                 name: "Persona");

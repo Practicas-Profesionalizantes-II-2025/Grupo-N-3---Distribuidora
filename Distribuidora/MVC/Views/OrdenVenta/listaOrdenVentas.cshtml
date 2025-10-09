@@ -1,0 +1,152 @@
+﻿@model List<MVC.Models.DTOs.OrdenDeVentaDTO>
+
+@{
+    ViewData["Title"] = "Lista de Ventas";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Ventas</title>
+
+    <!--=============== REMIXICONS ===============-->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css">
+    <style>
+        .tabla-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .tabla-empleados thead {
+            position: sticky;
+            top: 0;
+            background-color: #f5f5f5;
+            z-index: 1;
+        }
+
+        .tabla-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tabla-container::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+            .tabla-container::-webkit-scrollbar-thumb:hover {
+                background-color: #555;
+            }
+    </style>
+</head>
+<body>
+    <main class="container full-width">
+        <h2 class="titulo">Lista de Ventas</h2>
+
+        <!-- Filtro de búsqueda y botón crear -->
+        <div class="search-filter">
+            <input type="text" placeholder="Buscar por ID, Fecha o Cliente" id="searchInput">
+            <button class="btn yellow">Buscar</button>
+            <a asp-controller="OrdenVenta" asp-action="crearOrdenVenta" class="btn yellow">Crear venta</a>
+        </div>
+
+        <!-- Tabla de ventas -->
+        <table class="tabla-empleados">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha de venta</th>
+                    <th>Cliente</th>
+                    <th>Empleado</th>
+                    <th>Distribuidor</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model != null && Model.Any())
+                {
+                    foreach (var venta in Model)
+                    {
+                        <tr> 
+                            <td>@venta.Id</td>
+                            <td>@venta.FechaOrden.ToString("dd/MM/yyyy")</td>
+                            <td>@venta.ClienteNombre</td>
+                            <td>@venta.NombreEmpleado</td>
+                            <td>@venta.DistribuidorNombre</td>
+                            <td>@venta.Estado</td>
+                            <td class="acciones">
+                                <a asp-controller="OrdenVenta" asp-action="modificarOrdenventa" asp-route-id="@venta.Id" class="btn-icon edit">
+                                    <i class="ri-pencil-line"></i>
+                                </a>
+                                <form asp-controller="OrdenVenta" asp-action="eliminarOrdenventa" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@venta.Id" />
+                                    <a href="#" class="btn-icon yellow-outline" title="Eliminar" onclick="confirmDelete(this)">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </a>
+                                </form>
+                                <a asp-controller="OrdenVenta" asp-action="detalleOrdenVenta" asp-route-id="@venta.Id" class="btn-icon blue-outline" title="Ver detalle">
+                                    <i class="ri-eye-line"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="7" style="text-align:center;">No hay ventas registradas.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </main>
+
+    <!-- Modal de Confirmación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="ri-alert-line" style="font-size: 2rem; color: #ff4d4d;"></i>
+                <h3>Confirmar eliminación</h3>
+            </div>
+            <p>¿Estás seguro que deseas eliminar esta venta?</p>
+            <div class="modal-buttons">
+                <button class="btn confirm" id="confirmBtn">Sí, eliminar</button>
+                <button class="btn cancel" id="cancelBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+@section Scripts {
+        <script>
+               let rowToDelete = null;
+
+            function confirmDelete(button) {
+                rowToDelete = button.closest('tr');
+                document.getElementById('deleteModal').style.display = 'flex';
+            }
+
+            document.getElementById('confirmBtn').onclick = function () {
+                if (rowToDelete) {
+                    rowToDelete.querySelector('form').submit();
+                    rowToDelete = null;
+                }
+                document.getElementById('deleteModal').style.display = 'none';
+            }
+
+            document.getElementById('cancelBtn').onclick = function () {
+                rowToDelete = null;
+                document.getElementById('deleteModal').style.display = 'none';
+            }
+        </script>
+
+        <!--=============== JS ===============-->
+        <script src="~/js/site.js"></script>
+        <script src="~/js/Compra/filtroOrden.js"></script>
+}
+</body>
+</html>

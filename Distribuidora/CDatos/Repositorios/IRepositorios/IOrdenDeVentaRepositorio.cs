@@ -10,9 +10,9 @@ namespace CDatos.Repositorios.IRepositorios
     public interface IOrdenDeVentaRepositorio
     {   Task<List<OrdenDeVenta>> ObtenerOrdenesDeVenta();
         Task<OrdenDeVenta> ObtenerOrdenDeVentaPorId(int id);
-        Task CrearOrdenDeVenta(OrdenDeVenta ordenDeVenta);
-        Task ActualizarOrdenDeVenta(OrdenDeVenta ordenDeVenta);
-        Task EliminarOrdenDeVentaAsync(int id);
+        Task<OrdenDeVenta> CrearOrdenDeVenta(OrdenDeVenta ordenDeVenta);
+        void ActualizarOrdenDeVenta(OrdenDeVenta ordenDeVenta);
+        void EliminarOrdenDeVenta(int id);
         Task<List<OrdenDeVenta>> ObtenerOrdenesDeVentaPorEmpleadoId(int empleadoId);
         Task<List<OrdenDeVenta>> ObtenerOrdenesDeVentaPorClienteId(int clienteId);
         Task<List<OrdenDeVenta>> ObtenerOrdenesDeVentaPorDistribuidoraId(int distribuidoraId);

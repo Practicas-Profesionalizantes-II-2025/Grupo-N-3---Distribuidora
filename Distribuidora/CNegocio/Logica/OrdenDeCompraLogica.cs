@@ -1,4 +1,5 @@
-﻿using CDatos.Repositorios.IRepositorios;
+﻿using CDatos.Repositorios;
+using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
 using Shared.Entities;
@@ -12,10 +13,12 @@ namespace CNegocio.Logica
     public class OrdenDeCompraLogica : IOrdenDeCompraLogica
     {
         private readonly IOrdenDeCompraRepositorio _ordenDeCompraRepositorio;
+        private readonly IProductoRepositorio _productoRepositorio;
 
-        public OrdenDeCompraLogica(IOrdenDeCompraRepositorio ordenDeCompraRepositorio)
+        public OrdenDeCompraLogica(IOrdenDeCompraRepositorio ordenDeCompraRepositorio, IProductoRepositorio productoRepositorio)
         {
             _ordenDeCompraRepositorio = ordenDeCompraRepositorio ?? throw new ArgumentNullException(nameof(ordenDeCompraRepositorio));
+            _productoRepositorio = productoRepositorio ?? throw new ArgumentNullException(nameof(productoRepositorio));
         }
 
         #region obtener ordenes
@@ -29,7 +32,7 @@ namespace CNegocio.Logica
                 EmpleadoId = o.EmpleadoId,
                 Estado = o.Estado,
                 ProveedorId = o.ProveedorId,
-                Productos = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                ProductosSeleccionados = o.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
@@ -55,11 +58,11 @@ namespace CNegocio.Logica
                 EmpleadoId = ordenDeCompra.EmpleadoId,
                 Estado = ordenDeCompra.Estado,
                 ProveedorId = ordenDeCompra.ProveedorId,
-                Productos = ordenDeCompra.Productos.Select(p => new OrdenDeCompraProductoDTO
+                ProductosSeleccionados = ordenDeCompra.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
-                    Id = p.Id,                           // ID del registro de la relación
-                    OrdenDeCompraId = ordenDeCompra.Id,  // ID de la orden
-                    ProductoId = p.ProductoId,           // ID del producto
+                    Id = p.Id,                        
+                    OrdenDeCompraId = ordenDeCompra.Id,  
+                    ProductoId = p.ProductoId,           
                     CantidadProducto = p.CantidadProducto,
                     NombreProducto = p.Producto.Nombre,
                     PrecioUnitario = p.Producto.PrecioProducto,
@@ -79,7 +82,7 @@ namespace CNegocio.Logica
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
                 ProveedorId = o.ProveedorId,
-                Productos = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                ProductosSeleccionados = o.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
@@ -101,7 +104,7 @@ namespace CNegocio.Logica
                 FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
                 ProveedorId = o.ProveedorId,
-                Productos = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                ProductosSeleccionados = o.Productos.Select(p => new OrdenDeCompraProductoDTO
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto,
@@ -144,7 +147,7 @@ namespace CNegocio.Logica
                 ProveedorId = ordenDeCompraDTO.ProveedorId,
                 FechaOrden = ordenDeCompraDTO.FechaOrden,
                 Estado = ordenDeCompraDTO.Estado = "Pendiente",
-                Productos = ordenDeCompraDTO.Productos.Select(p => new OrdenDeCompraProducto
+                Productos = ordenDeCompraDTO.ProductosSeleccionados.Select(p => new OrdenDeCompraProducto
                 {
                     ProductoId = p.ProductoId,
                     CantidadProducto = p.CantidadProducto
@@ -159,6 +162,11 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO == null)
                 throw new ArgumentNullException(nameof(ordenDeCompraDTO));
 
+            var ordenExistente = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(ordenDeCompraDTO.Id);
+            if (ordenExistente == null)
+                throw new Exception("Orden de Compra no encontrada.");
+
+            bool cambioAEntregado = ordenExistente.Estado != "Entregado" && ordenDeCompraDTO.Estado == "Entregado";
             var orden = new OrdenDeCompra
             {
                 Id = ordenDeCompraDTO.Id,
@@ -166,14 +174,27 @@ namespace CNegocio.Logica
                 ProveedorId = ordenDeCompraDTO.ProveedorId,
                 FechaOrden = ordenDeCompraDTO.FechaOrden,
                 Estado = ordenDeCompraDTO.Estado,
-                Productos = ordenDeCompraDTO.Productos.Select(p => new OrdenDeCompraProducto
+                Productos = ordenDeCompraDTO.ProductosSeleccionados.Select(p => new OrdenDeCompraProducto
                 {
                     ProductoId = p.ProductoId,
-                    CantidadProducto = p.CantidadProducto                   
+                    CantidadProducto = p.CantidadProducto
                 }).ToList()
             };
 
             _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(orden);
+
+            if (cambioAEntregado)
+            {
+                foreach (var prod in orden.Productos)
+                {
+                    var producto = await _productoRepositorio.ObtenerProductoPorId(prod.ProductoId);
+                    if (producto != null)
+                    {
+                        producto.Stock += prod.CantidadProducto;
+                        await _productoRepositorio.ActualizarProducto(producto);
+                    }
+                }
+            }
         }
 
         public async Task EliminarOrdenDeCompra(int id)

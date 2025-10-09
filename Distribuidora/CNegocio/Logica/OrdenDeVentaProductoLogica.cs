@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CDatos.Repositorios;
 using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
 using Shared.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CNegocio.Logica
 {
@@ -21,30 +22,25 @@ namespace CNegocio.Logica
         public async Task<List<OrdenDeVentaProductoDTO>> ObtenerOrdenesDeVentaProductos()
         {
             var ordenesDeVentaProductos = await _ordenDeVentaProductoRepositorio.ObtenerOrdenesDeVentaProductos();
-            return ordenesDeVentaProductos?.Select(ovp => new OrdenDeVentaProductoDTO
+            return ordenesDeVentaProductos.Select(o => new OrdenDeVentaProductoDTO
             {
-                Id = ovp.Id,
-                ProductoId = ovp.ProductoId,
-                CantidadProducto = ovp.CantidadProducto,
-                OrdenVentaId = ovp.OrdenVentaId
-            }).ToList() ?? new List<OrdenDeVentaProductoDTO>();
+                Id = o.Id,
+                OrdenDeVentaId = o.OrdenDeVentaId,
+                ProductoId = o.ProductoId,
+                CantidadProducto = o.CantidadProducto
+            }).ToList();
         }
 
         public async Task<OrdenDeVentaProductoDTO> ObtenerOrdenDeVentaProductoPorId(int id)
         {
-            if (id <= 0)
-                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(id));
-
-            var ordenDeVentaProducto = await _ordenDeVentaProductoRepositorio.ObtenerOrdenDeVentaProductoPorId(id);
-            if (ordenDeVentaProducto == null)
-                throw new KeyNotFoundException($"No se encontró un registro con ID {id}.");
-
+            var ordenVentaProducto = await _ordenDeVentaProductoRepositorio.ObtenerOrdenDeVentaProductoPorId(id);
+            if (ordenVentaProducto == null) return null;
             return new OrdenDeVentaProductoDTO
             {
-                Id = ordenDeVentaProducto.Id,
-                ProductoId = ordenDeVentaProducto.ProductoId,
-                CantidadProducto = ordenDeVentaProducto.CantidadProducto,
-                OrdenVentaId = ordenDeVentaProducto.OrdenVentaId
+                Id = ordenVentaProducto.Id,
+                OrdenDeVentaId = ordenVentaProducto.OrdenDeVentaId,
+                ProductoId = ordenVentaProducto.ProductoId,
+                CantidadProducto = ordenVentaProducto.CantidadProducto
             };
         }
 
@@ -54,13 +50,13 @@ namespace CNegocio.Logica
                 throw new ArgumentException("El ID de la orden de venta debe ser mayor que cero.", nameof(ordenDeVentaId));
 
             var ordenesDeVentaProducto = await _ordenDeVentaProductoRepositorio.ObtenerOrdenesDeVentaProductosPorOrdenDeVentaId(ordenDeVentaId);
-            return ordenesDeVentaProducto?.Select(o => new OrdenDeVentaProductoDTO
+            return ordenesDeVentaProducto.Select(o => new OrdenDeVentaProductoDTO
             {
                 Id = o.Id,
                 ProductoId = o.ProductoId,
                 CantidadProducto = o.CantidadProducto,
-                OrdenVentaId = o.OrdenVentaId
-            }).ToList() ?? new List<OrdenDeVentaProductoDTO>();
+                OrdenDeVentaId = o.OrdenDeVentaId
+            }).ToList();
         }
 
         public async Task CrearOrdenDeVentaProducto(OrdenDeVentaProductoDTO ordenDeVentaProductoDTO)
@@ -71,20 +67,18 @@ namespace CNegocio.Logica
             if (ordenDeVentaProductoDTO.ProductoId <= 0)
                 throw new ArgumentException("El ID del producto debe ser mayor que cero.", nameof(ordenDeVentaProductoDTO.ProductoId));
 
-            if (ordenDeVentaProductoDTO.OrdenVentaId <= 0)
-                throw new ArgumentException("El ID de la orden de venta debe ser mayor que cero.", nameof(ordenDeVentaProductoDTO.OrdenVentaId));
-
             if (ordenDeVentaProductoDTO.CantidadProducto <= 0)
                 throw new ArgumentException("La cantidad del producto debe ser mayor que cero.", nameof(ordenDeVentaProductoDTO.CantidadProducto));
 
-            var nuevoOrdenDeVentaProducto = new OrdenDeVentaProducto
+            var ordenDeVentaProducto = new OrdenDeVentaProducto
             {
+                OrdenDeVentaId = ordenDeVentaProductoDTO.OrdenDeVentaId,
                 ProductoId = ordenDeVentaProductoDTO.ProductoId,
                 CantidadProducto = ordenDeVentaProductoDTO.CantidadProducto,
-                OrdenVentaId = ordenDeVentaProductoDTO.OrdenVentaId
+
             };
 
-            await _ordenDeVentaProductoRepositorio.CrearOrdenDeVentaProducto(nuevoOrdenDeVentaProducto);
+            await _ordenDeVentaProductoRepositorio.CrearOrdenDeVentaProducto(ordenDeVentaProducto);
         }
 
         public async Task ActualizarOrdenDeVentaProducto(OrdenDeVentaProductoDTO ordenDeVentaProductoDTO)
@@ -92,39 +86,25 @@ namespace CNegocio.Logica
             if (ordenDeVentaProductoDTO == null)
                 throw new ArgumentNullException(nameof(ordenDeVentaProductoDTO));
 
-            if (ordenDeVentaProductoDTO.Id <= 0)
-                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(ordenDeVentaProductoDTO.Id));
-
             if (ordenDeVentaProductoDTO.ProductoId <= 0)
                 throw new ArgumentException("El ID del producto debe ser mayor que cero.", nameof(ordenDeVentaProductoDTO.ProductoId));
-
-            if (ordenDeVentaProductoDTO.OrdenVentaId <= 0)
-                throw new ArgumentException("El ID de la orden de venta debe ser mayor que cero.", nameof(ordenDeVentaProductoDTO.OrdenVentaId));
 
             if (ordenDeVentaProductoDTO.CantidadProducto <= 0)
                 throw new ArgumentException("La cantidad del producto debe ser mayor que cero.", nameof(ordenDeVentaProductoDTO.CantidadProducto));
 
-            var existente = await _ordenDeVentaProductoRepositorio.ObtenerOrdenDeVentaProductoPorId(ordenDeVentaProductoDTO.Id);
-            if (existente == null)
-                throw new KeyNotFoundException($"No se encontró un registro con ID {ordenDeVentaProductoDTO.Id}.");
-
-            existente.ProductoId = ordenDeVentaProductoDTO.ProductoId;
-            existente.CantidadProducto = ordenDeVentaProductoDTO.CantidadProducto;
-            existente.OrdenVentaId = ordenDeVentaProductoDTO.OrdenVentaId;
-
-            await _ordenDeVentaProductoRepositorio.ActualizarOrdenDeVentaProducto(existente);
+            var ordenDeVentaProducto = new OrdenDeVentaProducto
+            {
+                Id = ordenDeVentaProductoDTO.Id,
+                ProductoId = ordenDeVentaProductoDTO.ProductoId,
+                CantidadProducto = ordenDeVentaProductoDTO.CantidadProducto,
+                OrdenDeVentaId = ordenDeVentaProductoDTO.OrdenDeVentaId,
+            };
+            _ordenDeVentaProductoRepositorio.ActualizarOrdenDeVentaProducto(ordenDeVentaProducto);
         }
 
         public async Task EliminarOrdenDeVentaProducto(int id)
         {
-            if (id <= 0)
-                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(id));
-
-            var existente = await _ordenDeVentaProductoRepositorio.ObtenerOrdenDeVentaProductoPorId(id);
-            if (existente == null)
-                throw new KeyNotFoundException($"No se encontró un registro con ID {id}.");
-
-            await _ordenDeVentaProductoRepositorio.EliminarOrdenDeVentaProducto(id);
+            _ordenDeVentaProductoRepositorio.EliminarOrdenDeVentaProducto(id);
         }
     }
 }

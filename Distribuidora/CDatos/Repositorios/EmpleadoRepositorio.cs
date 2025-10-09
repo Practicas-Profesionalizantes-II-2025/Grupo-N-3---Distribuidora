@@ -74,10 +74,22 @@ namespace CDatos.Repositorios
         }
         public async Task<List<Empleado>> ObtenerEmpleadosPorDni(string dni)
         {
-            var personaId = (_personaRepositorio.ObtenerPersonasPorDni(dni)).Id;
+            var persona = await _personaRepositorio.ObtenerPersonasPorDni(dni);
+
+            if (persona == null || !persona.Any())
+                return new List<Empleado>();
+
+            var personaId = persona.First().Id;
+
             return await _context.Empleado
-                .Where(c => c.PersonaId == personaId)
+                .Include(e => e.Persona) 
+                .Where(e => e.PersonaId == personaId)
                 .ToListAsync();
+
+            //var personaId = (_personaRepositorio.ObtenerPersonasPorDni(dni)).Id;
+            //return await _context.Empleado
+            //    .Where(c => c.PersonaId == personaId)
+            //    .ToListAsync();
         }
         public async Task<Persona> ObtenerPersonaPorEmpleadoId(int empleadoId)
         {

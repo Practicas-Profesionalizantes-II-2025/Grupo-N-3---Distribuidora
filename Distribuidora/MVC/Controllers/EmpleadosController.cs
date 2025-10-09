@@ -28,8 +28,8 @@ namespace MVC.Controllers
         public async Task<IActionResult> LoginAccion(DatosInicioSesionDTO datos)
         {
             // Construir la URL del endpoint
-            string url = $"{_settings.BaseUrl}/{_settings.ValidacionEmpleado}/{datos.dni}/{datos.Contrasenia}";
-            var response = await _httpClient.GetAsync(url);
+            string urlValidacion = $"{_settings.BaseUrl}/{_settings.ValidacionEmpleado}/{datos.dni}/{datos.Contrasenia}";
+            var response = await _httpClient.GetAsync(urlValidacion);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -39,17 +39,33 @@ namespace MVC.Controllers
 
             bool confirmacionLoggin = await response.Content.ReadFromJsonAsync<bool>();
 
-            if (confirmacionLoggin)
+            if (!confirmacionLoggin)
             {
-                // Inicio de sesión exitoso
-                return RedirectToAction("PaginaInicial", "PaginaInicial");
-            }
-            else
-            {
-                // Datos incorrectos
                 ViewBag.Error = "DNI o contraseña incorrectos.";
                 return View("Login");
             }
+
+            string empleadoUrl = $"{_settings.BaseUrl.TrimEnd('/')}/Empleados/dni/{datos.dni}";
+            var empleadoResponse = await _httpClient.GetAsync(empleadoUrl);
+
+            if (!empleadoResponse.IsSuccessStatusCode)
+            {
+                ViewBag.Error = $"No se pudo obtener el empleado desde la API. Status: {empleadoResponse.StatusCode}";
+                return View("Login");
+            }
+
+            var empleado = await empleadoResponse.Content.ReadFromJsonAsync<EmpleadoDTO>();
+
+            if (empleado == null)
+            {
+                ViewBag.Error = "Empleado no encontrado";
+                return View("Login");
+            }
+
+            HttpContext.Session.SetInt32("EmpleadoId", empleado.Id);
+            HttpContext.Session.SetString("EmpleadoNombre", $"{empleado.Persona.Nombre ?? "Sin nombre"} {empleado.Persona.Apellido ?? ""}");
+
+            return RedirectToAction("PaginaInicial", "PaginaInicial");
         }
 
         // GET: Empleados
@@ -320,6 +336,10 @@ namespace MVC.Controllers
             return View("listaEmpleado", empleado);
         }
 
-
+        public IActionResult Logout()
+        {
+            HttpContext.Session.Clear(); // borra toda la sesión
+            return RedirectToAction("Login", "Empleados");
+        }
     }
 }

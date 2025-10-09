@@ -1,19 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Shared.DTOs
+﻿namespace MVC.Models.DTOs
 {
-    public class OrdenDeVentaDTO
+    public class DetalleOrdenVentaDTO
     {
         public int Id { get; set; }
+        public string Estado { get; set; }
         public int EmpleadoId { get; set; }
         public int DistribuidorId { get; set; }
         public int ClienteId { get; set; }
         public DateTime FechaOrden { get; set; }
         public List<OrdenDeVentaProductoDTO> ProductosSeleccionados { get; set; } = new();
-        public string Estado { get; set; }
     }
 }

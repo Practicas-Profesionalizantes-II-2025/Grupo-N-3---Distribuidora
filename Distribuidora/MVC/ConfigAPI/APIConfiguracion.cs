@@ -56,10 +56,10 @@
         public string OrdenDeCompraProductoDelete { get; set; } = string.Empty;
 
         // Endpoints OrdenDeVenta
-        public string OrdenDeVentaGet { get; set; } = string.Empty;
-        public string OrdenDeVentaPost { get; set; } = string.Empty;
-        public string OrdenDeVentaPut { get; set; } = string.Empty;
-        public string OrdenDeVentaDelete { get; set; } = string.Empty;
+        public string OrdenVentaGet { get; set; } = string.Empty;
+        public string OrdenVentaPost { get; set; } = string.Empty;
+        public string OrdenVentaPut { get; set; } = string.Empty;
+        public string OrdenVentaDelete { get; set; } = string.Empty;
 
         // Endpoints OrdenDeVentaProducto
         public string OrdenDeVentaProductoGet { get; set; } = string.Empty;

@@ -94,5 +94,17 @@ namespace API.Controllers
 
             return NoContent();
         }
+
+        [HttpGet("dni/{dni}")]
+        public async Task<ActionResult<EmpleadoDTO>> GetEmpleadoPorDni(string dni)
+        {
+            var empleados = await _empleadoLogic.ObtenerEmpleadosPorDni(dni);
+            var empleado = empleados.FirstOrDefault();
+
+            if (empleado == null)
+                return NotFound();
+
+            return Ok(empleado);
+        }
     }
 }

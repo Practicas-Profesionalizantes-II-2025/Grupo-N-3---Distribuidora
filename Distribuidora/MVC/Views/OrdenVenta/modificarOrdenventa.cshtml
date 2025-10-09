@@ -1,0 +1,84 @@
+﻿@model MVC.Models.DTOs.OrdenDeVentaDTO
+
+@{
+    ViewData["Title"] = "Modificar Venta";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modificar Venta</title>
+
+    <!--=============== REMIXICONS ===============-->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css">
+</head>
+<body>
+    <main class="pedido">
+        <div class="section-header">
+            <h2>Modificar Venta</h2>
+        </div>
+
+        @using (Html.BeginForm("modificarOrdenventa", "OrdenVenta", FormMethod.Post, new { id = "pedidoForm" }))
+        {
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <input type="hidden" name="FechaOrden" value="@Model.FechaOrden.ToString("yyyy-MM-ddTHH:mm:ss")" />
+            <input type="hidden" name="EmpleadoId" value="@Model.EmpleadoId" />
+            <input type="hidden" name="DistribuidorId" value="@Model.DistribuidorId" />
+            <input type="hidden" name="ClienteId" value="@Model.ClienteId" />
+            
+            <div class="form-group">
+                <label for="Estado">Estado:</label>
+                @Html.DropDownListFor(m => m.Estado, (SelectList)ViewBag.Estados, "Seleccione un estado", new { @class = "form-control" })
+            </div>
+
+
+            <table class="pedido__table" id="pedidoTable">
+                <thead>
+                    <tr>
+                        <th>ID Producto</th>
+                        <th>Nombre</th>
+                        <th>Cantidad</th>
+                        <th>Precio Unitario</th>
+                        <th>Total</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for (int i = 0; i < Model.ProductosSeleccionados.Count; i++)
+                    {
+                        <tr>
+                            <td><input type="hidden" name="ProductosSeleccionados[@i].ProductoId" value="@Model.ProductosSeleccionados[i].ProductoId" />
+                                @Model.ProductosSeleccionados[i].ProductoId</td>
+                            <td><input type="text" name="ProductosSeleccionados[@i].NombreProducto" value="@Model.ProductosSeleccionados[i].NombreProducto" readonly /></td>
+                            <td><input type="number" name="ProductosSeleccionados[@i].CantidadProducto" value="@Model.ProductosSeleccionados[i].CantidadProducto" min="1" class="cantidad" /></td>
+                            <td><input type="number" name="ProductosSeleccionados[@i].PrecioUnitario" value="@Model.ProductosSeleccionados[i].PrecioUnitario" step="0.01" class="precio" /></td>
+                            <td class="subtotal">$@(Model.ProductosSeleccionados[i].CantidadProducto * Model.ProductosSeleccionados[i].PrecioUnitario)</td>
+                            <td><button type="button" class="btn btn-delete">Eliminar</button></td>
+                        </tr>
+                    }
+                </tbody> 
+                <tfoot>
+                    <tr>
+                        <td colspan="4" class="total-label">TOTAL:</td>
+                        <td class="total-value" id="totalGeneral">@String.Format("{0:C}", Model.ProductosSeleccionados.Sum(p => p.CantidadProducto * p.PrecioUnitario))
+                        </td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+
+        <div class="actions">
+            <button type="button" class="btn" id="agregarFila">Agregar Producto</button>
+            <button type="submit" class="btn">Guardar Cambios</button>
+                <a asp-action="listaOrdenVentas" class="btn back">Volver</a>
+        </div>
+        }
+    </main>
+    <!--=============== JS ===============-->
+    <script src="~/js/Venta/modificarVenta.js"></script>
+    }
+</body>
+</html>

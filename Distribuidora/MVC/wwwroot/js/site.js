@@ -13,12 +13,3 @@ const showMenu = (toggleId, navId) => {
 }
 
 showMenu('nav-toggle', 'nav-menu')
-
-/*=============== Fitro busqueda lista Productos ===============*/
-
-document.getElementById("botonFiltrar").addEventListener("click", function () {
-    
-    console.log("clickccc")
-    const valor = document.getElementById("searchInput").value.trim();
-    this.setAttribute("asp-route-nombre", valor);
-});
