@@ -115,7 +115,6 @@ namespace MVC.Controllers
                     var error = await clienteResponse.Content.ReadAsStringAsync();
                     ModelState.AddModelError(string.Empty, $"Error creando cliente: {error}");
 
-                    // 🔹 Volvemos a cargar los dropdowns antes de mostrar el error
                     CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
                     DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
 
@@ -244,12 +243,12 @@ namespace MVC.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
-                return View(cliente);
                 CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
                 DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
 
                 cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
                 cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+                return View(cliente);
             }
         }
 

@@ -20,6 +20,7 @@
             <h2>Modificar empleado</h2>
         </div>
 
+        <div asp-validation-summary="All" class="text-danger" style="margin-bottom:15px;"></div>
         <form asp-action="modificarEmpleado" method="post">
             <!-- Campos ocultos necesarios -->
             <input type="hidden" asp-for="Id" />
@@ -35,7 +36,10 @@
                     <input asp-for="Persona.Apellido" placeholder="Apellido" required />
 
                 <!-- Tipo y número de documento -->
-                <input asp-for="Persona.Nro_Doc" placeholder="Número de documento" readonly />
+                    <select asp-for="Persona.Tipo_DocId"
+                            asp-items="@(new SelectList(Model.Persona.TiposDocumentos, "Id", "NombreTipoDocumento", Model.Persona.Tipo_DocId))" required>
+                    </select>
+                    <input type="text" asp-for="Persona.Nro_Doc" placeholder="Número de documento" class="input-text" readonly />
 
                 <!-- Campo Teléfono -->
                     <input asp-for="Persona.Telefono" placeholder="Número de teléfono" required />
@@ -44,7 +48,9 @@
                     <input asp-for="Persona.Direccion" placeholder="Dirección" required />
 
                 <!-- Ciudad -->
-                    <input asp-for="Persona.CiudadId" placeholder="Ciudad" required />
+                    <select asp-for="Persona.CiudadId"
+                            asp-items="@(new SelectList(Model.Persona.Ciudades, "Id", "Nombre", Model.Persona.CiudadId))" required>
+                    </select>
 
                 <!-- Email -->
                     <input asp-for="Persona.Email" placeholder="Email" required />
