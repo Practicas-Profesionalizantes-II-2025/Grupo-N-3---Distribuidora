@@ -137,7 +137,7 @@ namespace CNegocio.Logica
             persona.Direccion = clienteDTO.Persona.Direccion;
             persona.CiudadId = clienteDTO.Persona.CiudadId;
 
-            await _personaRepositorio.ActualizarPersona(persona);
+            _personaRepositorio.ActualizarPersona(persona);
 
             var clienteExistente = await _clienteRepositorio.ObtenerClientePorId(clienteDTO.Id);
             if (clienteExistente == null)   

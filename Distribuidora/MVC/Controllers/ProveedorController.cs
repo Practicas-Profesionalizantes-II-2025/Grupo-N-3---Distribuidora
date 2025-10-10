@@ -57,26 +57,26 @@ namespace MVC.Controllers
             var response = await _httpClient.PostAsync(url, content);
 
             if (response.IsSuccessStatusCode)
+            {
+                TempData["MensajeExito"] = "Proveedor creado correctamente.";
                 return RedirectToAction(nameof(listaProveedores));
+            }
+            var contenido = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var errorObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(contenido);
+                if (errorObj != null && errorObj.ContainsKey("mensaje"))
+                    ModelState.AddModelError(string.Empty, errorObj["mensaje"]);
+                else
+                    ModelState.AddModelError(string.Empty, contenido);
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, contenido);
+            }
 
-            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
-            return RedirectToAction("listaProveedores");
+            return View(proveedor);
         }
-/*        // GET: Proveedores/EliminarProveedor
-        [HttpGet]
-        public async Task<IActionResult> eliminarProveedor()
-        {
-            var url = $"{_settings.BaseUrl}/{_settings.ProveedorGet}";
-            var response = await _httpClient.GetAsync(url);
-
-            if (!response.IsSuccessStatusCode)
-                return View("Error");
-
-            var json = await response.Content.ReadAsStringAsync();
-            var listaProveedores = JsonConvert.DeserializeObject<List<ProveedorDTO>>(json);
-
-            return View(listaProveedores); 
-        }*/
 
         // POST:Proveedores/EliminarProveedor
         [HttpPost]
@@ -129,14 +129,26 @@ namespace MVC.Controllers
 
             var response = await _httpClient.PutAsync(url, content);
 
-            if (!response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
-                var errorMsg = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError(string.Empty, $"Error al modificar proveedor: {errorMsg}");
-                return View(proveedor);
+                TempData["MensajeExito"] = "Proveedor creado correctamente.";
+                return RedirectToAction(nameof(listaProveedores));
+            }
+            var contenido = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var errorObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(contenido);
+                if (errorObj != null && errorObj.ContainsKey("mensaje"))
+                    ModelState.AddModelError(string.Empty, errorObj["mensaje"]);
+                else
+                    ModelState.AddModelError(string.Empty, contenido);
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, contenido);
             }
 
-            return RedirectToAction("listaProveedores");
+            return View(proveedor);
         }
     }
 }

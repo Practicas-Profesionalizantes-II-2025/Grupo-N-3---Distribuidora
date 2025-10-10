@@ -1,14 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using CDatos.Data;
+using CNegocio.Logica;
+using CNegocio.Logica.ILogica;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using CDatos.Data;
-using Shared.Entities;
-using CNegocio.Logica.ILogica;
 using Shared.DTOs;
+using Shared.Entities;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -48,13 +49,15 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PersonaPut(int id, PersonaDTO persona)
         {
-
-            if (id != persona.Id)
-                return BadRequest("El ID de la URL no coincide con el de la persona.");
-
-            await _IPersonaLogica.ActualizarPersona(persona);
-
-            return NoContent();
+            try
+            {
+                await _IPersonaLogica.ActualizarPersona(persona);
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
         }
 
         // POST: api/Personas
@@ -62,10 +65,15 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Persona>> PersonaPost(PersonaDTO persona)
         {
-            var personaCreada = await _IPersonaLogica.CrearPersona(persona);
-
-            // Retornar persona con todos sus datos
-            return CreatedAtAction(nameof(GetPersona), new { id = personaCreada.Id }, personaCreada);
+            try
+            {
+                var personaCreada = await _IPersonaLogica.CrearPersona(persona);
+                return CreatedAtAction(nameof(GetPersona), new { id = personaCreada.Id }, personaCreada);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
         }
 
         // DELETE: api/Personas/5

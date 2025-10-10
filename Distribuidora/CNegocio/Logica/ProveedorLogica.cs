@@ -51,49 +51,55 @@ namespace CNegocio.Logica
         }
         public async Task<ProveedorDTO> CrearProveedor(ProveedorDTO proveedorDTO)
         {
-            List<string> camposErroneos = new List<string>();
-            if (string.IsNullOrEmpty(proveedorDTO.Nombre) || !IsValidName(proveedorDTO.Nombre))
-                camposErroneos.Add("Nombre");
-
-            if (camposErroneos.Count > 0)
+            try
             {
-                throw new ArgumentException("Los siguientes campos son inválidos: ", string.Join(", ", camposErroneos));
+                ValidarProveedorDTO(proveedorDTO, true);
+                var proveedor = new Proveedor
+                {
+                    Nombre = proveedorDTO.Nombre,
+                    Direccion = proveedorDTO.Direccion,
+                    Telefono = proveedorDTO.Telefono,
+                    Email = proveedorDTO.Email
+                };
+
+                var nuevoProveedor = await _proveedorRepositorio.CrearProveedor(proveedor);
+
+                proveedorDTO.Id = nuevoProveedor.Id;
+
+                return proveedorDTO;
+            }
+            catch (ArgumentException ex)
+            {
+
+                    throw new ArgumentException(ex.Message); 
             }
 
-            var proveedor = new Proveedor
-            {
-                Nombre = proveedorDTO.Nombre,
-                Direccion = proveedorDTO.Direccion,
-                Telefono = proveedorDTO.Telefono,
-                Email = proveedorDTO.Email
-            };
-
-            var nuevoProveedor = await _proveedorRepositorio.CrearProveedor(proveedor);
-
-            proveedorDTO.Id = nuevoProveedor.Id;
-
-            return proveedorDTO;
+            
         }
-        public async Task ActualizarProveedor(ProveedorDTO proveedorDTO)
+        public async Task<ProveedorDTO> ActualizarProveedor(ProveedorDTO proveedorDTO)
         {
-            if (proveedorDTO.Id <= 0)
-                throw new ArgumentException("El Id del proveedor no es válido.");
-
-            var existente = await _proveedorRepositorio.ObtenerProveedorPorId(proveedorDTO.Id);
-            if (existente == null)
-                throw new InvalidOperationException("No se encontró el proveedor a actualizar.");
-
-            ValidarProveedorDTO(proveedorDTO, esNuevo: false);
-
-            var proveedor = new Proveedor
+            try
             {
-                Id = proveedorDTO.Id,
-                Nombre = proveedorDTO.Nombre,
-                Direccion = proveedorDTO.Direccion,
-                Telefono = proveedorDTO.Telefono,
-                Email = proveedorDTO.Email
-            };
-            _proveedorRepositorio.ActualizarProveedor(proveedor);
+                ValidarProveedorDTO(proveedorDTO, true);
+                var proveedor = new Proveedor
+                {
+                    Id = proveedorDTO.Id,
+                    Nombre = proveedorDTO.Nombre,
+                    Direccion = proveedorDTO.Direccion,
+                    Telefono = proveedorDTO.Telefono,
+                    Email = proveedorDTO.Email
+                };
+
+                _proveedorRepositorio.ActualizarProveedor(proveedor);
+                proveedorDTO.Id = proveedor.Id;
+                return proveedorDTO;
+
+            }
+            catch (ArgumentException ex)
+            {
+
+                throw new ArgumentException(ex.Message);
+            }
         }
         public async Task EliminarProveedor(int id)
         {

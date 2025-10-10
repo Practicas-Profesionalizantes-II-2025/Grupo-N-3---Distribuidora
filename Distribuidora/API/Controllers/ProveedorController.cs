@@ -40,23 +40,31 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProveedor(int id,ProveedorDTO proveedor)
         {
-            if (id != proveedor.Id)
+            try
             {
-                return BadRequest();
+                await _proveedorLogica.ActualizarProveedor(proveedor);
+                return NoContent();
             }
-
-            await _proveedorLogica.ActualizarProveedor(proveedor);
-
-            return NoContent();
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message }); 
+            }
         }
 
         // POST: api/Proveedor/5
         [HttpPost]
         public async Task<ActionResult<ProveedorDTO>> PostProveedor(ProveedorDTO proveedor)
         {
-            var proveedorCreado = await _proveedorLogica.CrearProveedor(proveedor);
+            try
+            {
+                var proveedorCreado = await _proveedorLogica.CrearProveedor(proveedor);
 
-            return CreatedAtAction(nameof(GetProveedor), new { id = proveedorCreado.Id }, proveedorCreado);
+                return CreatedAtAction(nameof(GetProveedor), new { id = proveedorCreado.Id }, proveedorCreado);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message }); 
+            }
         }
 
         // DELETE: api/Proveedor/5

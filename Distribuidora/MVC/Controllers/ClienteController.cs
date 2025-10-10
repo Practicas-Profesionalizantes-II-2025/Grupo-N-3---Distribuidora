@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 using MVC.ConfigAPI;
@@ -99,16 +100,11 @@ namespace MVC.Controllers
                 cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
                 cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
 
-                // Forzamos estado de Persona en Alta
                 cliente.Persona.EstadoId = 1;
 
-                // Validación del ModelState
                 if (!ModelState.IsValid)
-                {
                     return View(cliente);
-                }
 
-                // Serializamos y enviamos a la API
                 var clienteJson = JsonConvert.SerializeObject(cliente);
                 var clienteContent = new StringContent(clienteJson, Encoding.UTF8, "application/json");
 
@@ -118,6 +114,14 @@ namespace MVC.Controllers
                 {
                     var error = await clienteResponse.Content.ReadAsStringAsync();
                     ModelState.AddModelError(string.Empty, $"Error creando cliente: {error}");
+
+                    // 🔹 Volvemos a cargar los dropdowns antes de mostrar el error
+                    CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+                    DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+
+                    cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+                    cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+
                     return View(cliente);
                 }
 
@@ -125,7 +129,13 @@ namespace MVC.Controllers
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
+                ModelState.AddModelError(string.Empty, $"Ocurrió un error inesperado: {ex.Message}");
+                var CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+                var DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+
+                cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+                cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+
                 return View(cliente);
             }
         }
@@ -184,7 +194,11 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> modificarCliente(ClienteDTO cliente)
         {
+            var CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+            var DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
 
+            cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+            cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
             if (!ModelState.IsValid)
             {
                 return View(cliente);
@@ -214,7 +228,14 @@ namespace MVC.Controllers
                 if (!clienteResponse.IsSuccessStatusCode)
                 {
                     var error = await clienteResponse.Content.ReadAsStringAsync();
-                    ModelState.AddModelError(string.Empty, $"Error actualizando cliente: {error}");
+                    ModelState.AddModelError(string.Empty, $"Error creando cliente: {error}");
+
+                    CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+                    DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+
+                    cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+                    cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+
                     return View(cliente);
                 }
 
@@ -224,6 +245,11 @@ namespace MVC.Controllers
             {
                 ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
                 return View(cliente);
+                CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+                DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+
+                cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
+                cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
             }
         }
 

@@ -2,6 +2,7 @@
 using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,13 +79,16 @@ namespace CNegocio.Logica
         }
         public async Task<PersonaDTO> CrearPersona(PersonaDTO personaDTO)
         {
-            List<string> camposErroneos = ValidarPersona(personaDTO, esNueva: true);
-
-            if (camposErroneos.Count > 0)
-                throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
-
-            var persona = new Shared.Entities.Persona
+            try
             {
+                var errores = ValidarPersona(personaDTO, true);
+                if (errores.Any())
+                {
+                    string mensaje = "Los siguientes campos son inválidos: " + string.Join(", ", errores);
+                    throw new ArgumentException(mensaje);
+                }
+                var persona = new Persona
+                {
                 Nombre = personaDTO.Nombre,
                 Apellido = personaDTO.Apellido,
                 Tipo_DocId = personaDTO.Tipo_DocId,
@@ -93,43 +97,52 @@ namespace CNegocio.Logica
                 Email = personaDTO.Email,
                 Direccion = personaDTO.Direccion,
                 Telefono = personaDTO.Telefono,
-            };
+                };
 
-            await _personaRepositorio.CrearPersona(persona);
+                var nuevaPersona = await _personaRepositorio.CrearPersona(persona);
 
-            return new PersonaDTO
+                personaDTO.Id = nuevaPersona.Id;
+
+                return personaDTO;
+            }
+            catch (ArgumentException ex)
             {
-                Id = persona.Id,
-                Nombre = persona.Nombre,
-                Apellido = persona.Apellido,
-                Tipo_DocId = persona.Tipo_DocId,
-                Nro_Doc = persona.Nro_Doc,
-                CiudadId = persona.CiudadId,
-                Email = persona.Email,
-                Direccion = persona.Direccion,
-                Telefono = persona.Telefono,
-            };
+
+                throw new ArgumentException(ex.Message);
+            }
+
         }
-        public async Task ActualizarPersona(PersonaDTO personaDTO)
+        public async Task<PersonaDTO> ActualizarPersona(PersonaDTO personaDTO)
         {
-            List<string> camposErroneos = ValidarPersona(personaDTO, esNueva: false);
-
-            if (camposErroneos.Count > 0)
-                throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
-
-            var persona = new Shared.Entities.Persona
+            try
             {
-                Id = personaDTO.Id,
-                Nombre = personaDTO.Nombre,
-                Apellido = personaDTO.Apellido,
-                Tipo_DocId = personaDTO.Tipo_DocId,
-                Nro_Doc = personaDTO.Nro_Doc,
-                CiudadId = personaDTO.CiudadId,
-                Email = personaDTO.Email,
-                Direccion = personaDTO.Direccion,
-                Telefono = personaDTO.Telefono,
-            };
-            await _personaRepositorio.ActualizarPersona(persona);
+                var errores = ValidarPersona(personaDTO, true);
+                if (errores.Any())
+                {
+                    string mensaje = "Los siguientes campos son inválidos: " + string.Join(", ", errores);
+                    throw new ArgumentException(mensaje);
+                }
+                var persona = new Persona
+                {
+                    Id = personaDTO.Id,
+                    Nombre = personaDTO.Nombre,
+                    Apellido = personaDTO.Apellido,
+                    Tipo_DocId = personaDTO.Tipo_DocId,
+                    Nro_Doc = personaDTO.Nro_Doc,
+                    CiudadId = personaDTO.CiudadId,
+                    Email = personaDTO.Email,
+                    Direccion = personaDTO.Direccion,
+                    Telefono = personaDTO.Telefono,
+                };
+                _personaRepositorio.ActualizarPersona(persona);
+                personaDTO.Id = persona.Id;
+                return personaDTO;
+            }
+            catch (ArgumentException ex)
+            {
+
+                throw new ArgumentException(ex.Message);
+            }
         }
         public async Task EliminarPersona(int id)
         {
