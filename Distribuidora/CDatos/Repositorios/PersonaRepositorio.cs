@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using CDatos.Data;
 using CDatos.Repositorios.IRepositorios;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query;
 using Shared.Entities;
 
 namespace CDatos.Repositorios
@@ -25,15 +26,29 @@ namespace CDatos.Repositorios
         {
             return await _context.Persona.ToListAsync();
         }
-        public async Task CrearPersona(Persona persona)
+        public async Task<Persona> CrearPersona(Persona persona)
         {
             _context.Persona.Add(persona);
             await _context.SaveChangesAsync();
+            return persona;
         }
-        public async Task ActualizarPersona(Persona persona)
+        public void ActualizarPersona(Persona persona)
         {
-            _context.Persona.Update(persona);
-            await _context.SaveChangesAsync();
+            var personaExistente = _context.Persona.Find(persona.Id);
+            if (personaExistente == null)
+            {
+                throw new Exception("persona no encontrado.");
+            }
+            personaExistente.Nombre = persona.Nombre;
+            personaExistente.Apellido = persona.Apellido;
+            personaExistente.Tipo_DocId = persona.Tipo_DocId;
+            personaExistente.Nro_Doc = persona.Nro_Doc;
+            personaExistente.CiudadId = persona.CiudadId;
+            personaExistente.Telefono = persona.Telefono;
+            personaExistente.Direccion = persona.Direccion;
+            personaExistente.Email = persona.Email;
+
+            _context.SaveChangesAsync();
         }
         public async Task EliminarPersona(int id)
         {

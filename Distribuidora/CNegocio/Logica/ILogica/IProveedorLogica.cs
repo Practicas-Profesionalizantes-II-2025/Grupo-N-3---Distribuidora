@@ -12,7 +12,7 @@ namespace CNegocio.Logica.ILogica
         Task<List<ProveedorDTO>> ObtenerProveedores();
         Task<ProveedorDTO> ObtenerProveedorPorId(int id);
         Task<ProveedorDTO> CrearProveedor(ProveedorDTO proveedorDTO);
-        Task ActualizarProveedor(ProveedorDTO proveedorDTO);
+        Task<ProveedorDTO> ActualizarProveedor(ProveedorDTO proveedorDTO);
         Task EliminarProveedor(int id);
     }
 }

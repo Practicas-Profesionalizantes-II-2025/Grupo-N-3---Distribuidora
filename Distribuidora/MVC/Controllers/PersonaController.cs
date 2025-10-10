@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Options;
 using MVC.ConfigAPI;
@@ -87,14 +88,26 @@ namespace MVC.Controllers
 
             var response = await _httpClient.PostAsync(url, content);
 
-            if (!response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
-                var error = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError(string.Empty, $"Error creando persona: {error}");
-                return View(persona);
+                TempData["MensajeExito"] = "Persona creado correctamente.";
+                return RedirectToAction(nameof(listaPersonas));
+            }
+            var contenido = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var errorObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(contenido);
+                if (errorObj != null && errorObj.ContainsKey("mensaje"))
+                    ModelState.AddModelError(string.Empty, errorObj["mensaje"]);
+                else
+                    ModelState.AddModelError(string.Empty, contenido);
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, contenido);
             }
 
-            return RedirectToAction("listaPersonas");
+            return View(persona);
         }
 
         // GET: Persona/Delete/5
@@ -185,18 +198,28 @@ namespace MVC.Controllers
 
                 var personaJson = JsonConvert.SerializeObject(persona);
                 var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
-                var personaResponse = await _httpClient.PutAsync(
-                    $"{_settings.BaseUrl}/{_settings.PersonaPut}/{persona.Id}",
-                    personaContent
-                );
+                var personaResponse = await _httpClient.PutAsync($"{_settings.BaseUrl}/{_settings.PersonaPut}/{persona.Id}",personaContent);
 
-                if (!personaResponse.IsSuccessStatusCode)
+                if (personaResponse.IsSuccessStatusCode)
                 {
-                    var error = await personaResponse.Content.ReadAsStringAsync();
-                    ModelState.AddModelError(string.Empty, $"Error actualizando persona: {error}");
-                    return View(persona);
+                    TempData["MensajeExito"] = "Persona creado correctamente.";
+                    return RedirectToAction(nameof(listaPersonas));
                 }
-                return RedirectToAction(nameof(listaPersonas));
+                var contenido = await personaResponse.Content.ReadAsStringAsync();
+                try
+                {
+                    var errorObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(contenido);
+                    if (errorObj != null && errorObj.ContainsKey("mensaje"))
+                        ModelState.AddModelError(string.Empty, errorObj["mensaje"]);
+                    else
+                        ModelState.AddModelError(string.Empty, contenido);
+                }
+                catch
+                {
+                    ModelState.AddModelError(string.Empty, contenido);
+                }
+
+                return View(persona);
             }
             catch (Exception ex)
             {

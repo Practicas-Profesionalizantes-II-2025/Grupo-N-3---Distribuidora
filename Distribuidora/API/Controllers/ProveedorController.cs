@@ -40,14 +40,15 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutProveedor(int id,ProveedorDTO proveedor)
         {
-            if (id != proveedor.Id)
+            try
             {
-                return BadRequest();
+                await _proveedorLogica.ActualizarProveedor(proveedor);
+                return NoContent();
             }
-
-            await _proveedorLogica.ActualizarProveedor(proveedor);
-
-            return NoContent();
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message }); 
+            }
         }
 
         // POST: api/Proveedor/5
@@ -62,7 +63,7 @@ namespace API.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { mensaje = ex.Message }); // ⬅️ mensaje de validación
+                return BadRequest(new { mensaje = ex.Message }); 
             }
         }
 

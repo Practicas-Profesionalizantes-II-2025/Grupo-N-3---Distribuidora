@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Shared.DTOs;
 using Shared.Entities;
 
 namespace CDatos.Repositorios.IRepositorios
@@ -11,8 +12,8 @@ namespace CDatos.Repositorios.IRepositorios
     {
         Task<Persona> ObtenerPersonaPorId(int id);
         Task<List<Persona>> ObtenerPersonas();
-        Task CrearPersona(Persona persona);
-        Task ActualizarPersona(Persona persona);
+        Task<Persona> CrearPersona(Persona persona);
+        void ActualizarPersona(Persona persona);
         Task EliminarPersona(int id);
         Task<List<Persona>> ObtenerPersonasPorDni(string dni);
     }

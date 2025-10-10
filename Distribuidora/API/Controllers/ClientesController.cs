@@ -63,13 +63,16 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCliente(int id, ClienteDTO cliente)
         {
-            if (id != cliente.Id)
+            try
             {
-                return BadRequest();
-            }
-            await _clienteLogica.ActualizarCliente(cliente);
+                await _clienteLogica.ActualizarCliente(cliente);
 
-            return NoContent();
+                return NoContent();
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }          
         }
 
         // POST: api/Clientes
@@ -77,18 +80,25 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<ClienteDTO>> PostCliente(ClienteDTO cliente)
         {
-            var personaCreada = await _personaLogica.CrearPersona(cliente.Persona);
-
-            var clienteDto = new ClienteDTO
+            try
             {
-                PersonaId = personaCreada.Id,
-                EstadoId = cliente.EstadoId,
-                Persona = personaCreada
-            };
+                var personaCreada = await _personaLogica.CrearPersona(cliente.Persona);
 
-            var nuevoCliente = await _clienteLogica.CrearCliente(clienteDto);
+                var clienteDto = new ClienteDTO
+                {
+                    PersonaId = personaCreada.Id,
+                    EstadoId = cliente.EstadoId,
+                    Persona = personaCreada
+                };
 
-            return CreatedAtAction(nameof(GetCliente), new { id = nuevoCliente.Id }, nuevoCliente);
+                var nuevoCliente = await _clienteLogica.CrearCliente(clienteDto);
+
+                return CreatedAtAction(nameof(GetCliente), new { id = nuevoCliente.Id }, nuevoCliente);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
         }
 
         // DELETE: api/Clientes/5
