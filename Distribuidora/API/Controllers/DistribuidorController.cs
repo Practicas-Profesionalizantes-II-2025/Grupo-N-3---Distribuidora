@@ -1,4 +1,5 @@
-﻿using CNegocio.Logica.ILogica;
+﻿using CNegocio.Logica;
+using CNegocio.Logica.ILogica;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
@@ -38,23 +39,31 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDistribuidor(int id, DistribuidorDTO distribuidor)
         {
-            if (id != distribuidor.Id)
+            try
             {
-                return BadRequest();
+                await _distribuidorLogica.ActualizarDistribuidor(distribuidor);
+                return NoContent();
             }
-
-            await _distribuidorLogica.ActualizarDistribuidor(distribuidor);
-
-            return NoContent();
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
         }
 
         // POST: api/Distribuidor/5
         [HttpPost]
         public async Task<ActionResult<DistribuidorDTO>> PostDIstribuidor(DistribuidorDTO distribuidor)
         {
-            var distribuidorCreado = await _distribuidorLogica.CrearDistribuidor(distribuidor);
-
-            return CreatedAtAction(nameof(GetDistribuidor), new { id = distribuidorCreado.Id }, distribuidorCreado);
+            try
+            {
+                var distribuidorCreado = await _distribuidorLogica.CrearDistribuidor(distribuidor);
+                return CreatedAtAction(nameof(GetDistribuidor), new { id = distribuidorCreado.Id }, distribuidorCreado);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+            
         }
 
         // DELETE: api/Distribuidor/5

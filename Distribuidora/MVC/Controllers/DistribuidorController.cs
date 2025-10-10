@@ -83,10 +83,25 @@ namespace MVC.Controllers
             var response = await _httpClient.PostAsync(url, content);
 
             if (response.IsSuccessStatusCode)
+            {
+                TempData["MensajeExito"] = "Distribuidor creado correctamente.";
                 return RedirectToAction(nameof(listaDistribuidores));
+            }
+            var contenido = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var errorObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(contenido);
+                if (errorObj != null && errorObj.ContainsKey("mensaje"))
+                    ModelState.AddModelError(string.Empty, errorObj["mensaje"]);
+                else
+                    ModelState.AddModelError(string.Empty, contenido);
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, contenido);
+            }
 
-            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
-            return RedirectToAction("listaDistribuidores");
+            return View(distribuidor);
         }
 
         // GET: Distribuidor/Modificar
@@ -136,14 +151,26 @@ namespace MVC.Controllers
             var url = $"{_settings.BaseUrl}/{_settings.DistribuidorPut}/{distribuidor.Id}";
             var response = await _httpClient.PutAsync(url, content);
 
-            if (!response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
-                var errorMsg = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError(string.Empty, $"Error al modificar distribuidor: {errorMsg}");
-                return View(distribuidor);
+                TempData["MensajeExito"] = "Distribuidor creado correctamente.";
+                return RedirectToAction(nameof(listaDistribuidores));
+            }
+            var contenido = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var errorObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(contenido);
+                if (errorObj != null && errorObj.ContainsKey("mensaje"))
+                    ModelState.AddModelError(string.Empty, errorObj["mensaje"]);
+                else
+                    ModelState.AddModelError(string.Empty, contenido);
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, contenido);
             }
 
-            return RedirectToAction(nameof(listaDistribuidores));
+            return View(distribuidor);
         }
 
         // POST: Distribuidor/Eliminar
