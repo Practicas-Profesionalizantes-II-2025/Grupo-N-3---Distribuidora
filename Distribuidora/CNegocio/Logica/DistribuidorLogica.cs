@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CNegocio.Logica
 {
@@ -150,19 +151,16 @@ namespace CNegocio.Logica
                 throw new ArgumentNullException(nameof(DistrbuidorDTO), "El distribuidor no puede ser nulo.");
 
             if (string.IsNullOrWhiteSpace(DistrbuidorDTO.Nombre))
-                throw new ArgumentException("El nombre del distribuidor es obligatorio.");
-            
-            if (string.IsNullOrWhiteSpace(DistrbuidorDTO.CuilCuit))
-                throw new ArgumentException("El cuit del distribuidor es obligatorio.");
+                throw new ArgumentException("El Nombre del distribuidor es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(DistrbuidorDTO.CuilCuit)  || !IsValidCuit(DistrbuidorDTO.CuilCuit))
+                throw new ArgumentException("El Cuit/Cuil del distribuidor es obligatorio.");
 
             if (string.IsNullOrWhiteSpace(DistrbuidorDTO.Direccion))
-                throw new ArgumentException("La dirección del distribuidor es obligatoria.");
+                throw new ArgumentException("La direccion del distribuidor es obligatorio.");
 
-            if (string.IsNullOrWhiteSpace(DistrbuidorDTO.Telefono))
+            if (string.IsNullOrWhiteSpace(DistrbuidorDTO.Telefono) || !IsValidTelefono(DistrbuidorDTO.Telefono))
                 throw new ArgumentException("El teléfono del distribuidor es obligatorio.");
-
-            if (!Regex.IsMatch(DistrbuidorDTO.Telefono, @"^\+?\d{7,15}$"))
-                throw new ArgumentException("El teléfono no tiene un formato válido.");
         }
 
         private bool ContainsInvalidCharacter(string text)
@@ -176,9 +174,12 @@ namespace CNegocio.Logica
         }
         private bool IsValidCuit(string cuit)
         {
-            return cuit.Length < 11 && !ContainsInvalidCharacter(cuit);
+            return cuit.Length > 10 && cuit.Length < 12 && !ContainsInvalidCharacter(cuit);
         }
-
+        private bool IsValidTelefono(string telefono)
+        {
+            return telefono.Length > 9 && telefono.Length <= 10 && telefono.All(char.IsDigit);
+        }
         #endregion Validaciones
     }
 }

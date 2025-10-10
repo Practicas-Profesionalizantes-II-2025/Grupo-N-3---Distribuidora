@@ -39,8 +39,6 @@ namespace CDatos.Repositorios
                 throw new Exception("Ciudad no encontrada.");
             }
             ciudadExistente.Nombre = ciudad.Nombre;
-            //ciudadExistente.Cp = ciudad.Cp;
-            //ciudadExistente.Acp = ciudad.Acp;
 
             _context.SaveChanges();
         }
