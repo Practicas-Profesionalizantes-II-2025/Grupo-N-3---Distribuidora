@@ -21,9 +21,12 @@
         <h2>Crear Venta</h2>
     </div>
 
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
     @using (Html.BeginForm("crearOrdenVenta", "OrdenVenta", FormMethod.Post, new { id = "formOrden" }))
     {
         @Html.AntiForgeryToken()
+      
 
         <!-- Datos generales -->
         <input type="hidden" asp-for="EmpleadoId" value="@Model.EmpleadoId" />

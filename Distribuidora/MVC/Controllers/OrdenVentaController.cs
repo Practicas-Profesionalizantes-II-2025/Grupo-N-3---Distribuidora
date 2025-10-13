@@ -195,7 +195,20 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError("", $"Error al crear la orden: {error}");
+
+                try
+                {
+                    var apiError = JsonConvert.DeserializeObject<dynamic>(error);
+                    string mensaje = apiError?.mensaje ?? error;
+                    ModelState.AddModelError("", mensaje);
+                }
+                catch
+                {
+                    ModelState.AddModelError("", $"Error al crear la orden: {error}");
+                }
+
+                // Recargar listas para evitar error en la vista
+                await crearOrdenVenta();
                 return View(orden);
             }
 

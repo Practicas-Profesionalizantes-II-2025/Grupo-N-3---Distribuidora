@@ -134,6 +134,18 @@ namespace CNegocio.Logica
             if (camposErroneos.Count > 0)
                 throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
 
+            foreach (var productoSeleccionado in ordenDeVentaDTO.ProductosSeleccionados)
+            {
+                var producto = await _productoRepositorio.ObtenerProductoPorId(productoSeleccionado.ProductoId);
+
+                if (producto == null)
+                    throw new ArgumentException($"El producto con ID {productoSeleccionado.ProductoId} no existe.");
+
+                if (productoSeleccionado.CantidadProducto > producto.Stock)
+                    throw new InvalidOperationException(
+                        $"Stock insuficiente para '{producto.Nombre}'. Disponible: {producto.Stock}, solicitado: {productoSeleccionado.CantidadProducto}.");
+            }
+
             var orden = new OrdenDeVenta
             {
                 EmpleadoId = ordenDeVentaDTO.EmpleadoId,
