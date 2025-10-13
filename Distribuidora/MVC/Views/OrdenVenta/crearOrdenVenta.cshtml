@@ -21,7 +21,15 @@
         <h2>Crear Venta</h2>
     </div>
 
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
 
     @using (Html.BeginForm("crearOrdenVenta", "OrdenVenta", FormMethod.Post, new { id = "formOrden" }))
     {
