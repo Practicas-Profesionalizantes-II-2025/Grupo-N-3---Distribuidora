@@ -64,6 +64,8 @@ namespace MVC.Controllers
 
             HttpContext.Session.SetInt32("EmpleadoId", empleado.Id);
             HttpContext.Session.SetString("EmpleadoNombre", $"{empleado.Persona.Nombre ?? "Sin nombre"} {empleado.Persona.Apellido ?? ""}");
+            HttpContext.Session.SetString("EmpleadoEsAdmin", empleado.Admin ? "true" : "false");
+
 
             return RedirectToAction("PaginaInicial", "PaginaInicial");
         }
