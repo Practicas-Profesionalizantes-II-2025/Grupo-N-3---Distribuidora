@@ -37,6 +37,10 @@ namespace CDatos.Repositorios
             var empleado = await _context.Empleado
                 .Include(c => c.Persona)
                 .FirstOrDefaultAsync(c => c.Persona.Nro_Doc == dni);
+            if (empleado == null)
+            {
+                throw new Exception($"No hay ningun empleado con dni: {dni}");
+            }
             return empleado.Contrasenia;
         }
         public async Task<Empleado> CrearEmpleado(Empleado empleado)

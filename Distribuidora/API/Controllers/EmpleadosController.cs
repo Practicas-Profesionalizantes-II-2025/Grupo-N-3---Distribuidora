@@ -58,12 +58,16 @@ namespace API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutEmpleado(int id, EmpleadoDTO empleado)
         {
-            if (id != empleado.Id)
+            try
             {
-                return BadRequest();
+                await _empleadoLogic.ActualizarEmpleado(empleado);
+                return NoContent();
             }
-            await _empleadoLogic.ActualizarEmpleado(empleado);
-            return NoContent();
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
+           
         }
 
         // POST: api/Empleados
@@ -71,19 +75,26 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Empleado>> PostEmpleado(EmpleadoDTO empleado)
         {
-            var personaCreada = await _personaLogica.CrearPersona(empleado.Persona);
-
-            var empleadoDto = new EmpleadoDTO
+            try
             {
-                PersonaId = personaCreada.Id,
-                Persona = personaCreada, 
-                EstadoId = empleado.EstadoId,
-                Contrasenia = empleado.Contrasenia
-            };
+                var personaCreada = await _personaLogica.CrearPersona(empleado.Persona);
 
-            var nuevoEmpleado = await _empleadoLogic.CrearEmpleado(empleadoDto);
-            nuevoEmpleado.Persona = personaCreada;
-            return CreatedAtAction(nameof(GetEmpleado), new { id = nuevoEmpleado.Id }, nuevoEmpleado);
+                var empleadoDto = new EmpleadoDTO
+                {
+                    PersonaId = personaCreada.Id,
+                    Persona = personaCreada,
+                    EstadoId = empleado.EstadoId,
+                    Contrasenia = empleado.Contrasenia
+                };
+
+                var nuevoEmpleado = await _empleadoLogic.CrearEmpleado(empleadoDto);
+                nuevoEmpleado.Persona = personaCreada;
+                return CreatedAtAction(nameof(GetEmpleado), new { id = nuevoEmpleado.Id }, nuevoEmpleado);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }    
         }
 
         // DELETE: api/Empleados/5

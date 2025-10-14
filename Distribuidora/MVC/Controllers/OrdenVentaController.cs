@@ -161,6 +161,7 @@ namespace MVC.Controllers
             if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
             {
                 ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
+                await CargarListasParaVista();
                 return View(orden);
             }
 
@@ -169,6 +170,7 @@ namespace MVC.Controllers
             if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
             {
                 ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
+                await CargarListasParaVista();
                 return View(orden);
             }
 
@@ -195,7 +197,19 @@ namespace MVC.Controllers
             if (!response.IsSuccessStatusCode)
             {
                 var error = await response.Content.ReadAsStringAsync();
-                ModelState.AddModelError("", $"Error al crear la orden: {error}");
+
+                try
+                {
+                    var apiError = JsonConvert.DeserializeObject<dynamic>(error);
+                    string mensaje = apiError?.mensaje ?? error;
+                    ModelState.AddModelError("", mensaje);
+                }
+                catch
+                {
+                    ModelState.AddModelError("", $"Error al crear la orden: {error}");
+                }
+
+                await CargarListasParaVista();
                 return View(orden);
             }
 
@@ -374,5 +388,52 @@ namespace MVC.Controllers
 
             return View(ordenParaVista);
         }
+
+
+
+        private async Task CargarListasParaVista()
+        {
+            // Traer clientes
+            var urlClientes = $"{_settings.BaseUrl}/{_settings.ClientesGet}";
+            var responseClientes = await _httpClient.GetAsync(urlClientes);
+            if (responseClientes.IsSuccessStatusCode)
+            {
+                var jsonClientes = await responseClientes.Content.ReadAsStringAsync();
+                var clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(jsonClientes);
+
+                ViewBag.Clientes = clientes.Select(c => new SelectListItem
+                {
+                    Value = c.Id.ToString(),
+                    Text = $"{c.Persona.Nombre} {c.Persona.Apellido}"
+                }).ToList();
+            }
+
+            // Traer distribuidores
+            var urlDistribuidores = $"{_settings.BaseUrl}/{_settings.DistribuidorGet}";
+            var responseDistribuidores = await _httpClient.GetAsync(urlDistribuidores);
+            if (responseDistribuidores.IsSuccessStatusCode)
+            {
+                var jsonDistribuidores = await responseDistribuidores.Content.ReadAsStringAsync();
+                var distribuidores = JsonConvert.DeserializeObject<List<DistribuidorDTO>>(jsonDistribuidores);
+
+                ViewBag.Distribuidores = distribuidores.Select(d => new SelectListItem
+                {
+                    Value = d.Id.ToString(),
+                    Text = d.Nombre
+                }).ToList();
+            }
+
+            // Traer productos
+            var urlProductos = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var responseProductos = await _httpClient.GetAsync(urlProductos);
+            if (responseProductos.IsSuccessStatusCode)
+            {
+                var jsonProductos = await responseProductos.Content.ReadAsStringAsync();
+                var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(jsonProductos);
+
+                ViewBag.Productos = productos;
+            }
+        }
+
     }
 }

@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CNegocio.Logica
 {
@@ -76,59 +77,60 @@ namespace CNegocio.Logica
         }
         public async Task<DistribuidorDTO> CrearDistribuidor(DistribuidorDTO DistrbuidorDTO)
         {
-            List<string> camposErroneos = new List<string>();
-            if (string.IsNullOrEmpty(DistrbuidorDTO.Nombre) || !IsValidName(DistrbuidorDTO.Nombre))
-                camposErroneos.Add("Nombre");
-
-            if (camposErroneos.Count > 0)
+            try
             {
-                throw new ArgumentException("Los siguientes campos son inválidos: ", string.Join(", ", camposErroneos));
+                ValidarDistrbuidorDTO(DistrbuidorDTO, true);
+                var distribuidor = new Distribuidor
+                {
+                    Nombre = DistrbuidorDTO.Nombre,
+                    CuilCuit = DistrbuidorDTO.CuilCuit,
+                    Direccion = DistrbuidorDTO.Direccion,
+                    Telefono = DistrbuidorDTO.Telefono,
+                    CiudadId = DistrbuidorDTO.CiudadId,
+
+                };
+
+                var nuevoDistribuidor = await _distribuidorRepositorio.CrearDistribuidor(distribuidor);
+                var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(distribuidor.CiudadId);
+                return new DistribuidorDTO
+                {
+                    Id = nuevoDistribuidor.Id,
+                    CuilCuit = nuevoDistribuidor.CuilCuit,
+                    Nombre = nuevoDistribuidor.Nombre,
+                    Direccion = nuevoDistribuidor.Direccion,
+                    Telefono = nuevoDistribuidor.Telefono,
+                    CiudadId = nuevoDistribuidor.CiudadId,
+                    NombreCiudad = ciudad.Nombre
+                };
             }
-
-            var distribuidor = new Distribuidor
+            catch (Exception ex)
             {
-                Nombre = DistrbuidorDTO.Nombre,
-                CuilCuit = DistrbuidorDTO.CuilCuit,
-                Direccion = DistrbuidorDTO.Direccion,
-                Telefono = DistrbuidorDTO.Telefono,
-                CiudadId = DistrbuidorDTO.CiudadId,
-                
-            };
-
-            var nuevoDistribuidor = await _distribuidorRepositorio.CrearDistribuidor(distribuidor);
-            var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(distribuidor.CiudadId); 
-            return new DistribuidorDTO
-            {
-                Id = nuevoDistribuidor.Id,
-                CuilCuit = nuevoDistribuidor.CuilCuit,
-                Nombre = nuevoDistribuidor.Nombre,
-                Direccion = nuevoDistribuidor.Direccion,
-                Telefono = nuevoDistribuidor.Telefono,
-                CiudadId = nuevoDistribuidor.CiudadId,
-                NombreCiudad = ciudad.Nombre
-            };
+                throw new Exception("Error al crear el distribuidor: " + ex.Message);
+            }
         }
-        public async Task ActualizarDistribuidor(DistribuidorDTO DistrbuidorDTO)
+        public async Task<DistribuidorDTO> ActualizarDistribuidor(DistribuidorDTO DistrbuidorDTO)
         {
-            if (DistrbuidorDTO.Id <= 0)
-                throw new ArgumentException("El Id del distribuidor no es válido.");
 
-            var existente = await _distribuidorRepositorio.ObtenerDistribuidorPorId(DistrbuidorDTO.Id);
-            if (existente == null)
-                throw new InvalidOperationException("No se encontró el distribuidor a actualizar.");
-
-            ValidarDistrbuidorDTO(DistrbuidorDTO, esNuevo: false);
-
-            var distribuidor = new Distribuidor
+            try
             {
-                Id = DistrbuidorDTO.Id,
-                CuilCuit = DistrbuidorDTO.CuilCuit,
-                Nombre = DistrbuidorDTO.Nombre,
-                Direccion = DistrbuidorDTO.Direccion,
-                Telefono = DistrbuidorDTO.Telefono,
-                CiudadId = DistrbuidorDTO.CiudadId
-            };
-            _distribuidorRepositorio.ActualizarDistribuidor(distribuidor);
+                ValidarDistrbuidorDTO(DistrbuidorDTO, true);
+                var distribuidor = new Distribuidor
+                {
+                    Id = DistrbuidorDTO.Id,
+                    CuilCuit = DistrbuidorDTO.CuilCuit,
+                    Nombre = DistrbuidorDTO.Nombre,
+                    Direccion = DistrbuidorDTO.Direccion,
+                    Telefono = DistrbuidorDTO.Telefono,
+                    CiudadId = DistrbuidorDTO.CiudadId
+                };
+                _distribuidorRepositorio.ActualizarDistribuidor(distribuidor);
+                DistrbuidorDTO.Id = distribuidor.Id;
+                return DistrbuidorDTO;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error al actualizar el distribuidor: " + ex.Message);
+            }
         }
         public async Task EliminarDistribuidor(int id)
         {
@@ -149,16 +151,16 @@ namespace CNegocio.Logica
                 throw new ArgumentNullException(nameof(DistrbuidorDTO), "El distribuidor no puede ser nulo.");
 
             if (string.IsNullOrWhiteSpace(DistrbuidorDTO.Nombre))
-                throw new ArgumentException("El nombre del distribuidor es obligatorio.");
+                throw new ArgumentException("El Nombre del distribuidor es obligatorio.");
+
+            if (string.IsNullOrWhiteSpace(DistrbuidorDTO.CuilCuit)  || !IsValidCuit(DistrbuidorDTO.CuilCuit))
+                throw new ArgumentException("El Cuit/Cuil del distribuidor es obligatorio.");
 
             if (string.IsNullOrWhiteSpace(DistrbuidorDTO.Direccion))
-                throw new ArgumentException("La dirección del distribuidor es obligatoria.");
+                throw new ArgumentException("La direccion del distribuidor es obligatorio.");
 
-            if (string.IsNullOrWhiteSpace(DistrbuidorDTO.Telefono))
+            if (string.IsNullOrWhiteSpace(DistrbuidorDTO.Telefono) || !IsValidTelefono(DistrbuidorDTO.Telefono))
                 throw new ArgumentException("El teléfono del distribuidor es obligatorio.");
-
-            if (!Regex.IsMatch(DistrbuidorDTO.Telefono, @"^\+?\d{7,15}$"))
-                throw new ArgumentException("El teléfono no tiene un formato válido.");
         }
 
         private bool ContainsInvalidCharacter(string text)
@@ -170,6 +172,14 @@ namespace CNegocio.Logica
         {
             return nombre.Length < 15 && !ContainsInvalidCharacter(nombre);
         }
+        private bool IsValidCuit(string cuit)
+        {
+            return cuit.Length > 10 && cuit.Length < 12 && !ContainsInvalidCharacter(cuit);
+        }
+        private bool IsValidTelefono(string telefono)
+        {
+            return telefono.Length > 9 && telefono.Length <= 10 && telefono.All(char.IsDigit);
+        }
+        #endregion Validaciones
     }
-    #endregion Validaciones
 }

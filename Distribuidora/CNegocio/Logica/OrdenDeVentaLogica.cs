@@ -9,6 +9,7 @@ using System.Linq;
 using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace CNegocio.Logica
 {
@@ -111,28 +112,39 @@ namespace CNegocio.Logica
         {
             if (ordenDeVentaDTO == null)
                 throw new ArgumentNullException(nameof(ordenDeVentaDTO));
+            var errores = new List<string>();
 
             if (ordenDeVentaDTO.EmpleadoId <= 0)
-                throw new ArgumentException("El ID del empleado debe ser mayor que cero.", nameof(ordenDeVentaDTO.EmpleadoId));
+                errores.Add("EmpleadoId inválido.");
 
             if (ordenDeVentaDTO.DistribuidorId <= 0)
-                throw new ArgumentException("El ID del proveedor debe ser mayor que cero.", nameof(ordenDeVentaDTO.DistribuidorId));
+                errores.Add("DistribuidorId inválido.");
 
             if (ordenDeVentaDTO.FechaOrden == default)
-                throw new ArgumentException("La fecha de la orden no es válida.", nameof(ordenDeVentaDTO.FechaOrden));
-            List<string> camposErroneos = new List<string>();
+                errores.Add("FechaOrden inválida.");
 
-            if (ordenDeVentaDTO.EmpleadoId <= 0)
-                camposErroneos.Add("EmpleadoId");
+            if (ordenDeVentaDTO.ProductosSeleccionados == null || !ordenDeVentaDTO.ProductosSeleccionados.Any())
+                errores.Add("Debe seleccionar al menos un producto.");
 
-            if (ordenDeVentaDTO.DistribuidorId <= 0)
-                camposErroneos.Add("DistribuidorId");
+            if (errores.Any())
+                throw new ArgumentException(string.Join(" | ", errores));
 
-            if (ordenDeVentaDTO.FechaOrden == default)
-                camposErroneos.Add("FechaOrden");
+            foreach (var item in ordenDeVentaDTO.ProductosSeleccionados)
+            {
+                var producto = await _productoRepositorio.ObtenerProductoPorId(item.ProductoId);
+                if (producto == null)
+                {
+                    errores.Add($"No se encontró el producto con ID {item.ProductoId}.");
+                    continue;
+                }
 
-            if (camposErroneos.Count > 0)
-                throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
+                if (item.CantidadProducto > producto.Stock)
+                {
+                    errores.Add($"El producto '{producto.Nombre}' supera el stock disponible ({producto.Stock}).");
+                }
+            }
+            if (errores.Any())
+                throw new InvalidOperationException(string.Join(" | ", errores));
 
             var orden = new OrdenDeVenta
             {

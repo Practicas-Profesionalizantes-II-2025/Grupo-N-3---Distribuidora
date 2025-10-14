@@ -24,24 +24,17 @@
             <!-- Formulario para crear o modificar productos -->
             <form asp-action="AccionModificarProducto" method="post" class="form">
                 <input type="hidden" asp-for="Id" /> @* para hacer el put necesitamos el id asi que lo oculatmos *@
-                <label>Nombre</label>
                 <input type="text" name="Nombre" placeholder="@Model.Nombre" value="@Model.Nombre" id="nombreApellido" required>
-                <label>Precio</label>
                 <input type="text" name="PrecioProducto" placeholder="@Model.PrecioProducto" value="@Model.PrecioProducto" id="nombreApellido" required>
-                <label>Stock</label>
                 <input type="number" name="Stock" placeholder="@Model.Stock" value="@Model.Stock" id="Stock" required>
-                <label>Categoria</label>
                 <select asp-for="CategoriaId"
                         asp-items="@(new SelectList(Model.Categorias, "Id", "Nombre", Model.CategoriaId))"
                         class="form-control" required>
                 </select>
-                <label>Proveedor</label>
                 <select asp-for="ProveedorId"
                         asp-items="@(new SelectList(Model.Proveedores, "Id", "Nombre", Model.ProveedorId))"
                         class="form-control" required>
                 </select>
-
-
 
                 <!-- contenedor exclusivo para centrar -->
                 <div class="form-buttons-wrapper">

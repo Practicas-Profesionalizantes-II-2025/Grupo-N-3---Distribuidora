@@ -69,11 +69,14 @@ namespace API.Controllers
                 await _ordenDeVentaLogica.CrearOrdenDeVenta(ordenDeVenta);
                 return CreatedAtAction("GetOrdenDeVentaPorId", new { id = ordenDeVenta.Id }, ordenDeVenta);
             }
-            catch (Exception ex)
+            catch (InvalidOperationException ex) // Por ejemplo, falta de stock
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { mensaje = ex.Message });
             }
-            
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { mensaje = ex.Message });
+            }
         }
 
         // DELETE: api/OrdenDeVentas/5

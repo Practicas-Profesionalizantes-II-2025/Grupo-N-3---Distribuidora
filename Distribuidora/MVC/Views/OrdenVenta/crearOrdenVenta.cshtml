@@ -21,9 +21,20 @@
         <h2>Crear Venta</h2>
     </div>
 
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
     @using (Html.BeginForm("crearOrdenVenta", "OrdenVenta", FormMethod.Post, new { id = "formOrden" }))
     {
         @Html.AntiForgeryToken()
+      
 
         <!-- Datos generales -->
         <input type="hidden" asp-for="EmpleadoId" value="@Model.EmpleadoId" />
