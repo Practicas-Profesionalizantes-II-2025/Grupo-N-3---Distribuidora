@@ -33,7 +33,7 @@ namespace MVC.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                ViewBag.Error = "Error al conectar con el servidor.";
+                ViewBag.Error = "DNI o contraseña incorrectos.";
                 return View("Login");
             }
 
@@ -41,7 +41,7 @@ namespace MVC.Controllers
 
             if (!confirmacionLoggin)
             {
-                ViewBag.Error = "DNI o contraseña incorrectos.";
+                ViewBag.Error = "Contraseña incorrecta.";
                 return View("Login");
             }
 
