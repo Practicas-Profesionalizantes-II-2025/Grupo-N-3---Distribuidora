@@ -1,0 +1,142 @@
+﻿@model List<MVC.Models.DTOs.OrdenDeCompraDTO>
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de compras</title>
+
+    <!--=============== REMIXICONS ===============-->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="~/css/site.css">
+
+    <style>
+        .tabla-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .tabla-empleados thead {
+            position: sticky;
+            top: 0;
+            background-color: #f5f5f5;
+            z-index: 1;
+        }
+
+        .tabla-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tabla-container::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+            .tabla-container::-webkit-scrollbar-thumb:hover {
+                background-color: #555;
+            }
+    </style>
+</head>
+<body>
+    <main class="container full-width">
+        <h2 class="titulo">Lista de compras</h2>
+
+        <!-- Filtro de búsqueda con crear -->
+        <div class="search-filter">
+            <input type="text" placeholder="Buscar por ID, Fecha o Distribuidor" id="searchInput">
+            <button class="btn yellow">Buscar</button>
+            <a asp-controller="OrdenCompra" asp-action="crearOrdenCompra" class="btn yellow">Crear compra</a>
+        </div>
+
+        <div class="tabla-container">
+            <!-- Tabla -->
+            <table class="tabla-empleados">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Fecha de orden</th>
+                        <th>Empleado</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.FechaOrden.ToString("dd/MM/yyyy")</td>
+                            <td>@item.NombreEmpleado</td>
+                            <td>@item.Estado</td>
+                            <td class="acciones">
+                                <a asp-controller="OrdenCompra" asp-action="modificarOrdenCompra" asp-route-id="@item.Id"
+                                   class="btn-icon yellow-outline" title="Editar">
+                                    <i class="ri-pencil-line"></i>
+                                </a>
+                                <form asp-controller="OrdenCompra" asp-action="eliminarOrdenCompra" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@item.Id" />
+                                    <a href="#" class="btn-icon yellow-outline" title="Eliminar" onclick="confirmDelete(this)">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </a>
+                                </form> 
+                                <a asp-controller="OrdenCompra" asp-action="detalleOrdenCompra" asp-route-id="@item.Id"
+                                   class="btn-icon blue-outline" title="Ver detalle">
+                                    <i class="ri-eye-line"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Modal de Confirmación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="ri-alert-line" style="font-size: 2rem; color: #ff4d4d;"></i>
+                <h3>Confirmar eliminación</h3>
+            </div>
+            <p>¿Estás seguro que deseas eliminar esta compra?</p>
+            <div class="modal-buttons">
+                <button class="btn confirm" id="confirmBtn">Sí, eliminar</button>
+                <button class="btn cancel" id="cancelBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let rowToDelete = null;
+
+        function confirmDelete(button) {
+            rowToDelete = button.closest('tr');
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        document.getElementById('confirmBtn').onclick = function () {
+            if (rowToDelete) {
+                rowToDelete.querySelector('form').submit();
+                rowToDelete = null;
+            }
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        document.getElementById('cancelBtn').onclick = function () {
+            rowToDelete = null;
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+    </script>
+
+    <!--=============== JS ===============-->
+    <script src="~/js/site.js"></script>
+    <script src="~/js/Compra/filtroOrden.js"></script>
+
+</body>
+</html>

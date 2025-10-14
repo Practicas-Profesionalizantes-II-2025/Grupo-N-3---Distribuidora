@@ -1,157 +1,108 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using MVC.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
 using MVC.Models.DTOs;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace MVC.Controllers
 {
     public class FacturaCabeceraController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public FacturaCabeceraController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
+        public FacturaCabeceraController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
         // GET: FacturaCabecera
-        public async Task<IActionResult> IndexF()
+        public async Task<IActionResult> listaFacturas()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.FacturaCabeceraGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_facturas = JsonConvert.DeserializeObject<List<FacturaCabeceraDTO>>(json);
+
+            return View(lista_facturas);
+        }
+
+        // GET: Crear FacturaCabecera
+        public IActionResult crearFactura()
         {
             return View();
         }
 
-        //// GET: FacturaCabecera/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Crear FacturaCabecera
+        [HttpPost]
+        public async Task<IActionResult> crearFactura([Bind("Id")] FacturaCabeceraDTO factura)
+        {
+            if (!ModelState.IsValid)
+                return View(factura);
 
-        //    var facturaCabeceraDTO = await _context.FacturaCabeceraDTO
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (facturaCabeceraDTO == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.FacturaCabeceraPost}";
+            var jsonData = JsonConvert.SerializeObject(factura);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //    return View(facturaCabeceraDTO);
-        //}
+            var response = await _httpClient.PostAsync(url, content);
 
-        //// GET: FacturaCabecera/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //// POST: FacturaCabecera/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            return RedirectToAction("listaFacturas");
+        }
+
+        // DELETE: FacturaCabecera/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var url = $"{_settings.BaseUrl}/{_settings.FacturaCabeceraDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            // Volver a traer la lista después de eliminar
+            var url2 = $"{_settings.BaseUrl}/{_settings.FacturaCabeceraGet}";
+            var response2 = await _httpClient.GetAsync(url2);
+
+            if (!response2.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response2.Content.ReadAsStringAsync();
+            var lista_facturas = JsonConvert.DeserializeObject<List<FacturaCabeceraDTO>>(json);
+
+            return View("listaFacturas", lista_facturas);
+        }
+
+        //// PUT: FacturaCabecera/Edit/5
         //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id")] FacturaCabeceraDTO facturaCabeceraDTO)
+        //public async Task<IActionResult> Edit(int id, [Bind("Id")] FacturaCabeceraDTO factura)
         //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(facturaCabeceraDTO);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(facturaCabeceraDTO);
-        //}
-
-        //// GET: FacturaCabecera/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
+        //    if (id != factura.Id)
         //        return NotFound();
-        //    }
-
-        //    var facturaCabeceraDTO = await _context.FacturaCabeceraDTO.FindAsync(id);
-        //    if (facturaCabeceraDTO == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(facturaCabeceraDTO);
-        //}
-
-        //// POST: FacturaCabecera/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id")] FacturaCabeceraDTO facturaCabeceraDTO)
-        //{
-        //    if (id != facturaCabeceraDTO.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(facturaCabeceraDTO);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!FacturaCabeceraDTOExists(facturaCabeceraDTO.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(facturaCabeceraDTO);
-        //}
-
-        //// GET: FacturaCabecera/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var facturaCabeceraDTO = await _context.FacturaCabeceraDTO
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (facturaCabeceraDTO == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(facturaCabeceraDTO);
-        //}
-
-        //// POST: FacturaCabecera/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var facturaCabeceraDTO = await _context.FacturaCabeceraDTO.FindAsync(id);
-        //    if (facturaCabeceraDTO != null)
-        //    {
-        //        _context.FacturaCabeceraDTO.Remove(facturaCabeceraDTO);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool FacturaCabeceraDTOExists(int id)
-        //{
-        //    return _context.FacturaCabeceraDTO.Any(e => e.Id == id);
+        //
+        //    if (!ModelState.IsValid)
+        //        return View(factura);
+        //
+        //    var url = $"{_settings.BaseUrl}/{_settings.FacturaCabeceraPut}/{id}";
+        //    var jsonData = JsonConvert.SerializeObject(factura);
+        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        //
+        //    var response = await _httpClient.PutAsync(url, content);
+        //
+        //    if (!response.IsSuccessStatusCode)
+        //        return View("Error");
+        //
+        //    return RedirectToAction("listaFacturas");
         //}
     }
 }

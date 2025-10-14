@@ -1,4 +1,5 @@
-﻿using CDatos.Repositorios.IRepositorios;
+﻿using CDatos.Repositorios;
+using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
 using Shared.Entities;
@@ -12,22 +13,33 @@ namespace CNegocio.Logica
     public class OrdenDeCompraLogica : IOrdenDeCompraLogica
     {
         private readonly IOrdenDeCompraRepositorio _ordenDeCompraRepositorio;
+        private readonly IProductoRepositorio _productoRepositorio;
 
-        public OrdenDeCompraLogica(IOrdenDeCompraRepositorio ordenDeCompraRepositorio)
+        public OrdenDeCompraLogica(IOrdenDeCompraRepositorio ordenDeCompraRepositorio, IProductoRepositorio productoRepositorio)
         {
             _ordenDeCompraRepositorio = ordenDeCompraRepositorio ?? throw new ArgumentNullException(nameof(ordenDeCompraRepositorio));
+            _productoRepositorio = productoRepositorio ?? throw new ArgumentNullException(nameof(productoRepositorio));
         }
 
+        #region obtener ordenes
         public async Task<List<OrdenDeCompraDTO>> ObtenerOrdenesDeCompra()
         {
-            var ordenesDeCompra = await _ordenDeCompraRepositorio.ObtenerOrdenesDeCompra();
-            return ordenesDeCompra?.Select(o => new OrdenDeCompraDTO
+            var ordenes = await _ordenDeCompraRepositorio.ObtenerOrdenesDeCompra();
+            return ordenes.Select(o => new OrdenDeCompraDTO
             {
                 Id = o.Id,
+                FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                DistribuidorId = o.DistribuidorId,
-                FechaOrden = o.FechaOrden
-            }).ToList() ?? new List<OrdenDeCompraDTO>();
+                Estado = o.Estado,
+                ProveedorId = o.ProveedorId,
+                ProductosSeleccionados = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto,
+                    NombreProducto = p.Producto.Nombre,
+                    PrecioUnitario = p.Producto.PrecioProducto,
+                }).ToList()
+            }).ToList();
         }
 
         public async Task<OrdenDeCompraDTO> ObtenerOrdenDeCompraPorId(int id)
@@ -42,9 +54,19 @@ namespace CNegocio.Logica
             return new OrdenDeCompraDTO
             {
                 Id = ordenDeCompra.Id,
+                FechaOrden = ordenDeCompra.FechaOrden,
                 EmpleadoId = ordenDeCompra.EmpleadoId,
-                DistribuidorId = ordenDeCompra.DistribuidorId,
-                FechaOrden = ordenDeCompra.FechaOrden
+                Estado = ordenDeCompra.Estado,
+                ProveedorId = ordenDeCompra.ProveedorId,
+                ProductosSeleccionados = ordenDeCompra.Productos.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    Id = p.Id,                        
+                    OrdenDeCompraId = ordenDeCompra.Id,  
+                    ProductoId = p.ProductoId,           
+                    CantidadProducto = p.CantidadProducto,
+                    NombreProducto = p.Producto.Nombre,
+                    PrecioUnitario = p.Producto.PrecioProducto,
+                }).ToList()
             };
         }
 
@@ -57,9 +79,16 @@ namespace CNegocio.Logica
             return ordenesDeCompra.Select(o => new OrdenDeCompraDTO
             {
                 Id = o.Id,
+                FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                DistribuidorId = o.DistribuidorId,
-                FechaOrden = o.FechaOrden
+                ProveedorId = o.ProveedorId,
+                ProductosSeleccionados = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto,
+                    NombreProducto = p.Producto.Nombre,
+                    PrecioUnitario = p.Producto.PrecioProducto
+                }).ToList()
             }).ToList();
         }
 
@@ -72,12 +101,19 @@ namespace CNegocio.Logica
             return ordenesDeCompra.Select(o => new OrdenDeCompraDTO
             {
                 Id = o.Id,
+                FechaOrden = o.FechaOrden,
                 EmpleadoId = o.EmpleadoId,
-                DistribuidorId = o.DistribuidorId,
-                FechaOrden = o.FechaOrden
+                ProveedorId = o.ProveedorId,
+                ProductosSeleccionados = o.Productos.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto,
+                    NombreProducto = p.Producto.Nombre,
+                    PrecioUnitario = p.Producto.PrecioProducto
+                }).ToList()
             }).ToList();
         }
-
+        #endregion obtener ordenes
         public async Task CrearOrdenDeCompra(OrdenDeCompraDTO ordenDeCompraDTO)
         {
             if (ordenDeCompraDTO == null)
@@ -86,8 +122,8 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO.EmpleadoId <= 0)
                 throw new ArgumentException("El ID del empleado debe ser mayor que cero.", nameof(ordenDeCompraDTO.EmpleadoId));
 
-            if (ordenDeCompraDTO.DistribuidorId <= 0)
-                throw new ArgumentException("El ID del distribuidor debe ser mayor que cero.", nameof(ordenDeCompraDTO.DistribuidorId));
+            if (ordenDeCompraDTO.ProveedorId <= 0)
+                throw new ArgumentException("El ID del proveedor debe ser mayor que cero.", nameof(ordenDeCompraDTO.ProveedorId));
 
             if (ordenDeCompraDTO.FechaOrden == default)
                 throw new ArgumentException("La fecha de la orden no es válida.", nameof(ordenDeCompraDTO.FechaOrden));
@@ -96,7 +132,7 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO.EmpleadoId <= 0)
                 camposErroneos.Add("EmpleadoId");
 
-            if (ordenDeCompraDTO.DistribuidorId <= 0)
+            if (ordenDeCompraDTO.ProveedorId <= 0)
                 camposErroneos.Add("DistribuidorId");
 
             if (ordenDeCompraDTO.FechaOrden == default)
@@ -105,14 +141,20 @@ namespace CNegocio.Logica
             if (camposErroneos.Count > 0)
                 throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
 
-            var ordenDeCompra = new OrdenDeCompra
+            var orden = new OrdenDeCompra
             {
                 EmpleadoId = ordenDeCompraDTO.EmpleadoId,
-                DistribuidorId = ordenDeCompraDTO.DistribuidorId,
-                FechaOrden = ordenDeCompraDTO.FechaOrden
+                ProveedorId = ordenDeCompraDTO.ProveedorId,
+                FechaOrden = ordenDeCompraDTO.FechaOrden,
+                Estado = ordenDeCompraDTO.Estado = "Pendiente",
+                Productos = ordenDeCompraDTO.ProductosSeleccionados.Select(p => new OrdenDeCompraProducto
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto
+                }).ToList()
             };
 
-            await _ordenDeCompraRepositorio.CrearOrdenDeCompra(ordenDeCompra);
+            await _ordenDeCompraRepositorio.CrearOrdenDeCompra(orden);
         }
 
         public async Task ActualizarOrdenDeCompra(OrdenDeCompraDTO ordenDeCompraDTO)
@@ -120,53 +162,39 @@ namespace CNegocio.Logica
             if (ordenDeCompraDTO == null)
                 throw new ArgumentNullException(nameof(ordenDeCompraDTO));
 
-            if (ordenDeCompraDTO.Id <= 0)
-                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(ordenDeCompraDTO.Id));
+            var ordenExistente = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(ordenDeCompraDTO.Id);
+            if (ordenExistente == null)
+                throw new Exception("Orden de Compra no encontrada.");
 
-            if (ordenDeCompraDTO.EmpleadoId <= 0)
-                throw new ArgumentException("El ID del empleado debe ser mayor que cero.", nameof(ordenDeCompraDTO.EmpleadoId));
-
-            if (ordenDeCompraDTO.DistribuidorId <= 0)
-                throw new ArgumentException("El ID del distribuidor debe ser mayor que cero.", nameof(ordenDeCompraDTO.DistribuidorId));
-
-            if (ordenDeCompraDTO.FechaOrden == default)
-                throw new ArgumentException("La fecha de la orden no es válida.", nameof(ordenDeCompraDTO.FechaOrden));
-
-            var existente = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(ordenDeCompraDTO.Id);
-            if (existente == null)
-                throw new KeyNotFoundException($"No se encontró una orden de compra con ID {ordenDeCompraDTO.Id}.");
-
-            existente.EmpleadoId = ordenDeCompraDTO.EmpleadoId;
-            existente.DistribuidorId = ordenDeCompraDTO.DistribuidorId;
-            existente.FechaOrden = ordenDeCompraDTO.FechaOrden;
-
-            _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(existente);
-            List<string> camposErroneos = new List<string>();
-
-            if (ordenDeCompraDTO.Id <= 0)
-                camposErroneos.Add("Id");
-
-            if (ordenDeCompraDTO.EmpleadoId <= 0)
-                camposErroneos.Add("EmpleadoId");
-
-            if (ordenDeCompraDTO.DistribuidorId <= 0)
-                camposErroneos.Add("DistribuidorId");
-
-            if (ordenDeCompraDTO.FechaOrden == default)
-                camposErroneos.Add("FechaOrden");
-
-            if (camposErroneos.Count > 0)
-                throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
-
-            var ordenDeCompra = new OrdenDeCompra
+            bool cambioAEntregado = ordenExistente.Estado != "Entregado" && ordenDeCompraDTO.Estado == "Entregado";
+            var orden = new OrdenDeCompra
             {
                 Id = ordenDeCompraDTO.Id,
                 EmpleadoId = ordenDeCompraDTO.EmpleadoId,
-                DistribuidorId = ordenDeCompraDTO.DistribuidorId,
-                FechaOrden = ordenDeCompraDTO.FechaOrden
+                ProveedorId = ordenDeCompraDTO.ProveedorId,
+                FechaOrden = ordenDeCompraDTO.FechaOrden,
+                Estado = ordenDeCompraDTO.Estado,
+                Productos = ordenDeCompraDTO.ProductosSeleccionados.Select(p => new OrdenDeCompraProducto
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto
+                }).ToList()
             };
-            _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(ordenDeCompra);
 
+            _ordenDeCompraRepositorio.ActualizarOrdenDeCompra(orden);
+
+            if (cambioAEntregado)
+            {
+                foreach (var prod in orden.Productos)
+                {
+                    var producto = await _productoRepositorio.ObtenerProductoPorId(prod.ProductoId);
+                    if (producto != null)
+                    {
+                        producto.Stock += prod.CantidadProducto;
+                        await _productoRepositorio.ActualizarProducto(producto);
+                    }
+                }
+            }
         }
 
         public async Task EliminarOrdenDeCompra(int id)
@@ -177,7 +205,6 @@ namespace CNegocio.Logica
             var existente = await _ordenDeCompraRepositorio.ObtenerOrdenDeCompraPorId(id);
             if (existente == null)
                 throw new KeyNotFoundException($"No se encontró una orden de compra con ID {id}.");
-                throw new ArgumentException("El ID de la orden debe ser mayor a 0.");
 
             _ordenDeCompraRepositorio.EliminarOrdenDeCompra(id);
         }

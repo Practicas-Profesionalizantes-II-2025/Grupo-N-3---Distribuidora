@@ -1,157 +1,119 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MVC.Data;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
+using MVC.Models.DTOs;
 using MVC.Models.Entities;
+using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace MVC.Controllers
 {
     public class CiudadController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public Ciudads1Controller(MVCContext context)
-        //{
-        //    _context = context;
-        //}
+        public CiudadController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
-        // GET: Ciudads1
-        public async Task<IActionResult> Index()
+        // GET: Ciudad
+        public async Task<IActionResult> listaCiudades()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(json);
+
+            return View(lista_ciudades);
+        }
+
+        // GET: Ciudad/Create
+        public IActionResult crearCiudad()
         {
             return View();
         }
 
-        //// GET: Ciudads1/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Ciudad/Create
+        [HttpPost]
+        public async Task<IActionResult> crearCiudad([Bind("Id,Nombre,Cp,Acp")] CiudadDTO ciudad)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(ciudad);
+            }
 
-        //    var ciudad = await _context.Ciudad
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (ciudad == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.CiudadesPost}";
+            var jsonData = JsonConvert.SerializeObject(ciudad);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //    return View(ciudad);
-        //}
+            var response = await _httpClient.PostAsync(url, content);
 
-        //// GET: Ciudads1/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (!response.IsSuccessStatusCode)
+            {
+                return View("Error");
+            }
 
-        //// POST: Ciudads1/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            return RedirectToAction("listaCiudades");
+        }
+
+        // GET: Ciudad/Delete
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var url = $"{_settings.BaseUrl}/{_settings.CiudadesDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error al eliminar la ciudad");
+
+            // Volver a obtener la lista actualizada
+            var url2 = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
+            var response2 = await _httpClient.GetAsync(url2);
+
+            if (!response2.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response2.Content.ReadAsStringAsync();
+            var lista_ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(json);
+
+            return View("listaCiudades", lista_ciudades);
+        }
+
+        //// PUT: Ciudad/Edit/5 (opcional)
         //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Nombre,Cp,Acp")] Ciudad ciudad)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(ciudad);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(ciudad);
-        //}
-
-        //// GET: Ciudads1/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var ciudad = await _context.Ciudad.FindAsync(id);
-        //    if (ciudad == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(ciudad);
-        //}
-
-        //// POST: Ciudads1/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Cp,Acp")] Ciudad ciudad)
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Cp,Acp")] CiudadDTO ciudad)
         //{
         //    if (id != ciudad.Id)
-        //    {
         //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(ciudad);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!CiudadExists(ciudad.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(ciudad);
-        //}
-
-        //// GET: Ciudads1/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var ciudad = await _context.Ciudad
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (ciudad == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(ciudad);
-        //}
-
-        //// POST: Ciudads1/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var ciudad = await _context.Ciudad.FindAsync(id);
-        //    if (ciudad != null)
-        //    {
-        //        _context.Ciudad.Remove(ciudad);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool CiudadExists(int id)
-        //{
-        //    return _context.Ciudad.Any(e => e.Id == id);
+        //
+        //    if (!ModelState.IsValid)
+        //        return View(ciudad);
+        //
+        //    var url = $"{_settings.BaseUrl}/{_settings.CiudadPut}/{id}";
+        //    var jsonData = JsonConvert.SerializeObject(ciudad);
+        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        //
+        //    var response = await _httpClient.PutAsync(url, content);
+        //
+        //    if (!response.IsSuccessStatusCode)
+        //        return View("Error");
+        //
+        //    return RedirectToAction("listaCiudades");
         //}
     }
 }

@@ -19,35 +19,36 @@ namespace CDatos.Repositorios
         }
         public async Task<List<TipoDocumento>> ObtenerTiposDocumento()
         {
-            return await _context.TiposDocumento.ToListAsync();
+            return await _context.TipoDocumento.ToListAsync();
         }
         public async Task<TipoDocumento> ObtenerTipoDocumentoPorId(int id)
         {
-            return await _context.TiposDocumento.FindAsync(id);
+            return await _context.TipoDocumento.FindAsync(id);
         }
-        public async Task CrearTipoDocumento(TipoDocumento tipoDocumento)
+        public async Task<TipoDocumento> CrearTipoDocumento(TipoDocumento tipoDocumento)
         {
-            _context.TiposDocumento.Add(tipoDocumento);
+            _context.TipoDocumento.Add(tipoDocumento);
             await _context.SaveChangesAsync();
+            return tipoDocumento;
         }
-        public async Task ActualizarTipoDocumento(TipoDocumento tipoDocumento)
+        public void ActualizarTipoDocumento(TipoDocumento tipoDocumento)
         {
-            var tipoDocumentoExistente = _context.TiposDocumento.Find(tipoDocumento.Id);
+            var tipoDocumentoExistente = _context.TipoDocumento.Find(tipoDocumento.Id);
             if (tipoDocumentoExistente == null)
             {
                 throw new Exception("Tipo Documento no encontrado.");
             }
             tipoDocumentoExistente.NombreTipoDocumento = tipoDocumento.NombreTipoDocumento;
 
-            await _context.SaveChangesAsync();
+            _context.SaveChangesAsync();
         }
-        public async Task EliminarTipoDocumentoAsync(int id)
+        public void EliminarTipoDocumento(int id)
         {
-            var tipoDocumento = await ObtenerTipoDocumentoPorId(id);
-            if (tipoDocumento != null)
+            var TipoDocumento = _context.TipoDocumento.FirstOrDefault(x => x.Id == id);
+            if (TipoDocumento != null)
             {
-                _context.TiposDocumento.Remove(tipoDocumento);
-                await _context.SaveChangesAsync();
+                _context.TipoDocumento.Remove(TipoDocumento);
+                _context.SaveChanges();
             }
         }
     }

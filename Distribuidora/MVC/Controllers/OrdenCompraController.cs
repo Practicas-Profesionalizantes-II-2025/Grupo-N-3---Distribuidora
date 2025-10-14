@@ -1,157 +1,304 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using MVC.Data;
-using MVC.Models.Entities;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
+using MVC.Models.DTOs;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace MVC.Controllers
 {
     public class OrdenCompraController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public OrdenCompraController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
-
-        // GET: OrdenCompra
-        public async Task<IActionResult> IndexCompra()
+        public OrdenCompraController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
         {
-            return View();
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
         }
 
-        //// GET: OrdenCompra/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: OrdenDeCompra
+        public async Task<IActionResult> listaOrdenCompras()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraGet}";
+            var response = await _httpClient.GetAsync(url);
 
-        //    var ordenDeCompra = await _context.OrdenDeCompra
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (ordenDeCompra == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new List<OrdenDeCompraDTO>());
+            }
 
-        //    return View(ordenDeCompra);
-        //}
+            var json = await response.Content.ReadAsStringAsync();
+            var listaApi = JsonConvert.DeserializeObject<List<OrdenDeCompraDTO>>(json);
 
-        //// GET: OrdenCompra/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (listaApi == null || !listaApi.Any())
+                return View(new List<OrdenDeCompraDTO>());
 
-        //// POST: OrdenCompra/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,EmpleadoId,DistribuidorId,FechaOrden")] OrdenDeCompra ordenDeCompra)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(ordenDeCompra);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(ordenDeCompra);
-        //}
+            foreach (var orden in listaApi)
+            {
+                // Obtener el empleado de forma individual para esta orden
+                var empleadoResponse = await _httpClient.GetAsync($"{_settings.BaseUrl}/Empleados/{orden.EmpleadoId}");
+                if (empleadoResponse.IsSuccessStatusCode)
+                {
+                    var empleado = await empleadoResponse.Content.ReadFromJsonAsync<EmpleadoDTO>();
+                    orden.NombreEmpleado = empleado != null? $"{empleado.Persona.Nombre} {empleado.Persona.Apellido}": $"Empleado {orden.EmpleadoId}";
+                }
+                else
+                {
+                    orden.NombreEmpleado = $"Empleado {orden.EmpleadoId}";
+                }
 
-        //// GET: OrdenCompra/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+                // Nombre del proveedor
+                orden.ProveedorNombre = $"Proveedor {orden.ProveedorId}";
 
-        //    var ordenDeCompra = await _context.OrdenDeCompra.FindAsync(id);
-        //    if (ordenDeCompra == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(ordenDeCompra);
-        //}
+                // Mapear productos si no hay detalles
+                if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+                {
+                    orden.ProductosSeleccionados = orden.Productos.Select(p => new OrdenDeCompraProductoDTO
+                    {
+                        ProductoId = p.Id,
+                        NombreProducto = p.Nombre,
+                        PrecioUnitario = p.PrecioProducto,
+                        CantidadProducto = 0,
+                        ProveedorId = orden.ProveedorId,
+                        ProveedorNombre = orden.ProveedorNombre
+                    }).ToList();
+                }
+            }
 
-        //// POST: OrdenCompra/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,EmpleadoId,DistribuidorId,FechaOrden")] OrdenDeCompra ordenDeCompra)
-        //{
-        //    if (id != ordenDeCompra.Id)
-        //    {
-        //        return NotFound();
-        //    }
+            return View(listaApi);
+        }
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(ordenDeCompra);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!OrdenDeCompraExists(ordenDeCompra.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(ordenDeCompra);
-        //}
+        // GET: Crear OrdenDeCompra
+        public async Task<IActionResult> crearOrdenCompra()
+        {
+            var empleadoId = HttpContext.Session.GetInt32("EmpleadoId");
+            if (empleadoId == null || empleadoId == 0)
+                return RedirectToAction("Login", "Empleados");
 
-        //// GET: OrdenCompra/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var empleadoNombre = HttpContext.Session.GetString("EmpleadoNombre") ?? "Empleado";
 
-        //    var ordenDeCompra = await _context.OrdenDeCompra
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (ordenDeCompra == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var response = await _httpClient.GetAsync(url);
 
-        //    return View(ordenDeCompra);
-        //}
+            if (!response.IsSuccessStatusCode)
+            {
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new OrdenDeCompraDTO());
+            }
 
-        //// POST: OrdenCompra/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var ordenDeCompra = await _context.OrdenDeCompra.FindAsync(id);
-        //    if (ordenDeCompra != null)
-        //    {
-        //        _context.OrdenDeCompra.Remove(ordenDeCompra);
-        //    }
+            var json = await response.Content.ReadAsStringAsync();
+            var productos = JsonConvert.DeserializeObject<List<ProductoDTO>>(json,
+            new JsonSerializerSettings { ContractResolver = new Newtonsoft.Json.Serialization.CamelCasePropertyNamesContractResolver() });
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            
+            var model = new OrdenDeCompraDTO
+            {
+                EmpleadoId = empleadoId.Value, // Cambiarlo por el empleado que inicie sesion
+                NombreEmpleado = empleadoNombre,
+                ProveedorId = 1,
+                ProveedorNombre = "Proveedor 4",
+                Estado = "Pendiente",
+                FechaOrden = DateTime.Now,
+                Productos = productos
+            };
 
-        //private bool OrdenDeCompraExists(int id)
-        //{
-        //    return _context.OrdenDeCompra.Any(e => e.Id == id);
-        //}
+            return View(model);
+        }
+
+        // POST: Crear OrdenDeCompra
+        [HttpPost]
+        public async Task<IActionResult> crearOrdenCompra(OrdenDeCompraDTO orden)
+        {
+            if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+            {
+                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
+                return View(orden);
+            }
+
+            orden.EmpleadoId = HttpContext.Session.GetInt32("EmpleadoId") ?? 0;
+
+            if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+            {
+                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
+                return View(orden);
+            }
+
+            var model = new
+            {
+                EmpleadoId = orden.EmpleadoId, // ahora seguro es el logueado
+                ProveedorId = orden.ProveedorId,
+                FechaOrden = DateTime.Now,
+                Estado = "Pendiente",
+                ProductosSeleccionados = orden.ProductosSeleccionados.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto
+                }).ToList()
+            };
+
+            var jsonData = JsonConvert.SerializeObject(model);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraPost}";
+            var response = await _httpClient.PostAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError("", $"Error al crear la orden: {error}");
+                return View(orden);
+            }
+
+            return RedirectToAction(nameof(listaOrdenCompras));
+        }
+
+        // GET: OrdenDeCompra/Edit/5
+        public async Task<IActionResult> modificarOrdenCompra(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaOrdenCompras));
+
+            var json = await response.Content.ReadAsStringAsync();
+            var ordenApi = JsonConvert.DeserializeObject<OrdenDeCompraDTO>(json);
+
+            var ordenMvc = new OrdenDeCompraDTO
+            {
+                Id = ordenApi.Id,
+                FechaOrden = ordenApi.FechaOrden,
+                EmpleadoId = ordenApi.EmpleadoId,
+                Estado = ordenApi.Estado,
+                NombreEmpleado = $"Empleado {ordenApi.EmpleadoId}",
+                ProveedorId = ordenApi.ProveedorId,
+                ProveedorNombre = $"Proveedor {ordenApi.ProveedorId}",
+                ProductosSeleccionados = ordenApi.ProductosSeleccionados.Select(p => new OrdenDeCompraProductoDTO
+                {
+                    ProductoId = p.ProductoId,
+                    NombreProducto = p.NombreProducto,
+                    PrecioUnitario = p.PrecioUnitario,
+                    CantidadProducto = p.CantidadProducto
+                }).ToList()
+            };
+
+            // Aquí definimos el ViewBag por separado
+            ViewBag.Estados = new SelectList(
+                new List<string> { "Pendiente", "Realizado", "Entregado" },
+                ordenApi.Estado // valor seleccionado
+            );
+
+            return View(ordenMvc);
+        }
+
+        // POST: OrdenDeCompra/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> modificarOrdenCompra(int id, OrdenDeCompraDTO orden)
+        {
+            if (id != orden.Id)
+                return NotFound();
+
+            if (orden.ProductosSeleccionados == null || !orden.ProductosSeleccionados.Any())
+            {
+                ModelState.AddModelError("", "Debe agregar al menos un producto a la orden.");
+                return View(orden);
+            }
+
+            // Mapear al objeto que la API espera
+            var model = new
+            {
+                Id = orden.Id,
+                FechaOrden = orden.FechaOrden,
+                Estado = orden.Estado,
+                EmpleadoId = orden.EmpleadoId,
+                ProveedorId = orden.ProveedorId,
+                ProductosSeleccionados = orden.ProductosSeleccionados.Select(p => new
+                {
+                    ProductoId = p.ProductoId,
+                    CantidadProducto = p.CantidadProducto,
+                    PrecioUnitario = p.PrecioUnitario
+                }).ToList()
+            };
+
+            var jsonData = JsonConvert.SerializeObject(model);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraPut}/{id}";
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var error = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError("", $"Error actualizando la orden: {error}");
+                return View(orden);
+            }
+
+            return RedirectToAction(nameof(listaOrdenCompras));
+        }
+        
+        // DELETE: OrdenDeCompra/Delete/5
+        public async Task<IActionResult> eliminarOrdenCompra(int? id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return RedirectToAction(nameof(listaOrdenCompras));
+            }
+            return RedirectToAction(nameof(listaOrdenCompras));
+        }
+
+        // GET: OrdenDeCompra/Detalle/5
+        public async Task<IActionResult> detalleOrdenCompra(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenCompraGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
+            if (!response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaOrdenCompras));
+
+            var json = await response.Content.ReadAsStringAsync();
+            var content = JsonConvert.DeserializeObject<DetalleOrdenCompraDTO>(json);
+            if (content == null)
+                return RedirectToAction(nameof(listaOrdenCompras));
+
+            var urlProductos = $"{_settings.BaseUrl}/{_settings.ProductoGet}";
+            var responseProductos = await _httpClient.GetAsync(urlProductos);
+            var jsonProductos = await responseProductos.Content.ReadAsStringAsync();
+            var catalogoProductos = JsonConvert.DeserializeObject<List<ProductoDTOvista>>(jsonProductos);
+
+            var productosSeleccionados = content.ProductosSeleccionados.Select(p =>
+            {
+                var prodCatalogo = catalogoProductos.FirstOrDefault(x => x.Id == p.ProductoId);
+                return new OrdenDeCompraProductoDTO
+                {
+                    Id = p.Id,
+                    OrdenDeCompraId = p.OrdenDeCompraId,
+                    ProductoId = p.ProductoId,
+                    NombreProducto = p.NombreProducto,
+                    CantidadProducto = p.CantidadProducto,
+                    PrecioUnitario = p.PrecioUnitario,
+                    ProveedorNombre = prodCatalogo?.ProveedorNombre ?? $"Proveedor {prodCatalogo?.ProveedorId ?? 0}"
+                };
+            }).ToList();
+
+            var ordenParaVista = new OrdenDeCompraDTO
+            {
+                Id = content.Id,
+                FechaOrden = content.FechaOrden,
+                Estado = content.Estado,
+                EmpleadoId = content.EmpleadoId,
+                NombreEmpleado = $"Empleado {content.EmpleadoId}",
+                ProveedorId = content.ProveedorId,
+                ProveedorNombre = $"Proveedor {content.ProveedorId}",
+                ProductosSeleccionados = productosSeleccionados
+            };
+
+            return View(ordenParaVista);
+        }
     }
 }

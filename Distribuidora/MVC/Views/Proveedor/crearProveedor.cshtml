@@ -1,22 +1,25 @@
-﻿
+﻿@model MVC.Models.DTOs.ProveedorDTO
+
 @{
+    ViewData["Title"] = "Crear Proveedor";
 }
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Página Inicio - Proveedores</title>
 
     <!--=============== REMIXICONS ===============-->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
-    <link rel="stylesheet" href="../css/style.css">
 
-    <title>Pagina Inicio - Empleados</title>
+    <!--=============== CSS ===============-->
+    <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
- 
+    <!--=============== CONTENIDO PRINCIPAL ===============-->
     <main>
         <div class="content">
             <!-- Header de la sección -->
@@ -24,20 +27,34 @@
                 <h2>Crear proveedor</h2>
             </div>
 
-            <!-- Formulario para crear proveedores -->
-            <div class="form">
-                <input type="text" placeholder="Nombre" id="nombre" required>
-                <input type="text" placeholder="CUIL/CUIT" id="cuil" required>
-                <input type="text" placeholder="Teléfono" id="telefono" required>
-                <input type="text" placeholder="Dirección" id="direccion" required>
-                <input type="text" placeholder="Ciudad" id="ciudad" required>
-                <input type="text" placeholder="Provincia" id="provincia" required>
-                <input type="text" placeholder="Código Postal" id="codigoPostal" required>
-                <button class="btn yellow" id="guardarProveedor">Guardar</button>
-            </div>
+            <!-- Formulario para crear proveedor -->
+            <form asp-controller="Proveedor" asp-action="crearProveedor" method="post" class="form">
+                <input type="text" asp-for="Nombre" placeholder="Nombre" required />
+                <input type="text" asp-for="Telefono" placeholder="Teléfono" required />
+                <input type="text" asp-for="Direccion" placeholder="Dirección" required />
+                <input type="text" asp-for="Email" placeholder="Email" required />
+
+                <!-- contenedor exclusivo para centrar -->
+                <div class="form-buttons-wrapper">
+                    <div class="form-buttons">
+                        <button type="submit" class="btn yellow">Guardar</button>
+                        <a asp-controller="Proveedor" asp-action="listaProveedores" class="btn back">Volver</a>
+                    </div>
+                </div>
+            </form>
+            @if (!ViewData.ModelState.IsValid)
+            {
+                <div class="alert alert-danger">
+                    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                    {
+                        <p>@error.ErrorMessage</p>
+                    }
+                </div>
+            }
         </div>
     </main>
 
-    <script href="../js/main.js"></script>
+    <!--=============== JS ===============-->
+    <script src="~/js/site.js"></script>
 </body>
 </html>

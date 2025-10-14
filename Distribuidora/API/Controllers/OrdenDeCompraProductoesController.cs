@@ -53,7 +53,7 @@ namespace API.Controllers
             {
                 return BadRequest();
             }
-            _ordenCompraProductoLogic.ActualizarOrdenCompraProducto(ordenDeCompraProducto);
+            await _ordenCompraProductoLogic.ActualizarOrdenCompraProducto(ordenDeCompraProducto);
 
             return NoContent();
         }
@@ -63,7 +63,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<OrdenDeCompraProducto>> PostOrdenDeCompraProducto(OrdenDeCompraProductoDTO ordenDeCompraProducto)
         {
-            _ordenCompraProductoLogic.CrearOrdenCompraProducto(ordenDeCompraProducto);
+            await _ordenCompraProductoLogic.CrearOrdenCompraProducto(ordenDeCompraProducto);
 
             return CreatedAtAction("GetOrdenDeCompraProducto", new { id = ordenDeCompraProducto.Id }, ordenDeCompraProducto);
         }
@@ -72,7 +72,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteOrdenDeCompraProducto(int id)
         {
-            _ordenCompraProductoLogic.EliminarOrdenCompraProducto(id);
+            await _ordenCompraProductoLogic.EliminarOrdenCompraProducto(id);
 
             return NoContent();
         }

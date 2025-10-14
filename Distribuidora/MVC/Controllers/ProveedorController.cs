@@ -1,157 +1,154 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using MVC.Data;
-using MVC.Models.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
+using MVC.Models.DTOs;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace MVC.Controllers
 {
     public class ProveedorController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public ProveedorController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
+        public ProveedorController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
-        // GET: Proveedor
-        public async Task<IActionResult> ProveedorIndex()
+        // GET: Proveedor/Lista
+        public async Task<IActionResult> listaProveedores()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ProveedorGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                // Podés pasar una lista vacía o un ViewBag con el error
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new List<ProveedorDTO>());
+            }
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_proveedores = JsonConvert.DeserializeObject<List<ProveedorDTO>>(json);
+
+            return View(lista_proveedores);
+        }
+
+        // GET: Proveedor/Crear
+        public IActionResult crearProveedor()
         {
             return View();
         }
 
-        //// GET: Proveedor/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Proveedor/Crear
+        [HttpPost]
+        public async Task<IActionResult> CrearProveedor([Bind("Id,Nombre,Telefono,Email,Direccion")] ProveedorDTO proveedor)
+        {
+            if (!ModelState.IsValid)
+                return View(proveedor);
 
-        //    var proveedor = await _context.Proveedor
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (proveedor == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.ProveedorPost}";
+            var jsonData = JsonConvert.SerializeObject(proveedor);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //    return View(proveedor);
-        //}
+            var response = await _httpClient.PostAsync(url, content);
 
-        //// GET: Proveedor/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["MensajeExito"] = "Proveedor creado correctamente.";
+                return RedirectToAction(nameof(listaProveedores));
+            }
+            var contenido = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var errorObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(contenido);
+                if (errorObj != null && errorObj.ContainsKey("mensaje"))
+                    ModelState.AddModelError(string.Empty, errorObj["mensaje"]);
+                else
+                    ModelState.AddModelError(string.Empty, contenido);
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, contenido);
+            }
 
-        //// POST: Proveedor/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Nombre,Direccion,Telefono,Email")] Proveedor proveedor)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(proveedor);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(proveedor);
-        //}
+            return View(proveedor);
+        }
 
-        //// GET: Proveedor/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST:Proveedores/EliminarProveedor
+        [HttpPost]
+        public async Task<IActionResult> eliminarProveedor(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ProveedorDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
 
-        //    var proveedor = await _context.Proveedor.FindAsync(id);
-        //    if (proveedor == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(proveedor);
-        //}
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaProveedores));
 
-        //// POST: Proveedor/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,Direccion,Telefono,Email")] Proveedor proveedor)
-        //{
-        //    if (id != proveedor.Id)
-        //    {
-        //        return NotFound();
-        //    }
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(proveedor);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!ProveedorExists(proveedor.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(proveedor);
-        //}
+            var listaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.ProveedorGet}");
+            var proveedor = JsonConvert.DeserializeObject<List<ProveedorDTO>>(listaJson);
+            return View("listaProveedores", proveedor);
+        }
+        // GET: Modificar Proveedor
+        [HttpGet]
+        public async Task<IActionResult> modificarProveedor(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.ProveedorGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
 
-        //// GET: Proveedor/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, $"Error al buscar proveedor: {errorMsg}");
+                return View(listaProveedores);
+            }
 
-        //    var proveedor = await _context.Proveedor
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (proveedor == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var json = await response.Content.ReadAsStringAsync();
+            var proveedor = JsonConvert.DeserializeObject<ProveedorDTO>(json);
 
-        //    return View(proveedor);
-        //}
+            return View(proveedor);
+        }
+        // PUT: Proveedor/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> modificarProveedor(int id, [Bind("Id,Nombre,Telefono,Email,Direccion")] ProveedorDTO proveedor)
+        {
+            if (id != proveedor.Id)
+                return NotFound();
 
-        //// POST: Proveedor/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var proveedor = await _context.Proveedor.FindAsync(id);
-        //    if (proveedor != null)
-        //    {
-        //        _context.Proveedor.Remove(proveedor);
-        //    }
+            if (!ModelState.IsValid)
+                return View(proveedor);
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            var url = $"{_settings.BaseUrl}/{_settings.ProveedorPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(proveedor);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //private bool ProveedorExists(int id)
-        //{
-        //    return _context.Proveedor.Any(e => e.Id == id);
-        //}
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (response.IsSuccessStatusCode)
+            {
+                TempData["MensajeExito"] = "Proveedor creado correctamente.";
+                return RedirectToAction(nameof(listaProveedores));
+            }
+            var contenido = await response.Content.ReadAsStringAsync();
+            try
+            {
+                var errorObj = JsonConvert.DeserializeObject<Dictionary<string, string>>(contenido);
+                if (errorObj != null && errorObj.ContainsKey("mensaje"))
+                    ModelState.AddModelError(string.Empty, errorObj["mensaje"]);
+                else
+                    ModelState.AddModelError(string.Empty, contenido);
+            }
+            catch
+            {
+                ModelState.AddModelError(string.Empty, contenido);
+            }
+
+            return View(proveedor);
+        }
     }
 }

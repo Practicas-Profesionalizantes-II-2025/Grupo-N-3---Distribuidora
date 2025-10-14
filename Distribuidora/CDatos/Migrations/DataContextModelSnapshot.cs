@@ -17,7 +17,7 @@ namespace CDatos.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.5")
+                .HasAnnotation("ProductVersion", "9.0.9")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -39,7 +39,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Categorias");
+                    b.ToTable("Categoria");
 
                     b.HasData(
                         new
@@ -70,40 +70,23 @@ namespace CDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("Acp")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Cp")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("EstadoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ciudades");
+                    b.ToTable("Ciudad");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            Acp = "A1000",
-                            Cp = "1000",
-                            EstadoId = 1,
                             Nombre = "Ciudad A"
                         },
                         new
                         {
                             Id = 2,
-                            Acp = "B2000",
-                            Cp = "2000",
-                            EstadoId = 1,
                             Nombre = "Ciudad B"
                         });
                 });
@@ -124,7 +107,9 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Clientes");
+                    b.HasIndex("PersonaId");
+
+                    b.ToTable("Cliente");
 
                     b.HasData(
                         new
@@ -165,6 +150,58 @@ namespace CDatos.Migrations
                         });
                 });
 
+            modelBuilder.Entity("Shared.Entities.Distribuidor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CiudadId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CuilCuit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Direccion")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Telefono")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Distribuidor");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            CiudadId = 1,
+                            CuilCuit = "46124922",
+                            Direccion = "Direccion 1",
+                            Nombre = "Distribuidor Uno",
+                            Telefono = "Telefono 1"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            CiudadId = 2,
+                            CuilCuit = "46136388",
+                            Direccion = "Direccion 2",
+                            Nombre = "Distribuidor Dos",
+                            Telefono = "Telefono 2"
+                        });
+                });
+
             modelBuilder.Entity("Shared.Entities.Empleado", b =>
                 {
                     b.Property<int>("Id")
@@ -173,71 +210,73 @@ namespace CDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("EstadoId")
-                        .HasColumnType("int");
+                    b.Property<bool>("Admin")
+                        .HasColumnType("bit");
 
-                    b.Property<string>("Foto")
+                    b.Property<string>("Contrasenia")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("EstadoId")
+                        .HasColumnType("int");
 
                     b.Property<int>("PersonaId")
                         .HasColumnType("int");
 
-                    b.Property<int>("SectorId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
-                    b.ToTable("Empleados");
+                    b.HasIndex("PersonaId");
+
+                    b.ToTable("Empleado");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
+                            Admin = true,
+                            Contrasenia = "8b5cc4df7eec7d32a7814eca4af047ae33b2d52342667715682e19c25b0b9faa",
                             EstadoId = 1,
-                            Foto = "",
-                            PersonaId = 1,
-                            SectorId = 1
+                            PersonaId = 1
                         },
                         new
                         {
                             Id = 2,
+                            Admin = false,
+                            Contrasenia = "ac0f09c0f8bf5e7a4b063d863255f16d8ce9abe600e288d934cf313bcbff63eb",
                             EstadoId = 1,
-                            Foto = "",
-                            PersonaId = 2,
-                            SectorId = 2
+                            PersonaId = 2
                         },
                         new
                         {
                             Id = 3,
+                            Admin = true,
+                            Contrasenia = "cef7fc13a38180936ffa2635489088778e059f07a5d1beda53f1719d35577631",
                             EstadoId = 1,
-                            Foto = "",
-                            PersonaId = 3,
-                            SectorId = 1
+                            PersonaId = 3
                         },
                         new
                         {
                             Id = 4,
+                            Admin = false,
+                            Contrasenia = "449777124b1466a8ed667d0dd4c0620993f59e20fb27b3fa8894e957f8762353",
                             EstadoId = 2,
-                            Foto = "",
-                            PersonaId = 4,
-                            SectorId = 2
+                            PersonaId = 4
                         },
                         new
                         {
                             Id = 5,
+                            Admin = true,
+                            Contrasenia = "43700797e2f9d4ad38ccf1355df3233453396bfcc8db8e424486e37bae42a9ec",
                             EstadoId = 1,
-                            Foto = "",
-                            PersonaId = 5,
-                            SectorId = 1
+                            PersonaId = 5
                         },
                         new
                         {
                             Id = 6,
+                            Admin = false,
+                            Contrasenia = "f33422b95e3b98310adedc93655de579f6e311120ea0c27c3e2317b5116d6afb",
                             EstadoId = 2,
-                            Foto = "",
-                            PersonaId = 6,
-                            SectorId = 2
+                            PersonaId = 6
                         });
                 });
 
@@ -278,33 +317,40 @@ namespace CDatos.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("DistribuidorId")
-                        .HasColumnType("int");
-
                     b.Property<int>("EmpleadoId")
                         .HasColumnType("int");
+
+                    b.Property<string>("Estado")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("FechaOrden")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("ProveedorId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeCompra");
+                    b.HasIndex("EmpleadoId");
+
+                    b.HasIndex("ProveedorId");
+
+                    b.ToTable("OrdenDeCompra");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
-                            DistribuidorId = 1,
                             EmpleadoId = 1,
-                            FechaOrden = new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            FechaOrden = new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProveedorId = 1
                         },
                         new
                         {
                             Id = 2,
-                            DistribuidorId = 2,
                             EmpleadoId = 2,
-                            FechaOrden = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            FechaOrden = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ProveedorId = 2
                         });
                 });
 
@@ -327,7 +373,11 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeCompraProducto");
+                    b.HasIndex("OrdenDeCompraId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("OrdenDeCompraProducto");
 
                     b.HasData(
                         new
@@ -370,18 +420,21 @@ namespace CDatos.Migrations
                     b.Property<int>("EmpleadoId")
                         .HasColumnType("int");
 
-                    b.Property<int>("EstadoId")
-                        .HasColumnType("int");
+                    b.Property<string>("Estado")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("FacturaId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("Fecha")
+                    b.Property<DateTime>("FechaOrden")
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeVenta");
+                    b.HasIndex("ClienteId");
+
+                    b.HasIndex("DistribuidorId");
+
+                    b.HasIndex("EmpleadoId");
+
+                    b.ToTable("OrdenDeVenta");
 
                     b.HasData(
                         new
@@ -390,9 +443,7 @@ namespace CDatos.Migrations
                             ClienteId = 1,
                             DistribuidorId = 1,
                             EmpleadoId = 1,
-                            EstadoId = 1,
-                            FacturaId = 1,
-                            Fecha = new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            FechaOrden = new DateTime(2025, 8, 21, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         },
                         new
                         {
@@ -400,9 +451,7 @@ namespace CDatos.Migrations
                             ClienteId = 2,
                             DistribuidorId = 2,
                             EmpleadoId = 2,
-                            EstadoId = 2,
-                            FacturaId = 2,
-                            Fecha = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
+                            FechaOrden = new DateTime(2025, 8, 20, 0, 0, 0, 0, DateTimeKind.Unspecified)
                         });
                 });
 
@@ -417,7 +466,7 @@ namespace CDatos.Migrations
                     b.Property<int>("CantidadProducto")
                         .HasColumnType("int");
 
-                    b.Property<int>("OrdenVentaId")
+                    b.Property<int>("OrdenDeVentaId")
                         .HasColumnType("int");
 
                     b.Property<int>("ProductoId")
@@ -425,28 +474,32 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("OrdenesDeVentaProducto");
+                    b.HasIndex("OrdenDeVentaId");
+
+                    b.HasIndex("ProductoId");
+
+                    b.ToTable("OrdenDeVentaProducto");
 
                     b.HasData(
                         new
                         {
                             Id = 1,
                             CantidadProducto = 1,
-                            OrdenVentaId = 1,
+                            OrdenDeVentaId = 1,
                             ProductoId = 1
                         },
                         new
                         {
                             Id = 2,
                             CantidadProducto = 2,
-                            OrdenVentaId = 1,
+                            OrdenDeVentaId = 1,
                             ProductoId = 2
                         },
                         new
                         {
                             Id = 3,
                             CantidadProducto = 5,
-                            OrdenVentaId = 2,
+                            OrdenDeVentaId = 2,
                             ProductoId = 3
                         });
                 });
@@ -474,9 +527,6 @@ namespace CDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EstadoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -494,7 +544,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Personas");
+                    b.ToTable("Persona");
 
                     b.HasData(
                         new
@@ -504,7 +554,6 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Falsa 123",
                             Email = "juan@mail.com",
-                            EstadoId = 1,
                             Nombre = "Juan",
                             Nro_Doc = "12345678",
                             Telefono = "11111111",
@@ -517,7 +566,6 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Av. Siempre Viva 742",
                             Email = "ana@mail.com",
-                            EstadoId = 1,
                             Nombre = "Ana",
                             Nro_Doc = "87654321",
                             Telefono = "22222222",
@@ -530,7 +578,6 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Calle Luna 45",
                             Email = "luis@mail.com",
-                            EstadoId = 1,
                             Nombre = "Luis",
                             Nro_Doc = "11223344",
                             Telefono = "33333333",
@@ -543,7 +590,6 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Sol 99",
                             Email = "maria@mail.com",
-                            EstadoId = 2,
                             Nombre = "María",
                             Nro_Doc = "44332211",
                             Telefono = "44444444",
@@ -556,7 +602,6 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Norte 10",
                             Email = "pedro@mail.com",
-                            EstadoId = 1,
                             Nombre = "Pedro",
                             Nro_Doc = "55555555",
                             Telefono = "55555555",
@@ -569,7 +614,6 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Sur 20",
                             Email = "lucia@mail.com",
-                            EstadoId = 2,
                             Nombre = "Lucía",
                             Nro_Doc = "66666666",
                             Telefono = "66666666",
@@ -582,7 +626,6 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Este 30",
                             Email = "carlos@mail.com",
-                            EstadoId = 1,
                             Nombre = "Carlos",
                             Nro_Doc = "77777777",
                             Telefono = "77777777",
@@ -595,7 +638,6 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Oeste 40",
                             Email = "sofia@mail.com",
-                            EstadoId = 1,
                             Nombre = "Sofía",
                             Nro_Doc = "88888888",
                             Telefono = "88888888",
@@ -608,7 +650,6 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Sur 50",
                             Email = "miguel@mail.com",
-                            EstadoId = 1,
                             Nombre = "Miguel",
                             Nro_Doc = "99999999",
                             Telefono = "99999999",
@@ -621,7 +662,6 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Norte 60",
                             Email = "valentina@mail.com",
-                            EstadoId = 2,
                             Nombre = "Valentina",
                             Nro_Doc = "10101010",
                             Telefono = "10101010",
@@ -634,7 +674,6 @@ namespace CDatos.Migrations
                             CiudadId = 1,
                             Direccion = "Calle Central 70",
                             Email = "diego@mail.com",
-                            EstadoId = 1,
                             Nombre = "Diego",
                             Nro_Doc = "11111112",
                             Telefono = "11111112",
@@ -647,7 +686,6 @@ namespace CDatos.Migrations
                             CiudadId = 2,
                             Direccion = "Av. Principal 80",
                             Email = "martina@mail.com",
-                            EstadoId = 2,
                             Nombre = "Martina",
                             Nro_Doc = "12121212",
                             Telefono = "12121212",
@@ -676,6 +714,9 @@ namespace CDatos.Migrations
                     b.Property<int>("ProveedorId")
                         .HasColumnType("int");
 
+                    b.Property<int>("Stock")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.ToTable("Productos");
@@ -687,23 +728,26 @@ namespace CDatos.Migrations
                             CategoriaId = 1,
                             Nombre = "Televisor",
                             PrecioProducto = 10000f,
-                            ProveedorId = 1
+                            ProveedorId = 1,
+                            Stock = 10
                         },
                         new
                         {
                             Id = 2,
-                            CategoriaId = 1,
+                            CategoriaId = 2,
                             Nombre = "Celular",
                             PrecioProducto = 5000f,
-                            ProveedorId = 1
+                            ProveedorId = 1,
+                            Stock = 20
                         },
                         new
                         {
                             Id = 3,
-                            CategoriaId = 2,
+                            CategoriaId = 3,
                             Nombre = "Pan",
                             PrecioProducto = 100f,
-                            ProveedorId = 2
+                            ProveedorId = 2,
+                            Stock = 100
                         });
                 });
 
@@ -723,9 +767,6 @@ namespace CDatos.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("EstadoId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Nombre")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -736,7 +777,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Proveedores");
+                    b.ToTable("Proveedor");
 
                     b.HasData(
                         new
@@ -744,7 +785,6 @@ namespace CDatos.Migrations
                             Id = 1,
                             Direccion = "Direccion 1",
                             Email = "email1@dominio.com.ar",
-                            EstadoId = 1,
                             Nombre = "Proveedor Uno",
                             Telefono = "Telefono 1"
                         },
@@ -753,7 +793,6 @@ namespace CDatos.Migrations
                             Id = 2,
                             Direccion = "Direccion 2",
                             Email = "email2@dominio.com.ar",
-                            EstadoId = 1,
                             Nombre = "Proveedor Dos",
                             Telefono = "Telefono 2"
                         });
@@ -776,7 +815,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Sectores");
+                    b.ToTable("Sector");
 
                     b.HasData(
                         new
@@ -807,7 +846,7 @@ namespace CDatos.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("TiposDocumento");
+                    b.ToTable("TipoDocumento");
 
                     b.HasData(
                         new
@@ -827,49 +866,123 @@ namespace CDatos.Migrations
                         });
                 });
 
-            modelBuilder.Entity("Shared.Entities.Usuario", b =>
+            modelBuilder.Entity("Shared.Entities.Cliente", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.HasOne("Shared.Entities.Persona", "Persona")
+                        .WithMany("Clientes")
+                        .HasForeignKey("PersonaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Navigation("Persona");
+                });
 
-                    b.Property<string>("Contrasenia")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+            modelBuilder.Entity("Shared.Entities.Empleado", b =>
+                {
+                    b.HasOne("Shared.Entities.Persona", "Persona")
+                        .WithMany("Empleados")
+                        .HasForeignKey("PersonaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("EstadoId")
-                        .HasColumnType("int");
+                    b.Navigation("Persona");
+                });
 
-                    b.Property<string>("NombreUsuario")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+            modelBuilder.Entity("Shared.Entities.OrdenDeCompra", b =>
+                {
+                    b.HasOne("Shared.Entities.Empleado", "Empleado")
+                        .WithMany()
+                        .HasForeignKey("EmpleadoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<int>("PersonaId")
-                        .HasColumnType("int");
+                    b.HasOne("Shared.Entities.Proveedor", "Proveedor")
+                        .WithMany()
+                        .HasForeignKey("ProveedorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.HasKey("Id");
+                    b.Navigation("Empleado");
 
-                    b.ToTable("Usuarios");
+                    b.Navigation("Proveedor");
+                });
 
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Contrasenia = "admin123",
-                            EstadoId = 1,
-                            NombreUsuario = "admin",
-                            PersonaId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Contrasenia = "cliente123",
-                            EstadoId = 1,
-                            NombreUsuario = "cliente1",
-                            PersonaId = 7
-                        });
+            modelBuilder.Entity("Shared.Entities.OrdenDeCompraProducto", b =>
+                {
+                    b.HasOne("Shared.Entities.OrdenDeCompra", null)
+                        .WithMany("Productos")
+                        .HasForeignKey("OrdenDeCompraId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shared.Entities.Producto", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+                });
+
+            modelBuilder.Entity("Shared.Entities.OrdenDeVenta", b =>
+                {
+                    b.HasOne("Shared.Entities.Cliente", "Cliente")
+                        .WithMany()
+                        .HasForeignKey("ClienteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shared.Entities.Distribuidor", "Distribuidor")
+                        .WithMany()
+                        .HasForeignKey("DistribuidorId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shared.Entities.Empleado", "Empleado")
+                        .WithMany()
+                        .HasForeignKey("EmpleadoId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Cliente");
+
+                    b.Navigation("Distribuidor");
+
+                    b.Navigation("Empleado");
+                });
+
+            modelBuilder.Entity("Shared.Entities.OrdenDeVentaProducto", b =>
+                {
+                    b.HasOne("Shared.Entities.OrdenDeVenta", null)
+                        .WithMany("Productos")
+                        .HasForeignKey("OrdenDeVentaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Shared.Entities.Producto", "Producto")
+                        .WithMany()
+                        .HasForeignKey("ProductoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Producto");
+                });
+
+            modelBuilder.Entity("Shared.Entities.OrdenDeCompra", b =>
+                {
+                    b.Navigation("Productos");
+                });
+
+            modelBuilder.Entity("Shared.Entities.OrdenDeVenta", b =>
+                {
+                    b.Navigation("Productos");
+                });
+
+            modelBuilder.Entity("Shared.Entities.Persona", b =>
+                {
+                    b.Navigation("Clientes");
+
+                    b.Navigation("Empleados");
                 });
 #pragma warning restore 612, 618
         }

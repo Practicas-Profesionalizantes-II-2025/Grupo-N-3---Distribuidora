@@ -1,73 +1,147 @@
-﻿
-@{
-}
+﻿@model List<MVC.Models.DTOs.ProveedorDTO>
 
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de clientes</title>
+    <title>Lista de Proveedores</title>
 
-    <!--=============== REMIXICONS ===============-->
+    <!-- REMIXICONS -->
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
 
-    <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="../css/style.css">
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/site.css">
+
+    <style>
+        .tabla-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .tabla-empleados thead {
+            position: sticky;
+            top: 0;
+            background-color: #f5f5f5;
+            z-index: 1;
+        }
+
+        .tabla-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tabla-container::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+            .tabla-container::-webkit-scrollbar-thumb:hover {
+                background-color: #555;
+            }
+    </style>
 </head>
 <body>
-
-    <!--=============== CONTENIDO PRINCIPAL ===============-->
     <main class="container full-width">
         <h2 class="titulo">Lista de proveedores</h2>
 
-        <!-- Filtro de búsqueda -->
+        <!-- Filtro de búsqueda con crear -->
         <div class="search-filter">
             <input type="text" placeholder="Buscar por ID, CUIL/CUIT o Nombre" id="searchInput">
             <button class="btn yellow">Buscar</button>
+            <a asp-controller="Proveedor" asp-action="crearProveedor" class="btn yellow">Crear proveedor</a>
         </div>
 
-        <table class="tabla-empleados">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre</th>
-                    <th>CUIL/CUIT</th>
-                    <th>Teléfono</th>
-                    <th>Dirección</th>
-                    <th>Ciudad</th>
-                    <th>Provincia</th>
-                    <th>Código Postal</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Proveedor A</td>
-                    <td>20-12345678-9</td>
-                    <td>3493-425869</td>
-                    <td>Calle Falsa 123</td>
-                    <td>Rosario</td>
-                    <td>Santa Fe</td>
-                    <td>2000</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Proveedor B</td>
-                    <td>27-98765432-1</td>
-                    <td>3492-693265</td>
-                    <td>Avenida Siempre Viva 456</td>
-                    <td>Santa Fe</td>
-                    <td>Santa Fe</td>
-                    <td>3000</td>
-                </tr>
-                <!-- Agregar más filas según necesidad -->
-            </tbody>
-        </table>
+        <div class="tabla-container">
+            <table class="tabla-empleados">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Teléfono</th>
+                        <th>Dirección</th>
+                        <th>Email</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Id</td>
+                            <td>@item.Nombre</td>
+                            <td>@item.Telefono</td>
+                            <td>@item.Direccion</td>
+                            <td>@item.Email</td>
+                            <td class="acciones">
+                                <a asp-controller="Proveedor" asp-action="modificarProveedor" asp-route-id="@item.Id"
+                                   class="btn-icon edit" title="Editar">
+                                    <i class="ri-pencil-line"></i>
+                                </a>
+
+                                <a href="#" class="btn-icon red-outline" title="Eliminar" onclick="confirmDelete(this, @item.Id)">
+                                    <i class="ri-delete-bin-line"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </main>
 
+    <!-- Modal de Confirmación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="ri-alert-line" style="font-size: 2rem; color: #ff4d4d;"></i>
+                <h3>Confirmar eliminación</h3>
+            </div>
+            <p>¿Estás seguro que deseas eliminar este proveedor?</p>
+            <div class="modal-buttons">
+                <button class="btn confirm" id="confirmBtn">Sí, eliminar</button>
+                <button class="btn cancel" id="cancelBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let proveedorId = null;
+
+        function confirmDelete(button, id) {
+            proveedorId = id;
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        document.getElementById('confirmBtn').onclick = function () {
+            if (proveedorId) {
+                fetch(`/Proveedor/eliminarProveedor?id=${proveedorId}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload();
+                    } else {
+                        alert("Error al eliminar el proveedor");
+                    }
+                })
+                .catch(() => alert("Error al eliminar el proveedor"));
+            }
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        document.getElementById('cancelBtn').onclick = function () {
+            proveedorId = null;
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+    </script>
+
     <!--=============== JS ===============-->
-    <script src="../js/main.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/js/Persona/filtropersona.js"></script>
+
 </body>
 </html>

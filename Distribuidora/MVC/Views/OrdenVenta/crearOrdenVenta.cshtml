@@ -1,0 +1,98 @@
+﻿@model MVC.Models.DTOs.OrdenDeVentaDTO
+
+@{
+    ViewData["Title"] = "Crear Venta";
+}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Venta</title>
+
+    <!--=============== REMIXICONS ===============-->
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css">
+</head>
+<body>
+    <main class="pedido container full-width">
+    <div class="section-header">
+        <h2>Crear Venta</h2>
+    </div>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+            <div class="alert alert-danger">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <p>@error.ErrorMessage</p>
+                }
+            </div>
+        }
+
+    @using (Html.BeginForm("crearOrdenVenta", "OrdenVenta", FormMethod.Post, new { id = "formOrden" }))
+    {
+        @Html.AntiForgeryToken()
+      
+
+        <!-- Datos generales -->
+        <input type="hidden" asp-for="EmpleadoId" value="@Model.EmpleadoId" />
+        <input type="hidden" asp-for="Estado" value="@Model.Estado" />
+            <input type="hidden" asp-for="FechaOrden" value="@Model.FechaOrden" />
+
+        <div class="form-group">
+            <label for="ClienteId">Cliente</label>
+            <select asp-for="ClienteId" class="form-control" asp-items="ViewBag.Clientes">
+                <option value="">-- Seleccione un cliente --</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="DistribuidorId">Distribuidor</label>
+            <select asp-for="DistribuidorId" class="form-control" asp-items="ViewBag.Distribuidores">
+                <option value="">-- Seleccione un distribuidor --</option>
+            </select>
+        </div>
+    
+        <!-- Tabla de productos -->
+        <table class="pedido__table" id="pedidoTable">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad</th>
+                    <th>Precio Unitario</th>
+                    <th>Subtotal</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Filas se agregarán dinámicamente -->
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="total-label">TOTAL:</td>
+                    <td id="totalGeneral" class="total-value" style="text-align:right;">$0.00</td>
+                    <td></td>
+                </tr>
+            </tfoot>
+        </table>
+        <!-- Container para inputs hidden de los productos -->
+        <div id="productosContainer"></div>
+
+        <div class="actions">
+            <button type="button" class="btn" id="agregarFila">Agregar producto</button>
+            <button type="submit" class="btn">Confirmar Venta</button>
+            <a asp-controller="OrdenVenta" asp-action="listaOrdenVentas" class="btn back">Volver</a>
+        </div>
+    }
+</main>
+</body>
+</html>
+
+@section Scripts {
+    <script>
+        const productos = @Html.Raw(Newtonsoft.Json.JsonConvert.SerializeObject(Model.Productos));
+    </script>
+    <script src="~/js/Venta/crearVenta.js"></script>
+}

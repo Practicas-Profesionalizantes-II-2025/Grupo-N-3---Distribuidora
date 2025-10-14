@@ -11,9 +11,10 @@ namespace CNegocio.Logica.ILogica
     {
         Task<List<EmpleadoDTO>> ObtenerEmpleados();
         Task<EmpleadoDTO> ObtenerEmpleadoPorId(int id);
-        Task CrearEmpleado(EmpleadoDTO empleadoDTO);
+        Task<EmpleadoDTO> CrearEmpleado(EmpleadoDTO empleadoDTO);
         Task ActualizarEmpleado(EmpleadoDTO empleadoDTO);
         Task EliminarEmpleado(int id);
         Task<List<EmpleadoDTO>> ObtenerEmpleadosPorDni(string dni);
+        Task<bool> ValidacionEmpleado(string dni, string contrasenia);
     }
 }

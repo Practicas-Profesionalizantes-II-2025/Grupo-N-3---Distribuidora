@@ -1,6 +1,8 @@
-﻿using CDatos.Repositorios.IRepositorios;
+﻿using CDatos.Repositorios;
+using CDatos.Repositorios.IRepositorios;
 using CNegocio.Logica.ILogica;
 using Shared.DTOs;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,26 +14,46 @@ namespace CNegocio.Logica
     public class PersonaLogica : IPersonaLogica
     {
         private readonly IPersonaRepositorio _personaRepositorio;
-        public PersonaLogica(IPersonaRepositorio personaRepositorio)
+        private readonly ICiudadRepositorio _ciudadRepositorio;
+        public PersonaLogica(IPersonaRepositorio personaRepositorio, ICiudadRepositorio ciudadRepositorio)
         {
             _personaRepositorio = personaRepositorio;
+            _ciudadRepositorio = ciudadRepositorio;
         }
         public async Task<List<PersonaDTO>> ObtenerPersonas()
         {
             var personas = await _personaRepositorio.ObtenerPersonas();
-            return personas.Select(p => new PersonaDTO
+            var personasDTO = new List<PersonaDTO>();
+
+            foreach (var p in personas)
             {
-                Id = p.Id,
-                Nombre = p.Nombre,
-                Apellido = p.Apellido,
-                Tipo_DocId = p.Tipo_DocId,
-                Nro_Doc = p.Nro_Doc,
-                CiudadId = p.CiudadId,
-                Email = p.Email,
-                Direccion = p.Direccion,
-                Telefono = p.Telefono,
-                EstadoId = p.EstadoId
-            }).ToList();
+                string nombreCiudad = string.Empty;
+
+                if (p.CiudadId > 0)
+                {
+                    var ciudad = await _ciudadRepositorio.ObtenerCiudadPorId(p.CiudadId);
+                    if (ciudad != null)
+                    {
+                        nombreCiudad = ciudad.Nombre;
+                    }
+                }
+
+                personasDTO.Add(new PersonaDTO
+                {
+                    Id = p.Id,
+                    Nombre = p.Nombre,
+                    Apellido = p.Apellido,
+                    Tipo_DocId = p.Tipo_DocId,
+                    Nro_Doc = p.Nro_Doc,
+                    CiudadId = p.CiudadId,
+                    NombreCiudad = nombreCiudad,
+                    Email = p.Email,
+                    Direccion = p.Direccion,
+                    Telefono = p.Telefono,
+                });
+            }
+
+            return personasDTO;
         }
         public async Task<PersonaDTO> ObtenerPersonaPorId(int id)
         {
@@ -53,18 +75,20 @@ namespace CNegocio.Logica
                 Email = persona.Email,
                 Direccion = persona.Direccion,
                 Telefono = persona.Telefono,
-                EstadoId = persona.EstadoId
             };
         }
-        public async Task CrearPersona(PersonaDTO personaDTO)
+        public async Task<PersonaDTO> CrearPersona(PersonaDTO personaDTO)
         {
-            List<string> camposErroneos = ValidarPersona(personaDTO, esNueva: false);
-
-            if (camposErroneos.Count > 0)
-                throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
-
-            var persona = new Shared.Entities.Persona
+            try
             {
+                var errores = ValidarPersona(personaDTO, true);
+                if (errores.Any())
+                {
+                    string mensaje = "Los siguientes campos son inválidos: " + string.Join(", ", errores);
+                    throw new ArgumentException(mensaje);
+                }
+                var persona = new Persona
+                {
                 Nombre = personaDTO.Nombre,
                 Apellido = personaDTO.Apellido,
                 Tipo_DocId = personaDTO.Tipo_DocId,
@@ -73,31 +97,52 @@ namespace CNegocio.Logica
                 Email = personaDTO.Email,
                 Direccion = personaDTO.Direccion,
                 Telefono = personaDTO.Telefono,
-                EstadoId = personaDTO.EstadoId
-            };
-            await _personaRepositorio.CrearPersona(persona);
-        }
-        public async Task ActualizarPersona(PersonaDTO personaDTO)
-        {
-            List<string> camposErroneos = ValidarPersona(personaDTO, esNueva: false);
+                };
 
-            if (camposErroneos.Count > 0)
-                throw new ArgumentException("Los siguientes campos son inválidos: " + string.Join(", ", camposErroneos));
+                var nuevaPersona = await _personaRepositorio.CrearPersona(persona);
 
-            var persona = new Shared.Entities.Persona
+                personaDTO.Id = nuevaPersona.Id;
+
+                return personaDTO;
+            }
+            catch (ArgumentException ex)
             {
-                Id = personaDTO.Id,
-                Nombre = personaDTO.Nombre,
-                Apellido = personaDTO.Apellido,
-                Tipo_DocId = personaDTO.Tipo_DocId,
-                Nro_Doc = personaDTO.Nro_Doc,
-                CiudadId = personaDTO.CiudadId,
-                Email = personaDTO.Email,
-                Direccion = personaDTO.Direccion,
-                Telefono = personaDTO.Telefono,
-                EstadoId = personaDTO.EstadoId
-            };
-            await _personaRepositorio.ActualizarPersona(persona);
+
+                throw new ArgumentException(ex.Message);
+            }
+
+        }
+        public async Task<PersonaDTO> ActualizarPersona(PersonaDTO personaDTO)
+        {
+            try
+            {
+                var errores = ValidarPersona(personaDTO, true);
+                if (errores.Any())
+                {
+                    string mensaje = "Los siguientes campos son inválidos: " + string.Join(", ", errores);
+                    throw new ArgumentException(mensaje);
+                }
+                var persona = new Persona
+                {
+                    Id = personaDTO.Id,
+                    Nombre = personaDTO.Nombre,
+                    Apellido = personaDTO.Apellido,
+                    Tipo_DocId = personaDTO.Tipo_DocId,
+                    Nro_Doc = personaDTO.Nro_Doc,
+                    CiudadId = personaDTO.CiudadId,
+                    Email = personaDTO.Email,
+                    Direccion = personaDTO.Direccion,
+                    Telefono = personaDTO.Telefono,
+                };
+                _personaRepositorio.ActualizarPersona(persona);
+                personaDTO.Id = persona.Id;
+                return personaDTO;
+            }
+            catch (ArgumentException ex)
+            {
+
+                throw new ArgumentException(ex.Message);
+            }
         }
         public async Task EliminarPersona(int id)
         {
@@ -123,7 +168,6 @@ namespace CNegocio.Logica
                 Email = p.Email,
                 Direccion = p.Direccion,
                 Telefono = p.Telefono,
-                EstadoId = p.EstadoId
             }).ToList();
         }
 
@@ -159,15 +203,12 @@ namespace CNegocio.Logica
             if (string.IsNullOrWhiteSpace(persona.Telefono) || !IsValidTelefono(persona.Telefono))
                 errores.Add("Telefono");
 
-            if (persona.EstadoId <= 0)
-                errores.Add("EstadoId");
-
             return errores;
         }
 
         private bool ContainsInvalidCharacter(string text)
         {
-            char[] caracteres = { '!', '"', '#', '$', '%', '/', '(', ')', '=', '.', ',' };
+            char[] caracteres = { '!', '"', '#', '$', '%', '/', '(', ')', '=', ',' };
             return caracteres.Any(c => text.Contains(c));
         }
 

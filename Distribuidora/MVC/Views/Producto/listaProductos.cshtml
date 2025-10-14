@@ -1,4 +1,7 @@
-﻿@{
+﻿@model IEnumerable<MVC.Models.DTOs.ProductoDTOvista>
+
+@{
+    ViewData["Title"] = "Lista de productos";
 }
 
 <!DOCTYPE html>
@@ -6,63 +9,139 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de productos</title>
+    <title>@ViewData["Title"]</title>
 
     <!--=============== REMIXICONS ===============-->
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/3.5.0/remixicon.css" crossorigin="">
+    <link href="https:cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/site.css">
 
-    <!--=============== CSS ===============-->
-    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .tabla-container {
+            max-height: 500px;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+        }
+
+        .tabla-empleados thead {
+            position: sticky;
+            top: 0;
+            background-color: #f5f5f5;
+            z-index: 1;
+        }
+
+        .tabla-container::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .tabla-container::-webkit-scrollbar-thumb {
+            background-color: #888;
+            border-radius: 4px;
+        }
+
+            .tabla-container::-webkit-scrollbar-thumb:hover {
+                background-color: #555;
+            }
+    </style>
 </head>
 <body>
 
-    <!--=============== CONTENIDO PRINCIPAL ===============-->
     <main class="container full-width">
-        <h2 class="titulo">Lista de productos</h2>
+        <h2 class="titulo">Lista de Productos</h2>
 
-        <!-- Filtro de búsqueda -->
         <div class="search-filter">
-            <input type="text" placeholder="Buscar por ID, Nombre o Categoría" id="searchInput">
+            <input type="text" placeholder="Buscar por ID o Nombre de producto" id="searchInput">
             <button class="btn yellow">Buscar</button>
+            <a asp-controller="Producto" asp-action="crearProducto" class="btn green">Crear Producto</a>
         </div>
 
-        <table class="tabla-empleados">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nombre producto</th>
-                    <th>Proveedor</th>
-                    <th>Categoría</th>
-                    <th>Unidades</th>
-                    <th>Precio venta</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Coca Cola 1.5 ltrs</td>
-                    <td>Entre copas</td>
-                    <td>Bebida</td>
-                    <td>120</td>
-                    <td>$1.950</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Oreo</td>
-                    <td>Arcor SRL</td>
-                    <td>Masitas</td>
-                    <td>80</td>
-                    <td>$1.200</td>
-                </tr>
+        <div class="tabla-container">
+            <table class="tabla-empleados">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre producto</th>
+                        <th>Proveedor</th>
+                        <th>Categoría</th>
+                        <th>Unidades</th>
+                        <th>Precio costo</th>
+@*                         <th>Precio venta</th>
+ *@                     <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var producto in Model)
+                    {
+                        <tr>
+                            <td>@producto.Id</td>
+                            <td>@producto.Nombre</td>
+                            <td>@producto.ProveedorNombre</td>
+                            <td>@producto.CategoriaNombre</td>
+                            <td>@producto.Stock</td>
+                            <td>@producto.PrecioProducto</td>
 
-            </tbody>
-        </table>
+                            <td class="acciones">
+                                <a asp-controller="Producto" asp-action="modificarProducto" asp-route-id="@producto.Id"
+                                   class="btn-icon yellow-outline" title="Editar">
+                                    <i class="ri-pencil-line"></i>
+                                </a>
+
+                                <!-- FORMULARIO POST PARA ELIMINAR -->
+                                <form asp-controller="Producto" asp-action="eliminarProducto" method="post" style="display:inline;">
+                                    <input type="hidden" name="id" value="@producto.Id" />
+                                    <a href="#" class="btn-icon yellow-outline" title="Eliminar" onclick="confirmDelete(this)">
+                                        <i class="ri-delete-bin-line"></i>
+                                    </a>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
+    <!-- Modal de Confirmación -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="ri-alert-line" style="font-size: 2rem; color: #ff4d4d;"></i>
+                <h3>Confirmar eliminación</h3>
+            </div>
+            <p>¿Estás seguro que deseas eliminar este producto?</p>
+            <div class="modal-buttons">
+                <button class="btn confirm" id="confirmBtn">Sí, eliminar</button>
+                <button class="btn cancel" id="cancelBtn">Cancelar</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let rowToDelete = null;
+
+        function confirmDelete(button) {
+            rowToDelete = button.closest('tr');
+            document.getElementById('deleteModal').style.display = 'flex';
+        }
+
+        document.getElementById('confirmBtn').onclick = function () {
+            if (rowToDelete) {
+                rowToDelete.querySelector('form').submit();
+                rowToDelete = null;
+            }
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+
+        document.getElementById('cancelBtn').onclick = function () {
+            rowToDelete = null;
+            document.getElementById('deleteModal').style.display = 'none';
+        }
+    </script>
+
     <!--=============== JS ===============-->
-    <script src="../js/main.js"></script>
+    <script src="~/js/site.js"></script>
+    <script src="~/js/Categoria/filtrocat.js"></script>
+
 </body>
 </html>
-

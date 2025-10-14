@@ -1,157 +1,108 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using MVC.Data;
-using MVC.Models.Entities;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Options;
+using MVC.ConfigAPI;
+using MVC.Models.DTOs;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace MVC.Controllers
 {
     public class OrdenVentaProductoController : Controller
     {
-        //private readonly MVCContext _context;
+        private readonly HttpClient _httpClient;
+        private readonly ApiSettings _settings;
 
-        //public OrdenVentaProductoController(MVCContext context)
-        //{
-        //    _context = context;
-        //}
+        public OrdenVentaProductoController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
+        {
+            _httpClient = httpClientFactory.CreateClient("API");
+            _settings = settings.Value;
+        }
 
-        // GET: OrdenVentaProducto
-        public async Task<IActionResult> PagPrincipOrdenVentaProd()
+        // GET: OrdenDeVentaProducto
+        public async Task<IActionResult> listaOrdenesProducto()
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaProductoGet}";
+            var response = await _httpClient.GetAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response.Content.ReadAsStringAsync();
+            var lista_ordenes = JsonConvert.DeserializeObject<List<OrdenDeVentaProductoDTO>>(json);
+
+            return View(lista_ordenes);
+        }
+
+        // GET: Crear OrdenDeVentaProducto
+        public IActionResult crearOrdenProducto()
         {
             return View();
         }
 
-        //// GET: OrdenVentaProducto/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Crear OrdenDeVentaProducto
+        [HttpPost]
+        public async Task<IActionResult> crearOrdenProducto([Bind("Id,OrdenVentaId,ProductoId,CantidadProducto")] OrdenDeVentaProductoDTO ordenProducto)
+        {
+            if (!ModelState.IsValid)
+                return View(ordenProducto);
 
-        //    var ordenDeVentaProducto = await _context.OrdenDeVentaProducto
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (ordenDeVentaProducto == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaProductoPost}";
+            var jsonData = JsonConvert.SerializeObject(ordenProducto);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //    return View(ordenDeVentaProducto);
-        //}
+            var response = await _httpClient.PostAsync(url, content);
 
-        //// GET: OrdenVentaProducto/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
 
-        //// POST: OrdenVentaProducto/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+            return RedirectToAction("listaOrdenesProducto");
+        }
+
+        // DELETE: OrdenDeVentaProducto/Delete/5
+        public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+                return NotFound();
+
+            var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaProductoDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
+
+            if (!response.IsSuccessStatusCode)
+                return View("Error");
+
+            // Volver a traer la lista después de eliminar
+            var url2 = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaProductoGet}";
+            var response2 = await _httpClient.GetAsync(url2);
+
+            if (!response2.IsSuccessStatusCode)
+                return View("Error");
+
+            var json = await response2.Content.ReadAsStringAsync();
+            var lista_ordenes = JsonConvert.DeserializeObject<List<OrdenDeVentaProductoDTO>>(json);
+
+            return View("listaOrdenesProducto", lista_ordenes);
+        }
+
+        //// PUT: OrdenDeVentaProducto/Edit/5
         //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,OrdenVentaId,ProductoId,CantidadProducto")] OrdenDeVentaProducto ordenDeVentaProducto)
+        //public async Task<IActionResult> Edit(int id, [Bind("Id,OrdenVentaId,ProductoId,CantidadProducto")] OrdenDeVentaProductoDTO ordenProducto)
         //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(ordenDeVentaProducto);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(ordenDeVentaProducto);
-        //}
-
-        //// GET: OrdenVentaProducto/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
+        //    if (id != ordenProducto.Id)
         //        return NotFound();
-        //    }
-
-        //    var ordenDeVentaProducto = await _context.OrdenDeVentaProducto.FindAsync(id);
-        //    if (ordenDeVentaProducto == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(ordenDeVentaProducto);
-        //}
-
-        //// POST: OrdenVentaProducto/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,OrdenVentaId,ProductoId,CantidadProducto")] OrdenDeVentaProducto ordenDeVentaProducto)
-        //{
-        //    if (id != ordenDeVentaProducto.Id)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(ordenDeVentaProducto);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!OrdenDeVentaProductoExists(ordenDeVentaProducto.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(ordenDeVentaProducto);
-        //}
-
-        //// GET: OrdenVentaProducto/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var ordenDeVentaProducto = await _context.OrdenDeVentaProducto
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (ordenDeVentaProducto == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(ordenDeVentaProducto);
-        //}
-
-        //// POST: OrdenVentaProducto/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var ordenDeVentaProducto = await _context.OrdenDeVentaProducto.FindAsync(id);
-        //    if (ordenDeVentaProducto != null)
-        //    {
-        //        _context.OrdenDeVentaProducto.Remove(ordenDeVentaProducto);
-        //    }
-
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
-        //private bool OrdenDeVentaProductoExists(int id)
-        //{
-        //    return _context.OrdenDeVentaProducto.Any(e => e.Id == id);
+        //
+        //    if (!ModelState.IsValid)
+        //        return View(ordenProducto);
+        //
+        //    var url = $"{_settings.BaseUrl}/{_settings.OrdenDeVentaProductoPut}/{id}";
+        //    var jsonData = JsonConvert.SerializeObject(ordenProducto);
+        //    var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+        //
+        //    var response = await _httpClient.PutAsync(url, content);
+        //
+        //    if (!response.IsSuccessStatusCode)
+        //        return View("Error");
+        //
+        //    return RedirectToAction("listaOrdenesProducto");
         //}
     }
 }

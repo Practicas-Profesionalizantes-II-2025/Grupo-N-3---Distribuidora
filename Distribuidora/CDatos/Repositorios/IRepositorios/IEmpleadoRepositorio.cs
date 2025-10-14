@@ -12,8 +12,10 @@ namespace CDatos.Repositorios.IRepositorios
         Task<List<Empleado>> ObtenerEmpleados();
         Task<Empleado> ObtenerEmpleadoPorId(int id);
         Task<Empleado> CrearEmpleado(Empleado empleado);
-        void ActualizarEmpleado(Empleado empleado);
+        Task ActualizarEmpleado(Empleado empleado);
         void EliminarEmpleado(int id);
         Task<List<Empleado>> ObtenerEmpleadosPorDni(string dni);
+        Task<Persona> ObtenerPersonaPorEmpleadoId(int empleadoId);
+        Task<string> GetContraseniaHasheadaEmpleadoPorDni(string dni);
     }
 }

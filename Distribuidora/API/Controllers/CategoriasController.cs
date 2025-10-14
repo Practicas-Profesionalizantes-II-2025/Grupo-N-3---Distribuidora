@@ -19,9 +19,9 @@ namespace API.Controllers
     public class CategoriasController : ControllerBase
     {
         private readonly ICategoriaLogica _IcategoriaLogica;
-        public CategoriasController(ICategoriaLogica _IcategoriaLogica)
+        public CategoriasController(ICategoriaLogica IcategoriaLogica)
         {
-            this._IcategoriaLogica = _IcategoriaLogica;
+            _IcategoriaLogica = IcategoriaLogica;
         }
 
         // GET: api/Categorias
@@ -55,7 +55,7 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            _IcategoriaLogica.ActualizarCategoria(categoria);
+            await _IcategoriaLogica.ActualizarCategoria(categoria);
 
             return NoContent();
         }
@@ -65,7 +65,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<CategoriaDTO>> PostCategoria(CategoriaDTO categoria)
         {
-            _IcategoriaLogica.CrearCategoria(categoria);
+            await _IcategoriaLogica.CrearCategoria(categoria);
 
             return CreatedAtAction("GetCategoria", new { id = categoria.Id }, categoria);
         }
@@ -74,10 +74,9 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategoria(int id)
         {
-            _IcategoriaLogica.EliminarCategoria(id);
+            await _IcategoriaLogica.EliminarCategoria(id);
 
             return NoContent();
         }
-
     }
 }

@@ -3,15 +3,16 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using MVC.ConfigAPI;
-using MVC.Data;
+using MVC.Models.DTOs;
 using MVC.Models.Entities;
 using Newtonsoft.Json;
+using Shared.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
-using MVC.Models.DTOs;
 
 namespace MVC.Controllers
 {
@@ -33,7 +34,11 @@ namespace MVC.Controllers
             var response = await _httpClient.GetAsync(url);
 
             if (!response.IsSuccessStatusCode)
-                return View("Error");
+            {
+                // Podés pasar una lista vacía o un ViewBag con el error
+                ViewBag.Error = await response.Content.ReadAsStringAsync();
+                return View(new List<CategoriaDTO>());
+            }
 
             var json = await response.Content.ReadAsStringAsync();
             var lista_categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(json);
@@ -41,133 +46,91 @@ namespace MVC.Controllers
             return View(lista_categorias);
         }
 
-        //// GET: Categorias/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Categorias
+        public IActionResult crearCategoria()
+        {
+            return View();
+        }
+        // POST: Categorias
+        [HttpPost]
+        public async Task<IActionResult> crearCategoria([Bind("Id,Nombre")] CategoriaDTO categoria)
+        {
+            if (!ModelState.IsValid)
+                return View(categoria);
 
-        //    var categoria = await _context.Categoria
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (categoria == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var url = $"{_settings.BaseUrl}/{_settings.CategoriasPost}";
+            var jsonData = JsonConvert.SerializeObject(categoria);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
 
-        //    return View(categoria);
-        //}
+            var response = await _httpClient.PostAsync(url, content);
 
-        //// GET: Categorias/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaCategorias));
 
-        //// POST: Categorias/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("Id,Nombre,EstadoId")] Categoria categoria)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(categoria);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(categoria);
-        //}
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
+            return RedirectToAction("listaCategorias");
+        }
 
-        //// GET: Categorias/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Categorias/EliminarCategoria
+        [HttpPost]
+        public async Task<IActionResult> eliminarCategoria(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.CategoriasDelete}/{id}";
+            var response = await _httpClient.DeleteAsync(url);
 
-        //    var categoria = await _context.Categoria.FindAsync(id);
-        //    if (categoria == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(categoria);
-        //}
+            if (response.IsSuccessStatusCode)
+                return RedirectToAction(nameof(listaCategorias));
 
-        //// POST: Categorias/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to.
-        //// For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,Nombre,EstadoId")] Categoria categoria)
-        //{
-        //    if (id != categoria.Id)
-        //    {
-        //        return NotFound();
-        //    }
+            ModelState.AddModelError(string.Empty, await response.Content.ReadAsStringAsync());
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(categoria);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!CategoriaExists(categoria.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(categoria);
-        //}
+            var listaJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CategoriasGet}");
+            var categoria = JsonConvert.DeserializeObject<List<CategoriaDTO>>(listaJson);
+            return View("listaCategorias", categoria);
+        }
 
-        //// GET: Categorias/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Modificar categoria
+        [HttpGet]
+        public async Task<IActionResult> modificarCategoria(int id)
+        {
+            var url = $"{_settings.BaseUrl}/{_settings.CategoriasGet}/{id}";
+            var response = await _httpClient.GetAsync(url);
 
-        //    var categoria = await _context.Categoria
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (categoria == null)
-        //    {
-        //        return NotFound();
-        //    }
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, $"Error al buscar categoria: {errorMsg}");
+                return View(listaCategorias);
+            }
 
-        //    return View(categoria);
-        //}
+            var json = await response.Content.ReadAsStringAsync();
+            var categoria = JsonConvert.DeserializeObject<CategoriaDTO>(json);
 
-        //// POST: Categorias/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var categoria = await _context.Categoria.FindAsync(id);
-        //    if (categoria != null)
-        //    {
-        //        _context.Categoria.Remove(categoria);
-        //    }
+            return View(categoria);
+        }
+        // PUT: Categorias/Edit/5
+        [HttpPost]
+        public async Task<IActionResult> modificarCategoria(int id, [Bind("Id,Nombre")] CategoriaDTO categoria)
+        {
+            if (id != categoria.Id)
+                return NotFound();
 
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+            if (!ModelState.IsValid)
+                return View(categoria);
 
-        //private bool CategoriaExists(int id)
-        //{
-        //    return _context.Categoria.Any(e => e.Id == id);
-        //}
+            var url = $"{_settings.BaseUrl}/{_settings.CategoriasPut}/{id}";
+            var jsonData = JsonConvert.SerializeObject(categoria);
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var errorMsg = await response.Content.ReadAsStringAsync();
+                ModelState.AddModelError(string.Empty, $"Error al modificar categoria: {errorMsg}");
+                return View(categoria);
+            }
+
+            return RedirectToAction("listaCategorias");
+        }
     }
 }

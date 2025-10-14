@@ -11,8 +11,8 @@ namespace CDatos.Repositorios.IRepositorios
     {
         Task<List<Proveedor>> ObtenerProveedores();
         Task<Proveedor> ObtenerProveedorPorId(int id);
-        Task CrearProveedor(Proveedor proveedor);
-        Task ActualizarProveedor(Proveedor proveedor);
-        Task EliminarProveedor(int id);
+        Task<Proveedor> CrearProveedor(Proveedor proveedor);
+        void ActualizarProveedor(Proveedor proveedor);
+        void EliminarProveedor(int id);
     }
 }
