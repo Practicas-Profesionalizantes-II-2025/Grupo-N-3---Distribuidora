@@ -26,9 +26,8 @@
             <input type="hidden" asp-for="Id" />
             <input type="hidden" asp-for="Persona.Id" />
             <input type="hidden" asp-for="Persona.Tipo_DocId" />
+            <input type="hidden" asp-for="Persona.EstadoId" />
             <input type="hidden" asp-for="Persona.Nro_Doc" />
-            <input type="hidden" asp-for="Persona.CiudadId" />
-            <input type="hidden" asp-for="EstadoId" />
 
             <div class="form">
                 <!-- Nombre y apellido -->
@@ -55,11 +54,17 @@
                 <!-- Email -->
                     <input asp-for="Persona.Email" placeholder="Email" required />
 
-                 
+                <!-- Contrasenia-->
+                <input asp-for="Contrasenia" placeholder="Nueva contraseña" type="password" />
+
+                <!-- Confirmación de contraseña -->
+                <input asp-for="ContraseniaConfimarcion" placeholder="Confirmar contraseña" type="password" />
                 <!-- Cargo  <input asp-for="CargoId" placeholder="Cargo" /> -->
 
                 <!-- Estado -->
-                <input asp-for="EstadoId" placeholder="Estado" />
+                    <select asp-for="Persona.EstadoId"
+                            asp-items="@(new SelectList(Model.Persona.Estados, "Id", "Descripcion", Model.Persona.EstadoId))">
+                    </select>
             </div>
 
             <!-- Botones -->

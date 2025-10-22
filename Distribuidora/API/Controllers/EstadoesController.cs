@@ -24,7 +24,7 @@ namespace API.Controllers
 
         // GET: api/Estadoes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetEstados()
+        public async Task<ActionResult<IEnumerable<EstadoDTO>>> GetEstado()
         {
             return await _estadoLogic.ObtenerEstados();
         }
@@ -53,7 +53,7 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            _estadoLogic.ActualizarEstado(estado);
+            await _estadoLogic.ActualizarEstado(estado);
 
             return NoContent();
         }
@@ -63,7 +63,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Estado>> PostEstado(EstadoDTO estado)
         {
-            _estadoLogic.CrearEstado(estado);
+            await _estadoLogic.CrearEstado(estado);
 
             return CreatedAtAction("GetEstado", new { id = estado.Id }, estado);
         }
@@ -72,7 +72,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteEstado(int id)
         {
-            _estadoLogic.EliminarEstado(id);
+            await _estadoLogic.EliminarEstado(id);
 
             return NoContent();
         }

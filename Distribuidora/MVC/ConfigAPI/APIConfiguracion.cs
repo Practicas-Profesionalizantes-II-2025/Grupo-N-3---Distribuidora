@@ -104,6 +104,12 @@
         public string UsuarioPut { get; set; } = string.Empty;
         public string UsuarioDelete { get; set; } = string.Empty;
 
+        // Endpoints Estado 
+        public string EstadoGet { get; set; } = string.Empty;
+        public string EstadoPost { get; set; } = string.Empty;
+        public string EstadoPut { get; set; } = string.Empty;
+        public string EstadoDelete { get; set; } = string.Empty;
+
         // agregá más endpoints según se necesite
     }
 }
