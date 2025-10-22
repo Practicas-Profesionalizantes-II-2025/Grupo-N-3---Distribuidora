@@ -38,7 +38,6 @@ namespace MVC.Controllers
             var json = await response.Content.ReadAsStringAsync();
             var lista_clientes = JsonConvert.DeserializeObject<List<ClienteDTO>>(json);
             
-            // Obtener proveedores y categorías para mostrar nombres
             var ulrCiudad = $"{_settings.BaseUrl}/{_settings.CiudadesGet}";
             var urlDoc = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
             var CiudadJson = await _httpClient.GetStringAsync(ulrCiudad);
@@ -58,7 +57,6 @@ namespace MVC.Controllers
                 p.Persona.TiposDocumentos = Doc;
 
             }
-
             return View(lista_clientes);
         }
 
@@ -177,6 +175,7 @@ namespace MVC.Controllers
             {
                 Id = clientes.Id,
                 PersonaId = clientes.PersonaId,
+                EstadoId = clientes.EstadoId,
                 Persona = new PersonaDTO
                 {
                     Id = clientes.Persona.Id,
@@ -188,7 +187,6 @@ namespace MVC.Controllers
                     Email = clientes.Persona.Email,
                     Direccion = clientes.Persona.Direccion,
                     Telefono = clientes.Persona.Telefono,
-                    EstadoId = clientes.Persona.EstadoId,
                     Ciudades = ciudades,
                     TiposDocumentos = Documentos,
                     Estados = estados
@@ -201,13 +199,17 @@ namespace MVC.Controllers
         [HttpPost]
         public async Task<IActionResult> modificarCliente(ClienteDTO cliente)
         {
-            var CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
-            var DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+            var jsonCiudad = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+            var jsonDocumentos = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
             var jsonEstados = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.EstadoGet}");
 
-            cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
-            cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
-            cliente.Persona.Estados = JsonConvert.DeserializeObject<List<EstadoDTO>>(jsonEstados);
+            var ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(jsonCiudad);
+            var Documentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(jsonDocumentos);
+            var estados = JsonConvert.DeserializeObject<List<EstadoDTO>>(jsonEstados);
+
+            cliente.Persona.Ciudades = ciudades;
+            cliente.Persona.TiposDocumentos = Documentos;
+            cliente.Persona.Estados = estados;
 
             if (!ModelState.IsValid)
             {
@@ -217,7 +219,6 @@ namespace MVC.Controllers
             try
             {
                 cliente.Persona.Tipo_DocId = cliente.Persona.Tipo_DocId == 0 ? 1 : cliente.Persona.Tipo_DocId;
-                cliente.EstadoId = cliente.Persona.EstadoId;
 
                 var personaJson = JsonConvert.SerializeObject(cliente.Persona);
                 var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
@@ -239,12 +240,11 @@ namespace MVC.Controllers
                     var error = await clienteResponse.Content.ReadAsStringAsync();
                     ModelState.AddModelError(string.Empty, $"Error creando cliente: {error}");
 
-                    CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
-                    DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+                    jsonCiudad = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+                    jsonDocumentos = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
 
-                    cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
-                    cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
-                    cliente.Persona.Estados = JsonConvert.DeserializeObject<List<EstadoDTO>>(jsonEstados);
+                    ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(jsonCiudad);
+                    Documentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(jsonDocumentos);
 
                     return View(cliente);
                 }
@@ -254,12 +254,11 @@ namespace MVC.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError(string.Empty, $"Ocurrió un error: {ex.Message}");
-                CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
-                DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+                jsonCiudad = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
+                jsonDocumentos = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
 
-                cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
-                cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
-                cliente.Persona.Estados = JsonConvert.DeserializeObject<List<EstadoDTO>>(jsonEstados);
+                ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(jsonCiudad);
+                Documentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(jsonDocumentos);
                 return View(cliente);
             }
         }

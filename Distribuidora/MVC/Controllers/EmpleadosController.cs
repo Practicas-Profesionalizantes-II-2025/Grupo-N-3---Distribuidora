@@ -229,6 +229,7 @@ namespace MVC.Controllers
             {
                 Id = empleados.Id,
                 PersonaId = empleados.PersonaId,
+                EstadoId = empleados.EstadoId,
                 Persona = new PersonaDTO
                 {
                     Id = empleados.Persona.Id,
@@ -240,7 +241,6 @@ namespace MVC.Controllers
                     Email = empleados.Persona.Email,
                     Direccion = empleados.Persona.Direccion,
                     Telefono = empleados.Persona.Telefono,
-                    EstadoId = empleados.Persona.EstadoId,
                     Ciudades = ciudades,
                     TiposDocumentos = Documentos,
                     Estados = estados
@@ -270,8 +270,6 @@ namespace MVC.Controllers
 
             try
             {
-                empleado.EstadoId = 1;
-                empleado.Persona.EstadoId = 1;
                 empleado.Persona.Tipo_DocId = empleado.Persona.Tipo_DocId == 0 ? 1 : empleado.Persona.Tipo_DocId;
 
                 var personaJson = JsonConvert.SerializeObject(empleado.Persona);

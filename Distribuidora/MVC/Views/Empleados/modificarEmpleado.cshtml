@@ -62,9 +62,9 @@
                 <!-- Cargo  <input asp-for="CargoId" placeholder="Cargo" /> -->
 
                 <!-- Estado -->
-                    <select asp-for="Persona.EstadoId"
-                            asp-items="@(new SelectList(Model.Persona.Estados, "Id", "Descripcion", Model.Persona.EstadoId))">
-                    </select>
+                <select asp-for="EstadoId"
+                        asp-items="@(new SelectList(Model.Persona.Estados, "Id", "Descripcion", Model.EstadoId))">
+                </select>
             </div>
 
             <!-- Botones -->
