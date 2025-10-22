@@ -229,8 +229,6 @@ namespace MVC.Controllers
             {
                 Id = empleados.Id,
                 PersonaId = empleados.PersonaId,
-                Contrasenia = "",                   
-                ContraseniaConfimarcion = "",
                 Persona = new PersonaDTO
                 {
                     Id = empleados.Persona.Id,

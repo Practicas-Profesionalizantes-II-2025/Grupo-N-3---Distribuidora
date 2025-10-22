@@ -151,6 +151,10 @@ namespace MVC.Controllers
 
             var urlDocumentos = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
             var responseUrlDocumentos = await _httpClient.GetAsync(urlDocumentos);
+
+            var urlEstados = $"{_settings.BaseUrl}/{_settings.EstadoGet}";
+            var responseEstados = await _httpClient.GetAsync(urlEstados);
+
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError(string.Empty, "No se pudo cargar el cliente");
@@ -162,9 +166,12 @@ namespace MVC.Controllers
 
             var jsonCiudad = await responseUrlCiudad.Content.ReadAsStringAsync();
             var jsonDocumentos = await responseUrlDocumentos.Content.ReadAsStringAsync();
+            var jsonEstados = await responseEstados.Content.ReadAsStringAsync();
+
 
             var ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(jsonCiudad);
             var Documentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(jsonDocumentos);
+            var estados = JsonConvert.DeserializeObject<List<EstadoDTO>>(jsonEstados);
 
             ClienteDTO modelo = new ClienteDTO
             {
@@ -183,7 +190,8 @@ namespace MVC.Controllers
                     Telefono = clientes.Persona.Telefono,
                     EstadoId = clientes.Persona.EstadoId,
                     Ciudades = ciudades,
-                    TiposDocumentos = Documentos
+                    TiposDocumentos = Documentos,
+                    Estados = estados
                 },
             };
             return View(modelo);
@@ -195,19 +203,21 @@ namespace MVC.Controllers
         {
             var CiudadJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
             var DocJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+            var jsonEstados = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.EstadoGet}");
 
             cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
             cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+            cliente.Persona.Estados = JsonConvert.DeserializeObject<List<EstadoDTO>>(jsonEstados);
+
             if (!ModelState.IsValid)
             {
                 return View(cliente);
             }
 
             try
-            { 
-                cliente.EstadoId = 1;
-                cliente.Persona.EstadoId = 1;
+            {
                 cliente.Persona.Tipo_DocId = cliente.Persona.Tipo_DocId == 0 ? 1 : cliente.Persona.Tipo_DocId;
+                cliente.EstadoId = cliente.Persona.EstadoId;
 
                 var personaJson = JsonConvert.SerializeObject(cliente.Persona);
                 var personaContent = new StringContent(personaJson, Encoding.UTF8, "application/json");
@@ -234,6 +244,7 @@ namespace MVC.Controllers
 
                     cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
                     cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+                    cliente.Persona.Estados = JsonConvert.DeserializeObject<List<EstadoDTO>>(jsonEstados);
 
                     return View(cliente);
                 }
@@ -248,6 +259,7 @@ namespace MVC.Controllers
 
                 cliente.Persona.Ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(CiudadJson);
                 cliente.Persona.TiposDocumentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(DocJson);
+                cliente.Persona.Estados = JsonConvert.DeserializeObject<List<EstadoDTO>>(jsonEstados);
                 return View(cliente);
             }
         }
