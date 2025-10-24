@@ -84,7 +84,8 @@ namespace API.Controllers
                     PersonaId = personaCreada.Id,
                     Persona = personaCreada,
                     EstadoId = empleado.EstadoId,
-                    Contrasenia = empleado.Contrasenia
+                    Contrasenia = empleado.Contrasenia,
+                    Admin = empleado.Admin
                 };
 
                 var nuevoEmpleado = await _empleadoLogic.CrearEmpleado(empleadoDto);

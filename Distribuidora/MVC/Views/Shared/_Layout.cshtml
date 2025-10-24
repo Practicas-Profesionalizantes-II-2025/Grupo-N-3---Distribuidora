@@ -15,16 +15,22 @@
     <title>@ViewData["Title"]</title>
 </head>
 <body>
+    @{
+        var esAdmin = (Context.Session.GetString("EsAdmin") ?? "false").ToLower() == "true";
+    }
     <!--=============== HEADER ===============-->
     <header class="header">
         <nav class="nav container">
             <div class="nav__menu" id="nav-menu">
                 <ul class="nav__list">
 
+                @if (esAdmin)
+                {       
                     <!--=============== Empleados ===============-->
                     <li class="dropdown__item">
                         <a href="/Empleados/listaEmpleados" class="nav__link">Empleados</a>
                     </li>
+                }
 
                     <!--=============== Clientes ===============-->
                     <li class="dropdown__item">

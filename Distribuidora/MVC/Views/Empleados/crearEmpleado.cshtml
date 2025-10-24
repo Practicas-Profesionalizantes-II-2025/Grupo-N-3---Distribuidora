@@ -61,6 +61,13 @@
                 <!-- Contrasenia -->
                     <input type="password" asp-for="empleado.Contrasenia" placeholder="Contrasenia" class="input-text" required />
                 <input type="password" asp-for="empleado.ContraseniaConfimarcion" placeholder="Repetir Contrasenia" class="input-text" />
+
+                <!--Admin-->
+                    <select asp-for="empleado.Admin" class="input-text" required>
+                        <option value="">Seleccionar</option>
+                        <option value="true">Administrador</option>
+                        <option value="false">Empleado</option>
+                    </select>
             </div>
 
             <!-- Botones -->
