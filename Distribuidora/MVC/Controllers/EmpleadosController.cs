@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Text;
 using EmpleadoDTO = MVC.Models.DTOs.EmpleadoDTO;
 using PersonaDTO = MVC.Models.DTOs.PersonaDTO;
+using MVC.Filters;
 
 namespace MVC.Controllers
 {
@@ -25,6 +26,7 @@ namespace MVC.Controllers
         {
             return View();
         }
+
         public async Task<IActionResult> LoginAccion(DatosInicioSesionDTO datos)
         {
             // Construir la URL del endpoint
@@ -69,7 +71,18 @@ namespace MVC.Controllers
             return RedirectToAction("PaginaInicial", "PaginaInicial");
         }
 
+        // Nueva acción para mostrar la página de inicio de empleados (muestra mensaje si existe)
+        public IActionResult PaginaInicioEmpleados()
+        {
+            if (TempData.ContainsKey("ErrorAdmin"))
+            {
+                ViewBag.ErrorAdmin = TempData["ErrorAdmin"];
+            }
+            return View();
+        }
+
         // GET: Empleados
+        [AdminAuthorize]
         public async Task<IActionResult> listaEmpleados()
         {
             var url = $"{_settings.BaseUrl}/{_settings.EmpleadosGet}";
@@ -109,6 +122,7 @@ namespace MVC.Controllers
         }
 
         // GET: Crear Empleado
+        [AdminAuthorize]
         public async Task<IActionResult> crearEmpleado()
         {
             var ciudadesJson = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
@@ -131,6 +145,7 @@ namespace MVC.Controllers
 
         // POST: Crear Empleado
         [HttpPost]
+        [AdminAuthorize]
         public async Task<IActionResult> crearEmpleado(EmpleadoVista_CargarEmpleadoDTO modelo)
         {
             try
@@ -193,6 +208,7 @@ namespace MVC.Controllers
         }
         
         // GET: Modificar empleado
+        [AdminAuthorize]
         public async Task<IActionResult> modificarEmpleado(int id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.EmpleadosGet}/{id}";
@@ -252,6 +268,7 @@ namespace MVC.Controllers
 
         // POST: Modificar empleado
         [HttpPost]
+        [AdminAuthorize]
         public async Task<IActionResult> modificarEmpleado(EmpleadoDTO empleado)
         {
             var jsonCiudad = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
@@ -316,6 +333,7 @@ namespace MVC.Controllers
 
         // DELETE: Empleado/Delete/5
         [HttpPost]
+        [AdminAuthorize]
         public async Task<IActionResult> eliminarEmpleado(int? id)
         {
             var url = $"{_settings.BaseUrl}/{_settings.EmpleadosDelete}/{id}";
