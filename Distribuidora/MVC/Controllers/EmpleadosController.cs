@@ -64,6 +64,7 @@ namespace MVC.Controllers
 
             HttpContext.Session.SetInt32("EmpleadoId", empleado.Id);
             HttpContext.Session.SetString("EmpleadoNombre", $"{empleado.Persona.Nombre ?? "Sin nombre"} {empleado.Persona.Apellido ?? ""}");
+            HttpContext.Session.SetString("EsAdmin", empleado.Admin ? "true" : "false"); 
 
             return RedirectToAction("PaginaInicial", "PaginaInicial");
         }
@@ -203,6 +204,10 @@ namespace MVC.Controllers
             var urlDocumentos = $"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}";
             var responseUrlDocumentos = await _httpClient.GetAsync(urlDocumentos);
 
+
+            var urlEstados = $"{_settings.BaseUrl}/{_settings.EstadoGet}";
+            var responseEstados = await _httpClient.GetAsync(urlEstados);
+
             if (!response.IsSuccessStatusCode)
             {
                 ModelState.AddModelError(string.Empty, "No se pudo cargar el empleado");
@@ -214,14 +219,18 @@ namespace MVC.Controllers
             
             var jsonCiudad = await responseUrlCiudad.Content.ReadAsStringAsync();
             var jsonDocumentos = await responseUrlDocumentos.Content.ReadAsStringAsync();
+            var jsonEstados = await responseEstados.Content.ReadAsStringAsync();
+
 
             var ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(jsonCiudad);
             var Documentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(jsonDocumentos);
+            var estados = JsonConvert.DeserializeObject<List<EstadoDTO>>(jsonEstados);
 
             EmpleadoDTO model = new EmpleadoDTO
             {
                 Id = empleados.Id,
                 PersonaId = empleados.PersonaId,
+                EstadoId = empleados.EstadoId,
                 Persona = new PersonaDTO
                 {
                     Id = empleados.Persona.Id,
@@ -233,9 +242,9 @@ namespace MVC.Controllers
                     Email = empleados.Persona.Email,
                     Direccion = empleados.Persona.Direccion,
                     Telefono = empleados.Persona.Telefono,
-                    EstadoId = empleados.Persona.EstadoId,
                     Ciudades = ciudades,
-                    TiposDocumentos = Documentos
+                    TiposDocumentos = Documentos,
+                    Estados = estados
                 },
             };
             return View(model);
@@ -247,16 +256,21 @@ namespace MVC.Controllers
         {
             var jsonCiudad = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.CiudadesGet}");
             var jsonDocumentos = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.TipoDocumentoGet}");
+            var jsonEstados = await _httpClient.GetStringAsync($"{_settings.BaseUrl}/{_settings.EstadoGet}");
 
             var ciudades = JsonConvert.DeserializeObject<List<CiudadDTO>>(jsonCiudad);
             var Documentos = JsonConvert.DeserializeObject<List<TipoDocumentoDTO>>(jsonDocumentos);
+            var estados = JsonConvert.DeserializeObject<List<EstadoDTO>>(jsonEstados);
+
+            empleado.Persona.Ciudades = ciudades;
+            empleado.Persona.TiposDocumentos = Documentos;
+            empleado.Persona.Estados = estados;
+
             if (!ModelState.IsValid)
                 return View(empleado);
 
             try
             {
-                empleado.EstadoId = 1;
-                empleado.Persona.EstadoId = 1;
                 empleado.Persona.Tipo_DocId = empleado.Persona.Tipo_DocId == 0 ? 1 : empleado.Persona.Tipo_DocId;
 
                 var personaJson = JsonConvert.SerializeObject(empleado.Persona);

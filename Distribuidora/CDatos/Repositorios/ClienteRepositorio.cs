@@ -46,9 +46,8 @@ namespace CDatos.Repositorios
             var clienteExistente = await _context.Cliente.FindAsync(cliente.Id);
             if (clienteExistente == null)
                 throw new Exception("Cliente no encontrado.");
-
-            clienteExistente.EstadoId = cliente.EstadoId;
             clienteExistente.PersonaId = cliente.PersonaId;
+            clienteExistente.EstadoId = cliente.EstadoId;
 
             await _context.SaveChangesAsync();
         }

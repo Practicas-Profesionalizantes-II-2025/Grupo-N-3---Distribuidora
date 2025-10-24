@@ -1,4 +1,5 @@
 ﻿using MVC.ConfigAPI;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -33,13 +34,14 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+app.UseHttpMetrics();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.MapMetrics();
 
 app.UseRouting();
 
-// 🔹 Agregar middleware de sesión
 app.UseSession();
 
 app.UseAuthorization();
@@ -49,3 +51,4 @@ app.MapControllerRoute(
     pattern: "{controller=Empleados}/{action=Login}/{id?}");
 
 app.Run();
+

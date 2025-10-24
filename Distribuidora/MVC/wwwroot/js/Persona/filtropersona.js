@@ -1,24 +1,30 @@
-﻿document.addEventListener("DOMContentLoaded", function () {
-    const inputBuscar = document.getElementById("searchInput");
+﻿document.addEventListener("DOMContentLoaded", () => {
+    const searchInput = document.getElementById('searchInput');
+    const tableRows = document.querySelectorAll('.tabla-empleados tbody tr');
 
-    if (inputBuscar) {
-        inputBuscar.addEventListener("keyup", function () {
-            const valor = inputBuscar.value.toLowerCase().trim();
-            const filas = document.querySelectorAll("table tbody tr");
+    function filtrarClientes() {
+        const filtro = searchInput.value.toLowerCase();
 
-            filas.forEach(fila => {
-                // Tomamos los valores de ID, DNI y Nombre completo de la fila
-                const id = fila.cells[0].textContent.toLowerCase();
-                const nombre = fila.cells[1].textContent.toLowerCase();
-                const dni = fila.cells[2].textContent.toLowerCase();
+        tableRows.forEach(row => {
+            const id = row.cells[0].textContent.toLowerCase();
+            const nombre = row.cells[1].textContent.toLowerCase();
+            const dni = row.cells[2].textContent.toLowerCase();
+            const estado = row.cells[7].textContent.toLowerCase();
 
-                // Mostrar fila si coincide con alguno de los campos
-                if (valor === "" || id.includes(valor) || nombre.includes(valor) || dni.includes(valor)) {
-                    fila.style.display = "";
-                } else {
-                    fila.style.display = "none";
-                }
-            });
+            if (filtro === '') {
+                // Por defecto: solo mostrar Activos
+                row.style.display = (estado === 'activo') ? '' : 'none';
+            } else {
+                // Durante la búsqueda: mostrar cualquier coincidencia, sin importar estado
+                const coincide = id.includes(filtro) || nombre.includes(filtro) || dni.includes(filtro);
+                row.style.display = coincide ? '' : 'none';
+            }
         });
     }
+
+    // Evento input en tiempo real
+    searchInput.addEventListener('input', filtrarClientes);
+
+    // Inicializa la tabla ocultando inactivos al cargar
+    filtrarClientes();
 });

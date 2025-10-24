@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using MVC.Controllers.Models;
 using MVC.Models;
+using Prometheus;
 using System.Diagnostics;
 
 namespace MVC.Controllers
@@ -8,7 +9,7 @@ namespace MVC.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
+        private static readonly Counter ContadorPeticiones = Metrics.CreateCounter("total_peticiones_privacy", "Total de peticiones procesadas");
         public HomeController(ILogger<HomeController> logger)
         {
             _logger = logger;
@@ -21,6 +22,7 @@ namespace MVC.Controllers
 
         public IActionResult Privacy()
         {
+            ContadorPeticiones.Inc();
             return View();
         }
 

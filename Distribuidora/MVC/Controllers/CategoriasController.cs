@@ -2,17 +2,21 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
+using Microsoft.Identity.Client;
 using MVC.ConfigAPI;
 using MVC.Models.DTOs;
 using MVC.Models.Entities;
 using Newtonsoft.Json;
+using Prometheus;
 using Shared.Entities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using Metrics = Prometheus.Metrics;
 
 namespace MVC.Controllers
 {
@@ -20,6 +24,7 @@ namespace MVC.Controllers
     {
         private readonly HttpClient _httpClient;
         private readonly ApiSettings _settings;
+        private static readonly Counter ContadorPeticiones = Metrics.CreateCounter("total_peticiones_categoria", "Total de peticiones procesadas");
 
         public CategoriasController(IHttpClientFactory httpClientFactory, IOptions<ApiSettings> settings)
         {
@@ -42,7 +47,7 @@ namespace MVC.Controllers
 
             var json = await response.Content.ReadAsStringAsync();
             var lista_categorias = JsonConvert.DeserializeObject<List<CategoriaDTO>>(json);
-
+            ContadorPeticiones.Inc();
             return View(lista_categorias);
         }
 

@@ -21,18 +21,16 @@ namespace CNegocio.Logica
         public async Task<List<EstadoDTO>> ObtenerEstados()
         {
             var estados = await _estadoRepositorio.ObtenerEstados();
-            return estados?.Select(e => new EstadoDTO
+            var estadodto = estados.Select(e => new EstadoDTO
             {
                 Id = e.Id,
                 Descripcion = e.Descripcion
-            }).ToList() ?? new List<EstadoDTO>();
+            }).ToList();
+            return estadodto;   
         }
 
         public async Task<EstadoDTO> ObtenerEstadoPorId(int id)
         {
-            if (id <= 0)
-                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(id));
-
             var estado = await _estadoRepositorio.ObtenerEstadoPorId(id);
             if (estado == null)
                 throw new KeyNotFoundException($"No se encontró un estado con ID {id}.");
@@ -70,9 +68,6 @@ namespace CNegocio.Logica
             if (estadoDTO == null)
                 throw new ArgumentNullException(nameof(estadoDTO));
 
-            if (estadoDTO.Id <= 0)
-                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(estadoDTO.Id));
-
             if (string.IsNullOrWhiteSpace(estadoDTO.Descripcion))
                 throw new ArgumentException("La descripción no puede estar vacía.", nameof(estadoDTO.Descripcion));
 
@@ -86,8 +81,6 @@ namespace CNegocio.Logica
 
         public async Task EliminarEstado(int id)
         {
-            if (id <= 0)
-                throw new ArgumentException("El ID debe ser mayor que cero.", nameof(id));
 
             var existente = await _estadoRepositorio.ObtenerEstadoPorId(id);
             if (existente == null)

@@ -32,6 +32,7 @@ namespace CNegocio.Logica
             {
                 Id = c.Id,
                 EstadoId = c.EstadoId,
+                Admin = c.Admin,
                 Persona = new PersonaDTO
                 {
                     Id = c.Persona.Id,
@@ -58,6 +59,7 @@ namespace CNegocio.Logica
             {
                 Id = empleado.Id,
                 EstadoId = empleado.EstadoId,
+                Admin = empleado.Admin,
                 PersonaId = empleado.PersonaId,
                 Persona = new PersonaDTO
                 {
@@ -93,7 +95,8 @@ namespace CNegocio.Logica
             {
                 PersonaId = empleadoDTO.PersonaId,
                 EstadoId = empleadoDTO.EstadoId,
-                Contrasenia = empleadoDTO.Contrasenia
+                Contrasenia = empleadoDTO.Contrasenia,
+                Admin = empleadoDTO.Admin
             };
             var nuevoEmpleado = await _empleadoRepositorio.CrearEmpleado(empleado);
 
@@ -104,6 +107,7 @@ namespace CNegocio.Logica
                 Id = nuevoEmpleado.Id,
                 PersonaId = nuevoEmpleado.PersonaId,
                 EstadoId = nuevoEmpleado.EstadoId,
+                Admin = nuevoEmpleado.Admin,
                 Persona = new PersonaDTO
                 {
                     Id = persona.Id,
@@ -155,6 +159,7 @@ namespace CNegocio.Logica
             {
                 Id = c.Id,
                 EstadoId = c.EstadoId,
+                Admin = c.Admin,
                 Persona = new PersonaDTO
                 {
                     Id = c.Persona?.Id ?? 0,

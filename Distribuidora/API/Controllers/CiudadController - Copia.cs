@@ -56,7 +56,7 @@ namespace API.Controllers
                 return BadRequest();
             }
 
-            _IciudadLogica.ActualizarCiudad(ciudad);
+            await _IciudadLogica.ActualizarCiudad(ciudad);
 
             return NoContent();
         }
@@ -66,7 +66,7 @@ namespace API.Controllers
         [HttpPost]
         public async Task<ActionResult<Ciudad>> CiudadPost(CiudadDTO ciudad)
         {
-            _IciudadLogica.CrearCiudad(ciudad);
+            await _IciudadLogica.CrearCiudad(ciudad);
 
             return CreatedAtAction("GetCiudad", new { id = ciudad.Id }, ciudad);
         }
@@ -75,7 +75,7 @@ namespace API.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> CiudadDelete(int id)
         {
-            _IciudadLogica.EliminarCiudad(id);
+            await _IciudadLogica.EliminarCiudad(id);
 
             return NoContent();
         }
