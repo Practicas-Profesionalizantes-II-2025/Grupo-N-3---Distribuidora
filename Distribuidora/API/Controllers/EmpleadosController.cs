@@ -1,4 +1,5 @@
-﻿using CDatos.Data;
+﻿using API.Metricas;
+using CDatos.Data;
 using CNegocio.Logica;
 using CNegocio.Logica.ILogica;
 using Microsoft.AspNetCore.Http;
@@ -50,7 +51,14 @@ namespace API.Controllers
         [HttpGet("dni/{dni}/{contrasenia}")]
         public async Task<bool> ValidacionEmpleado(string dni, string contrasenia)
         {
-            return await _empleadoLogic.ValidacionEmpleado(dni, contrasenia);
+            var valido = await _empleadoLogic.ValidacionEmpleado(dni, contrasenia);
+
+            if (!valido)
+            {
+                LoginMetrics.LoginFallidos.Inc(); // 👈 incrementa el contador
+            }
+
+            return valido;
         }
 
         // PUT: api/Empleados/5
@@ -89,6 +97,7 @@ namespace API.Controllers
                 };
 
                 var nuevoEmpleado = await _empleadoLogic.CrearEmpleado(empleadoDto);
+                LoginMetrics.EmpleadosCreados.Inc(); // Incrementa el contador cuando se crea un empleado
                 nuevoEmpleado.Persona = personaCreada;
                 return CreatedAtAction(nameof(GetEmpleado), new { id = nuevoEmpleado.Id }, nuevoEmpleado);
             }

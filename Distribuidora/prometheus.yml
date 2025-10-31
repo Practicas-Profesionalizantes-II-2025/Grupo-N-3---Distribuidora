@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s          # Cada 15 segundos
+  evaluation_interval: 15s
+  scrape_timeout: 20s           # Aumentamos timeout a 20s
+
+scrape_configs:
+  - job_name: 'mi_api'
+    scheme: https               # Porque tu endpoint usa HTTPS
+    tls_config:
+      insecure_skip_verify: true  # Ignorar certificados auto-firmados
+    static_configs:
+      - targets: ['localhost:7044']

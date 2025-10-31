@@ -1,20 +1,22 @@
-using CDatos.Data;
+﻿using CDatos.Data;
 using CDatos.Repositorios.IRepositorios;
 using CDatos.Repositorios;
 using CNegocio.Logica.ILogica;
 using CNegocio.Logica;
 using Microsoft.EntityFrameworkCore;
+using Prometheus;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
+// --- Servicios ---
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("Connection")));
 
-// Registro de servicios de l�gica
+// --- Inyección de dependencias ---
 builder.Services.AddScoped<ICategoriaLogica, CategoriaLogica>();
 builder.Services.AddScoped<ICiudadLogica, CiudadLogica>();
 builder.Services.AddScoped<IClienteLogica, ClienteLogica>();
@@ -31,8 +33,6 @@ builder.Services.AddScoped<IDistribuidorLogica, DistribuidorLogica>();
 builder.Services.AddScoped<ISectorLogica, SectorLogica>();
 builder.Services.AddScoped<ITipoDocLogica, TipoDocLogica>();
 
-
-// Registro de repositorios
 builder.Services.AddScoped<ICategoriaRepositorio, CategoriaRepositorio>();
 builder.Services.AddScoped<IDistribuidorRepositorio, DistribuidorRepositorio>();
 builder.Services.AddScoped<ICiudadRepositorio, CiudadRepositorio>();
@@ -49,23 +49,25 @@ builder.Services.AddScoped<IProveedorRepositorio, ProveedorRepositorio>();
 builder.Services.AddScoped<ISectorRepositorio, SectorRepositorio>();
 builder.Services.AddScoped<ITipoDocumentoRepositorio, TipoDocumentoRepositorio>();
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
-
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// --- Middleware ---
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+// El orden importa: primero redirección, luego métricas, luego controladores
 app.UseHttpsRedirection();
+
+// Middleware Prometheus (mide peticiones y tiempos)
+app.UseHttpMetrics();
 
 app.UseAuthorization();
 
+// Mapear controladores y endpoint de métricas
 app.MapControllers();
+app.MapMetrics(); // <- esto expone /metrics
 
 app.Run();
